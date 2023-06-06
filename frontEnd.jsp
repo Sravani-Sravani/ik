@@ -26,6 +26,34 @@
 			</nav>
 		</div>	
 </section>
+<%@page import="com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.dao.orm.DynamicQuery"%>
+<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>   
+<%@page import="com.liferay.portal.kernel.util.ListUtil"%>
+<%@page import="javax.portlet.PortletURL"%>
+<%@page import="com.kpmg.citizenTables.service.InfraKnowledgeSubCategoryLocalServiceUtil"%>
+<%@page import="com.kpmg.citizenTables.service.InfraKnowledgeCategoryLocalServiceUtil"%>
+<%@page import="java.util.List"%>
+<%@page import="com.kpmg.infraknowledge.portlet.InfraKnowledgePortlet"%>
+<%@page import="com.kpmg.infraknowledge.constants.InfraKnowledgePortletKeys"%>
+<%@page import="com.kpmg.citizenTables.service.InfraKnowledgeLocalServiceUtil"%>
+<%@page import="com.kpmg.citizenTables.model.InfraKnowledge"%>
+<%@page import="com.kpmg.citizenTables.model.InfraKnowledgeCategory"%>
+<%@page import="com.kpmg.citizenTables.model.InfraKnowledgeSubCategory"%>
+ <%@page import="java.text.SimpleDateFormat"%>
+<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+ <%@page import="com.kpmg.citizenTables.service.constants.CustomTablePortletKeys"%>
+ <section class="top_innerBanner ">
+<div class="container top_bannerImg d-flex align-items-center flex-wrap">
+			<div class="me-auto"><h1>Infra Knowledge Hub</h1></div>
+			<nav style="--bs-breadcrumb-divider: '>';">
+			  <ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="#">Home</a></li>
+				<li class="breadcrumb-item active">Infra Knowledge Hub</li>
+			  </ol>
+			</nav>
+		</div>	
+</section>
 <main class="main_innerlayout">
 
 <section>
@@ -41,6 +69,7 @@ List<InfraKnowledgeCategory> ik=null;
   catch(Exception e){
 	  e.getMessage();
   }
+  if(ik!=null){
 for(InfraKnowledgeCategory data:ik)
 {
 	tab=data.getCategoryName();
@@ -118,7 +147,7 @@ for(InfraKnowledgeSubCategory c1:ikc)
 								dq1.add(RestrictionsFactoryUtil.eq("type","CENTRAL POLICIES"));
 								List<InfraKnowledge> ikd=null;
 								try{
-									  ik = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq1, 0,
+									  ikd = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq1, 0,
 											  InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
 									}
   catch(Exception e){
@@ -168,34 +197,37 @@ for(InfraKnowledge newik:ikd)
 		  </div>
 			<div class="resources_scroller">	
     <div class="owl-carousel owl-theme scroller">
+    <%
+								String title1="";
+								DynamicQuery dq2= null;
+								dq2 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
+								dq2.add(RestrictionsFactoryUtil.eq("type","CENTRAL POLICIES"));
+								List<InfraKnowledge> ikd1=null;
+								try{
+									  ikd1 = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq2, 0,
+											  InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
+									}
+  catch(Exception e){
+	  e.getMessage();
+  }
+for(InfraKnowledge newik:ikd1)
+{
+	try{
+	title1=newik.getHeadingText();
+	}
+	catch(Exception e)
+	{
+		
+	}
+%>
 		<div class="item"><div class="card yellow_gradient">
 			<img src="images/news/1.png" class="card-img-top" alt="...">
 			<div class="card-body">
-			  <p class="card-title">Monetization of Operational National Highways</p>
+			  <p class="card-title"><%=title1 %></p>
 			<p class="card-link"><a href="#">Download</a></p></div>
 		  </div>
 		</div><!--item-->
-		<div class="item"><div class="card yellow_gradient">
-		  <img src="images/news/2.png" class="card-img-top" alt="...">
-		  <div class="card-body">
-			<p class="card-title text-truncate">Bharatmala Pariyojana</p>
-		  <p class="card-link"><a href="#">Download</a></p></div>
-		</div>
-		</div><!--item-->
-		<div class="item"><div class="card yellow_gradient">
-		  <img src="images/news/1.png" class="card-img-top" alt="...">
-		  <div class="card-body">
-			<p class="card-title text-truncate">Relaxation in technical and financial qualification for bidder...</p>
-		 <p class="card-link"><a href="#">Download</a></p></div>
-		  </div>
-		</div><!--item-->
-		<div class="item"><div class="card yellow_gradient">
-		  <img src="images/news/1.png" class="card-img-top" alt="...">
-		  <div class="card-body">
-			<p class="card-title text-truncate">Bharatmala Pariyojana</p>
-		 <p class="card-link"><a href="#">Download</a></p></div>
-		  </div>
-		</div><!--item-->
+	<%} %>	
 </div><!--Owl Carousel-->
 				</div>
   </div><!--Container-->
@@ -486,7 +518,7 @@ for(InfraKnowledge newik:ikd)
 					</div>
 				  </div>
 				</div>
-						<%} %>			
+						<%}} %>			
 				
 		</div>
 		
