@@ -1,4 +1,4 @@
-  <main class="main_innerlayout">
+<main class="main_innerlayout">
     <section>
       <div class="container resources_link">
         <ul class="nav nav-pills d-none d-lg-flex" id="myTab" role="tablist">
@@ -100,3 +100,4 @@
         </div><!--tab-content-->
       </div><!--container-->
     </section>
+  </main>
