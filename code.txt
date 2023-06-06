@@ -12,104 +12,91 @@
           <% tabIndex++; %>
           <% } %>
         </ul>
-        <div class="tab-content accordion" id="myTabContent">
+        <div class="tab-content" id="myTabContent">
           <% tabIndex = 0; %>
           <% for (InfraKnowledgeCategory data : ik) { %>
-          <div class="tab-pane fade <%= tabIndex == 0 ? "show active" : "" %> accordion-item"
-            id="<%= "pane-" + tabIndex %>" role="tabpanel" aria-labelledby="<%= "tab-" + tabIndex %>"
-            tabindex="0">
-            <h2 class="accordion-header d-lg-none" id="<%= "heading-" + tabIndex %>">
-              <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                data-bs-target="<%= "#collapse-" + tabIndex %>" aria-expanded="true"
-                aria-controls="<%= "collapse-" + tabIndex %>">All</button>
-            </h2>
-            <div id="<%= "collapse-" + tabIndex %>"
-              class="accordion-collapse collapse <%= tabIndex == 0 ? "show" : "" %> d-lg-block"
-              aria-labelledby="<%= "heading-" + tabIndex %>" data-bs-parent="#myTabContent">
-              <div class="accordion-body">
-                <div class="filter_form">
-                  <div class="row">
-                    <form class="row row-cols-lg-auto align-items-center">
-                      <div class="col-auto">
-                        <label class="form-label"><span class="text-danger">*</span> Select Subsector</label>
-                        <select class="form-select form-select-sm">
-                          <option selected>All</option>
-                          <% for (InfraKnowledgeSubCategory c1 : ikc) { %>
-                          <option><%= c1.getSubCategoryName() %></option>
-                          <% } %>
-                        </select>
-                      </div>
-                      <div class="col-auto">
-                        <label class="form-label"><span class="text-danger">*</span> Select Ministry</label>
-                        <select class="form-select form-select-sm">
-                          <option>All</option>
-                          <option>Ministry</option>
-                          <option>State</option>
-                        </select>
-                      </div>
-                    </form>
+          <div class="tab-pane fade <%= tabIndex == 0 ? "show active" : "" %>" id="<%= "pane-" + tabIndex %>"
+            role="tabpanel" aria-labelledby="<%= "tab-" + tabIndex %>">
+            <div class="filter_form">
+              <div class="row">
+                <form class="row row-cols-lg-auto align-items-center">
+                  <div class="col-auto">
+                    <label class="form-label"><span class="text-danger">*</span> Select Subsector</label>
+                    <select class="form-select form-select-sm">
+                      <option selected>All</option>
+                      <% for (InfraKnowledgeSubCategory c1 : ikc) { %>
+                      <option><%= c1.getSubCategoryName() %></option>
+                      <% } %>
+                    </select>
                   </div>
+                  <div class="col-auto">
+                    <label class="form-label"><span class="text-danger">*</span> Select Ministry</label>
+                    <select class="form-select form-select-sm">
+                      <option>All</option>
+                      <option>Ministry</option>
+                      <option>State</option>
+                    </select>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="container d-flex align-items-center flex-wrap">
+                  <div class="me-auto">
+                    <h4 class="subheading blue_leftborder">CENTRAL POLICIES</h4>
+                  </div>
+                  <a href="#" class="btnview_sm">View All</a>
                 </div>
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="container d-flex align-items-center flex-wrap">
-                      <div class="me-auto">
-                        <h4 class="subheading blue_leftborder">CENTRAL POLICIES</h4>
-                      </div>
-                      <a href="#" class="btnview_sm">View All</a>
-                    </div>
-                    <div class="container">
-                      <div class="resources_scroller">
-                        <div class="owl-carousel owl-theme scroller">
-                          <% for (InfraKnowledge newik : ikd) { %>
-                          <div class="item">
-                            <div class="card">
-                              <img src="images/news/1.png" class="card-img-top" alt="...">
-                              <div class="card-body">
-                                <p class="card-title"><%= newik.getHeadingText() %></p>
-                                <p class="card-link"><a href="#">Download</a></p>
-                              </div>
-                            </div>
-                          </div><!--item-->
-                          <% } %>
-                        </div><!--Owl Carousel-->
-                      </div>
-                    </div><!--Container-->
-                  </div><!--col-->
-                </div><!--row-->
-                <div class="row">
-                  <div class="col-lg-12">
-                    <div class="container d-flex align-items-center flex-wrap">
-                      <div class="me-auto">
-                        <h4 class="subheading blue_leftborder">PPP Document Repository</h4>
-                      </div>
-                      <a href="#" class="btnview_sm">View All</a>
-                    </div>
-                    <div class="container">
-                      <div class="resources_scroller">
-                        <div class="owl-carousel owl-theme scroller">
-                          <% for (InfraKnowledge newik1 : ikp) { %>
-                          <div class="item">
-                            <div class="card">
-                              <img src="images/news/1.png" class="card-img-top" alt="...">
-                              <div class="card-body">
-                                <p class="card-title"><%= newik1.getHeadingText() %></p>
-                                <p class="card-link"><a href="#">Download</a></p>
-                              </div>
-                            </div>
-                          </div><!--item-->
-                          <% } %>
-                        </div><!--Owl Carousel-->
-                      </div>
-                    </div><!--Container-->
-                  </div><!--col-->
-                </div><!--row-->
-              </div><!--accordion-body-->
-            </div><!--collapse-->
+                <div class="container">
+                  <div class="resources_scroller">
+                    <div class="owl-carousel owl-theme scroller">
+                      <% for (InfraKnowledge newik : ikd) { %>
+                      <div class="item">
+                        <div class="card">
+                          <img src="images/news/1.png" class="card-img-top" alt="...">
+                          <div class="card-body">
+                            <p class="card-title"><%= newik.getHeadingText() %></p>
+                            <p class="card-link"><a href="#">Download</a></p>
+                          </div>
+                        </div>
+                      </div><!--item-->
+                      <% } %>
+                    </div><!--Owl Carousel-->
+                  </div>
+                </div><!--Container-->
+              </div><!--col-->
+            </div><!--row-->
+            <div class="row">
+              <div class="col-lg-12">
+                <div class="container d-flex align-items-center flex-wrap">
+                  <div class="me-auto">
+                    <h4 class="subheading blue_leftborder">PPP Document Repository</h4>
+                  </div>
+                  <a href="#" class="btnview_sm">View All</a>
+                </div>
+                <div class="container">
+                  <div class="resources_scroller">
+                    <div class="owl-carousel owl-theme scroller">
+                      <% for (InfraKnowledge newik1 : ikp) { %>
+                      <div class="item">
+                        <div class="card">
+                          <img src="images/news/1.png" class="card-img-top" alt="...">
+                          <div class="card-body">
+                            <p class="card-title"><%= newik1.getHeadingText() %></p>
+                            <p class="card-link"><a href="#">Download</a></p>
+                          </div>
+                        </div>
+                      </div><!--item-->
+                      <% } %>
+                    </div><!--Owl Carousel-->
+                  </div>
+                </div><!--Container-->
+              </div><!--col-->
+            </div><!--row-->
           </div><!--tab-pane-->
           <% tabIndex++; %>
           <% } %>
         </div><!--tab-content-->
       </div><!--container-->
     </section>
-  </main>
