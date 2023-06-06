@@ -1,0 +1,111 @@
+<main class="main_innerlayout">
+  <section>
+    <div class="container resources_link">
+      <ul class="nav nav-pills d-none d-lg-flex" id="myTab" role="tablist">
+        <% 
+        List<InfraKnowledgeCategory> ik=null;
+        String tab="";
+        long cid=0L;
+        try{
+          ik =InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategories(0, InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
+        }
+        catch(Exception e){
+          e.getMessage();
+        }
+        for(InfraKnowledgeCategory data:ik)
+        {
+          tab=data.getCategoryName();
+          cid=data.getCatId();
+        %>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="one-tab" data-bs-toggle="tab" data-bs-target="#one-tab-pane" type="button" role="tab" aria-controls="one-tab-pane" aria-selected="true"><%=tab %></button>
+        </li>
+        <% } %>
+      </ul>
+      <div class="tab-content accordion" id="myTabContent">
+        <div class="tab-pane fade show active accordion-item" id="one-tab-pane" role="tabpanel" aria-labelledby="one-tab" tabindex="0">
+          <h2 class="accordion-header d-lg-none" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">All</button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show  d-lg-block" aria-labelledby="headingOne" data-bs-parent="#myTabContent">
+            <div class="accordion-body">
+              <div class="filter_form">
+                <div class="row">
+                  <form class="row row-cols-lg-auto align-items-center">
+                    <div class="col-auto">
+                      <label class="form-label"><span class="text-danger">*</span> Select Subsector</label>
+                      <select class="form-select form-select-sm">
+                        <option selected>All</option>
+                        <% String options="";
+                        DynamicQuery dynamicQuery1 = null;
+                        dynamicQuery1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
+                        dynamicQuery1.add(RestrictionsFactoryUtil.eq("catId", cid));
+                        List<InfraKnowledgeSubCategory> ikc=null;
+                        try{
+                          ikc = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dynamicQuery1, 0, InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
+                        }
+                        catch(Exception e){
+                          e.getMessage();
+                        }
+                        for(InfraKnowledgeSubCategory c1:ikc) {
+                          options=c1.getSubCategoryName();
+                        %>
+                        <option><%=options %></option>
+                        <% } %>
+                      </select>
+                    </div>
+                    <div class="col-auto">
+                      <label class="form-label"><span class="text-danger">*</span> Select Ministry</label>
+                      <select class="form-select form-select-sm">
+                        <option>All</option>
+                        <option>Ministry</option>
+                        <option>State</option>
+                      </select>
+                    </div>
+                  </form>
+                </div>
+              </div><!--filter-->
+              <div class="row">
+                <div class="col-lg-12">
+                  <div class="container d-flex align-items-center flex-wrap">
+                    <div class="me-auto"><h4 class="subheading blue_leftborder">CENTRAL GOVERNMENT SCHEMES</h4></div>
+                    <div class="blue_rightborder"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="row resources_scroller">
+                <div class="owl-carousel owl-theme">
+                  <% 
+                  List<InfraKnowledge> ik=null;
+                  try{
+                    ik = InfraKnowledgeLocalServiceUtil.getInfraKnowledges(0, InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
+                  }
+                  catch(Exception e){
+                    e.getMessage();
+                  }
+                  for(InfraKnowledge data:ik)
+                  {
+                  %>
+                  <div class="item">
+                    <div class="resource_card">
+                      <div class="resource_card_top">
+                        <div class="resource_card_img">
+                          <img src="<%=data.getImagePath() %>" alt="<%=data.getTitle() %>">
+                        </div>
+                      </div>
+                      <div class="resource_card_bottom">
+                        <h6 class="resource_title"><%=data.getTitle() %></h6>
+                        <a href="<%=data.getFilePath() %>" class="btn btn_blue resource_download">Download</a>
+                      </div>
+                    </div>
+                  </div>
+                  <% } %>
+                </div><!--owl-carousel-->
+              </div><!--row-->
+            </div><!--accordion-body-->
+          </div><!--collapseOne-->
+        </div><!--tab-pane-->
+      </div><!--tab-content-->
+    </div><!--container-->
+  </section>
+</main>
