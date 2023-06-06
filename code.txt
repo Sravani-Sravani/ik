@@ -3,22 +3,20 @@
     <div class="container resources_link">
       <ul class="nav nav-pills d-none d-lg-flex" id="myTab" role="tablist">
         <% 
-        List<InfraKnowledgeCategory> ik=null;
-        String tab="";
-        long cid=0L;
-        try{
-          ik =InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategories(0, InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
+        List<InfraKnowledgeCategory> ik = null;
+        String tab = "";
+        long cid = 0L;
+        try {
+          ik = InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategories(0, InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
+        } catch (Exception e) {
+          e.printStackTrace();
         }
-        catch(Exception e){
-          e.getMessage();
-        }
-        for(InfraKnowledgeCategory data:ik)
-        {
-          tab=data.getCategoryName();
-          cid=data.getCatId();
+        for (InfraKnowledgeCategory data : ik) {
+          tab = data.getCategoryName();
+          cid = data.getCatId();
         %>
         <li class="nav-item" role="presentation">
-          <button class="nav-link active" id="one-tab" data-bs-toggle="tab" data-bs-target="#one-tab-pane" type="button" role="tab" aria-controls="one-tab-pane" aria-selected="true"><%=tab %></button>
+          <button class="nav-link active" id="one-tab" data-bs-toggle="tab" data-bs-target="#one-tab-pane" type="button" role="tab" aria-controls="one-tab-pane" aria-selected="true"><%= tab %></button>
         </li>
         <% } %>
       </ul>
@@ -27,7 +25,7 @@
           <h2 class="accordion-header d-lg-none" id="headingOne">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">All</button>
           </h2>
-          <div id="collapseOne" class="accordion-collapse collapse show  d-lg-block" aria-labelledby="headingOne" data-bs-parent="#myTabContent">
+          <div id="collapseOne" class="accordion-collapse collapse show d-lg-block" aria-labelledby="headingOne" data-bs-parent="#myTabContent">
             <div class="accordion-body">
               <div class="filter_form">
                 <div class="row">
@@ -36,21 +34,21 @@
                       <label class="form-label"><span class="text-danger">*</span> Select Subsector</label>
                       <select class="form-select form-select-sm">
                         <option selected>All</option>
-                        <% String options="";
+                        <% 
+                        String options = "";
                         DynamicQuery dynamicQuery1 = null;
                         dynamicQuery1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
                         dynamicQuery1.add(RestrictionsFactoryUtil.eq("catId", cid));
-                        List<InfraKnowledgeSubCategory> ikc=null;
-                        try{
+                        List<InfraKnowledgeSubCategory> ikc = null;
+                        try {
                           ikc = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dynamicQuery1, 0, InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
+                        } catch (Exception e) {
+                          e.printStackTrace();
                         }
-                        catch(Exception e){
-                          e.getMessage();
-                        }
-                        for(InfraKnowledgeSubCategory c1:ikc) {
-                          options=c1.getSubCategoryName();
+                        for (InfraKnowledgeSubCategory c1 : ikc) {
+                          options = c1.getSubCategoryName();
                         %>
-                        <option><%=options %></option>
+                        <option><%= options %></option>
                         <% } %>
                       </select>
                     </div>
@@ -64,7 +62,7 @@
                     </div>
                   </form>
                 </div>
-              </div><!--filter-->
+              </div><!-- filter -->
               <div class="row">
                 <div class="col-lg-12">
                   <div class="container d-flex align-items-center flex-wrap">
@@ -76,36 +74,34 @@
               <div class="row resources_scroller">
                 <div class="owl-carousel owl-theme">
                   <% 
-                  List<InfraKnowledge> ik=null;
-                  try{
+                  List<InfraKnowledge> ik = null;
+                  try {
                     ik = InfraKnowledgeLocalServiceUtil.getInfraKnowledges(0, InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
+                  } catch (Exception e) {
+                    e.printStackTrace();
                   }
-                  catch(Exception e){
-                    e.getMessage();
-                  }
-                  for(InfraKnowledge data:ik)
-                  {
+                  for (InfraKnowledge data : ik) {
                   %>
                   <div class="item">
                     <div class="resource_card">
                       <div class="resource_card_top">
                         <div class="resource_card_img">
-                          <img src="<%=data.getImagePath() %>" alt="<%=data.getTitle() %>">
+                          <img src="<%= data.getImagePath() %>" alt="<%= data.getTitle() %>">
                         </div>
                       </div>
                       <div class="resource_card_bottom">
-                        <h6 class="resource_title"><%=data.getTitle() %></h6>
-                        <a href="<%=data.getFilePath() %>" class="btn btn_blue resource_download">Download</a>
+                        <h6 class="resource_title"><%= data.getTitle() %></h6>
+                        <a href="<%= data.getFilePath() %>" class="btn btn_blue resource_download">Download</a>
                       </div>
                     </div>
                   </div>
                   <% } %>
-                </div><!--owl-carousel-->
-              </div><!--row-->
-            </div><!--accordion-body-->
-          </div><!--collapseOne-->
-        </div><!--tab-pane-->
-      </div><!--tab-content-->
-    </div><!--container-->
+                </div><!-- owl-carousel -->
+              </div><!-- row -->
+            </div><!-- accordion-body -->
+          </div><!-- collapseOne -->
+        </div><!-- tab-pane -->
+      </div><!-- tab-content -->
+    </div><!-- container -->
   </section>
 </main>
