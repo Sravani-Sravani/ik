@@ -1,0 +1,46 @@
+CREATE TABLE IF NOT EXISTS public.dea_infraknowledge
+(
+    uuid_ character varying(75) COLLATE pg_catalog."default",
+    infraid bigint NOT NULL,
+    cateid bigint,
+    subcatid bigint,
+    type_ character varying(75) COLLATE pg_catalog."default",
+    documenttype character varying(75) COLLATE pg_catalog."default",
+    ministry character varying(75) COLLATE pg_catalog."default",
+    headingtext character varying(75) COLLATE pg_catalog."default",
+    hi_headingtext character varying(75) COLLATE pg_catalog."default",
+    description character varying(75) COLLATE pg_catalog."default",
+    hi_description character varying(75) COLLATE pg_catalog."default",
+    thumbnailfileentryid bigint,
+    fileentryid bigint,
+    createddate timestamp without time zone,
+    createdby bigint,
+    modifieddate timestamp without time zone,
+    modifiedby bigint,
+    CONSTRAINT dea_infraknowledge_pkey PRIMARY KEY (infraid)
+)
+
+CREATE TABLE IF NOT EXISTS public.dea_infraknowledgecategory
+(
+    uuid_ character varying(75) COLLATE pg_catalog."default",
+    catid bigint NOT NULL,
+    categoryname character varying(75) COLLATE pg_catalog."default",
+    createddate timestamp without time zone,
+    createdby bigint,
+    modifieddate timestamp without time zone,
+    modifiedby bigint,
+    CONSTRAINT dea_infraknowledgecategory_pkey PRIMARY KEY (catid)
+)
+
+CREATE TABLE IF NOT EXISTS public.dea_infraknowledgesubcategory
+(
+    uuid_ character varying(75) COLLATE pg_catalog."default",
+    subcatid bigint NOT NULL,
+    catid bigint,
+    subcategoryname character varying(75) COLLATE pg_catalog."default",
+    createddate timestamp without time zone,
+    createdby bigint,
+    modifieddate timestamp without time zone,
+    modifiedby bigint,
+    CONSTRAINT dea_infraknowledgesubcategory_pkey PRIMARY KEY (subcatid)
+)
