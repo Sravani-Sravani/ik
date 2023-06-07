@@ -20,14 +20,13 @@
                     for (InfraKnowledgeCategory data : ik) {
                         tab = data.getCategoryName();
                         cid = data.getCatId();
-                        System.out.println(cid);
                 %>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link <%=tabIndex==0?"active":"" %>" id="<%=cid%>-tab" data-bs-toggle="tab" data-bs-target="#<%=cid %>-tab-pane" type="button" role="tab" aria-controls="#<%=cid %>-tab-pane" aria-selected="true"><%=tab %></button>
+                    <button class="nav-link <%=tabIndex==0?"active":"" %>" id="<%=cid%>-tab" data-bs-toggle="pill" data-bs-target="#<%=cid %>-tab-pane" type="button" role="tab" aria-controls="<%=cid %>-tab-pane" aria-selected="true"><%=tab %></button>
                 </li>
                 <% tabIndex++; } } %>
             </ul>
-            <div class="tab-content accordion" id="myTabContent">
+            <div class="tab-content" id="myTabContent">
                 <%
                 for (InfraKnowledgeCategory data : ik) {
                     int innerTabIndex = 0;
@@ -38,7 +37,7 @@
                     <h2 class="accordion-header d-lg-none" id="heading<%=cid%>">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%=cid %>" aria-expanded="true" aria-controls="collapse<%=cid %>">All</button>
                     </h2>
-                    <div id="collapse<%=cid %>" class="accordion-collapse collapse show  d-lg-block" aria-labelledby="heading<%=cid %>" data-bs-parent="#myTabContent">
+                    <div id="collapse<%=cid %>" class="accordion-collapse collapse show d-lg-block" aria-labelledby="heading<%=cid %>" data-bs-parent="#myTabContent">
                         <div class="accordion-body">
                             <div class="filter_form">
                                 <div class="row">
@@ -92,6 +91,7 @@
                                                 DynamicQuery dq1 = null;
                                                 dq1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
                                                 dq1.add(RestrictionsFactoryUtil.eq("type", "CENTRAL POLICIES"));
+                                                dq1.add(RestrictionsFactoryUtil.eq("catId", cid));
                                                 List<InfraKnowledge> ikd = null;
                                                 try {
                                                     ikd = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq1, 0,
@@ -160,6 +160,7 @@
                                                 DynamicQuery dq2 = null;
                                                 dq2 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
                                                 dq2.add(RestrictionsFactoryUtil.eq("type", "PPP Document Repository"));
+                                                dq2.add(RestrictionsFactoryUtil.eq("catId", cid));
                                                 List<InfraKnowledge> ikd1 = null;
                                                 try {
                                                     ikd1 = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq2, 0,
