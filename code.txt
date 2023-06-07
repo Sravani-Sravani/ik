@@ -43,7 +43,7 @@
                                 <div class="row">
                                     <div class="col-auto">
                                         <label class="form-label"><span class="text-danger">*</span>Select Subsector</label>
-                                        <select class="form-select form-select-sm">
+                                        <select class="form-select form-select-sm" id="subsector-select-<%=cid%>">
                                             <option selected>All</option>
                                             <% String options = "";
                                             DynamicQuery dynamicQuery1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
@@ -64,7 +64,7 @@
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-label"><span class="text-danger">*</span>Select Ministry</label>
-                                        <select class="form-select form-select-sm">
+                                        <select class="form-select form-select-sm" id="ministry-select-<%=cid%>">
                                             <option>All</option>
                                             <option>Ministry</option>
                                             <option>State</option>
@@ -81,7 +81,7 @@
 
                                     <div class="container">
                                         <div class="resources_scroller">
-                                            <div class="owl-carousel owl-theme scroller">
+                                            <div class="owl-carousel owl-theme scroller" id="central-policies-carousel-<%=cid%>">
                                                 <%
                                                 String title = "";
                                                 String fileUrl = "";
@@ -142,7 +142,7 @@
                                     <div class="container">
                                         <div class="col-lg-3">
                                             <label class="form-label"><span class="text-danger">*</span> Document Type</label>
-                                            <select class="form-select form-select-sm">
+                                            <select class="form-select form-select-sm" id="document-type-select-<%=cid%>">
                                                 <option selected>All</option>
                                                 <option>Policy</option>
                                                 <option>Report</option>
@@ -151,7 +151,7 @@
                                             </select>
                                         </div>
                                         <div class="resources_scroller">
-                                            <div class="owl-carousel owl-theme scroller">
+                                            <div class="owl-carousel owl-theme scroller" id="ppp-documents-carousel-<%=cid%>">
                                                 <%
                                                 String title1 = "";
                                                 String fileUrl2 = "";
@@ -209,3 +209,45 @@
         </div><!-- container -->
     </section>
 </main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        <% for (InfraKnowledgeCategory data : ik) {
+            cid = data.getCatId();
+        %>
+        var ministrySelect<%=cid%> = document.getElementById('ministry-select-<%=cid%>');
+        var documentTypeSelect<%=cid%> = document.getElementById('document-type-select-<%=cid%>');
+
+        ministrySelect<%=cid%>.addEventListener('change', function () {
+            var selectedMinistry = this.value;
+            filterDocuments('<%=cid%>', selectedMinistry, documentTypeSelect<%=cid%>.value);
+        });
+
+        documentTypeSelect<%=cid%>.addEventListener('change', function () {
+            var selectedDocumentType = this.value;
+            filterDocuments('<%=cid%>', ministrySelect<%=cid%>.value, selectedDocumentType);
+        });
+        <% } %>
+
+        function filterDocuments(categoryId, ministry, documentType) {
+            var carouselId = 'central-policies-carousel-' + categoryId;
+            if (documentType === 'PPP Document Repository') {
+                carouselId = 'ppp-documents-carousel-' + categoryId;
+            }
+
+            var carousel = document.getElementById(carouselId);
+            var items = carousel.getElementsByClassName('item');
+
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var ministryLabel = item.querySelector('.card-link a').innerText;
+
+                if (ministry === 'All' || ministryLabel.includes(ministry)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            }
+        }
+    });
+</script>
