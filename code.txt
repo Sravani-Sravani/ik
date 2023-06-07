@@ -1,397 +1,242 @@
-<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
-<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %>
-
-<portlet:defineObjects />
-
 <main class="main_innerlayout">
 
-    <section>
-        <div class="container resources_link">
-            <ul class="nav nav-pills d-none d-lg-flex" id="myTab" role="tablist">
-                <% 
-                int tabIndex = 0;
-                List<InfraKnowledgeCategory> ik = null;
-                String tab = "";
-                long cid = 0L;
-                try {
-                    ik = InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategories(0, InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (ik != null) {
-                    for (InfraKnowledgeCategory data : ik) {
-                        tab = data.getCategoryName();
-                        cid = data.getCatId();
-                %>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link <%=tabIndex==0?"active":"" %>" id="<%=cid %>" data-bs-toggle="tab"
-                        data-bs-target="#<%=cid %>-tab-pane" type="button" role="tab"
-                        aria-controls="<%=cid %>-tab-pane" aria-selected="true"><%=tab %></button>
-                </li>
-                <%tabIndex++; }
-                } %>
-            </ul>
-            <div class="tab-content accordion" id="myTabContent">
-                <%
-                for (InfraKnowledgeCategory data : ik) {
-                    tabIndex = 0;
-                    tab = data.getCategoryName();
-                    cid = data.getCatId();
-                %>
-                <div class="tab-pane fade <%=tabIndex==0?"show active":"" %> accordion-item" id="<%=cid %>-tab-pane"
-                    role="tabpanel" aria-labelledby="one-tab" tabindex="<%=tabIndex%>">
+<section>
+		<div class="container resources_link">
+				<ul class="nav nav-pills d-none d-lg-flex" id="myTab" role="tablist">
+				<% 
+				int tabIndex=0;
+List<InfraKnowledgeCategory> ik=null;
+				String tab="";
+				long cid=0L;
+  try{
+		 ik =InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategories(0, InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
+  }
+  catch(Exception e){
+	  e.getMessage();
+  }
+  if(ik!=null){
+for(InfraKnowledgeCategory data:ik)
+{
+	tab=data.getCategoryName();
+	cid=data.getCatId();
+%>
+		  <li class="nav-item" role="presentation">
+			<button class="nav-link <%=tabIndex==0?"active":"" %>" id="<%=cid%>-tab" data-bs-toggle="tab" data-bs-target="#<%=cid %>-tab-pane" type="button" role="tab" aria-controls="#<%=cid %>-tab-pane" aria-selected="true"><%=tab %></button>
+		  </li>	
+		  <%tabIndex++; }	} %>
+		</ul>
+				<div class="tab-content accordion" id="myTabContent">
+				<%
+				for(InfraKnowledgeCategory data:ik)
+				{
+					tabIndex=0;
+					tab=data.getCategoryName();
+					cid=data.getCatId();
+				%>
+				  <div class="tab-pane fade <%=tabIndex==0?"show active":"" %> accordion-item" id="#<%=cid %>-tab-pane" role="tabpanel" aria-labelledby="<%=cid %>-tab" tabindex="<%=cid%>">
 
-                    <h2 class="accordion-header d-lg-none" id="headingOne">
-                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">All</button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse show  d-lg-block"
-                        aria-labelledby="headingOne" data-bs-parent="#myTabContent">
-                        <div class="accordion-body">
-                            <div class="filter_form">
-                                <div class="row">
-                                    <form class="row row-cols-lg-auto align-items-center">
-                                        <div class="col-auto">
-                                            <label class="form-label"><span class="text-danger">*</span> Select
-                                                Subsector</label>
-                                            <select id="subsector_<%=cid %>" class="form-select form-select-sm">
-                                                <option selected>All</option>
-                                                <%
-                                                String options = "";
-                                                DynamicQuery dynamicQuery1 = null;
-                                                dynamicQuery1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
-                                                dynamicQuery1.add(RestrictionsFactoryUtil.eq("catId", cid));
-                                                List<InfraKnowledgeSubCategory> ikc = null;
-                                                try {
-                                                    ikc = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dynamicQuery1, 0, InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                                for (InfraKnowledgeSubCategory c1 : ikc) {
-                                                    options = c1.getSubCategoryName();
-                                                %>
-                                                <option><%=options %></option>
-                                                <% } %>
-                                            </select>
-                                        </div>
-                                        <div class="col-auto">
-                                            <label class="form-label"><span class="text-danger">*</span> Select
-                                                Ministry</label>
-                                            <select class="form-select form-select-sm">
-                                                <option>All</option>
-                                                <option>Ministry</option>
-                                                <option>State</option>
-                                            </select>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div><!-- filter -->
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="container d-flex align-items-center flex-wrap">
-                                        <div class="me-auto">
-                                            <h4 class="subheading blue_leftborder">CENTRAL POLICIES</h4>
-                                        </div>
-                                        <a href="#" class="btnview_sm">View All</a>
-                                    </div>
+					<h2 class="accordion-header d-lg-none" id="heading<%=cid%>">
+					  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="collapse<%=cid %>" aria-expanded="true" aria-controls="collapse<%=cid %>">All</button>
+					</h2>
+					<div id="collapse<%=cid %>" class="accordion-collapse collapse show  d-lg-block" aria-labelledby="heading<%=cid %>" data-bs-parent="#myTabContent">
+					  <div class="accordion-body">
+						 <div class="filter_form">
+						  <div class="row">
+						<form class="row row-cols-lg-auto align-items-center"> 
+						<div class="col-auto">
+						  <label  class="form-label"><span class="text-danger">*</span> Select Subsector</label>
+							<select class="form-select form-select-sm">
+								<option selected>All</option>
+								<%
+								String options="";
+								DynamicQuery dynamicQuery1 = null;
+								dynamicQuery1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
+								dynamicQuery1.add(RestrictionsFactoryUtil.eq("catId", cid));
+								List<InfraKnowledgeSubCategory> ikc=null;
+								try{
+									  ikc = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dynamicQuery1, 0,
+											  InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
+									}
+  catch(Exception e){
+	  e.getMessage();
+  }
+for(InfraKnowledgeSubCategory c1:ikc)
+{
+	options=c1.getSubCategoryName();
+%>
+								
+								<option><%=options %></option>
 
-                                    <div class="container">
-                                        <div class="resources_scroller">
-                                            <div class="owl-carousel owl-theme scroller">
-                                                <%
-                                                String title = "";
-                                                String fileUrl = "";
-                                                String fileUrl1 = "";
-                                                DynamicQuery dq1 = null;
-                                                dq1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
-                                                dq1.add(RestrictionsFactoryUtil.eq("type", "CENTRAL POLICIES"));
-                                                dq1.add(RestrictionsFactoryUtil.eq("catId", cid));
-                                                List<InfraKnowledge> ikd = null;
-                                                try {
-                                                    ikd = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq1, 0,
-                                                            InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                                for (InfraKnowledge newik : ikd) {
-                                                    try {
-                                                        title = newik.getHeadingText();
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                    long fileEntryId = newik.getThumbnailfileEntryId();
-                                                    if (fileEntryId != 0L) {
-                                                        try {
-                                                            fileUrl = InfraKnowledgePortlet.getFile(fileEntryId,
-                                                                    themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-                                                    long fileEntryId1 = newik.getFileEntryId();
-                                                    if (fileEntryId1 != 0L) {
-                                                        try {
-                                                            fileUrl1 = InfraKnowledgePortlet.getFile(fileEntryId1,
-                                                                    themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-                                                %>
-                                                <div class="item">
-                                                    <div class="card">
-                                                        <img src="<%=fileUrl %>" class="card-img-top" alt="...">
-                                                        <div class="card-body">
-                                                            <p class="card-title"><%=title %></p>
-                                                            <p class="card-link"><a
-                                                                    href="<%=fileUrl1%>?download=true">Download</a>
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div><!-- item -->
-                                                <% } %>
-                                            </div><!-- Owl Carousel -->
-                                        </div>
-                                    </div><!-- Container -->
-                                </div><!-- Central Policies -->
-                                <hr class="seperator" />
-                                <div class="col-lg-12">
-                                    <div class="container d-flex align-items-center flex-wrap">
-                                        <div class="me-auto">
-                                            <h4 class="subheading yellow_leftborder">PPP Document Repository</h4>
-                                        </div>
-                                        <a href="#" class="btnview_sm">View All</a>
-                                    </div>
+							</select>	
+							  <%} %>
+						  </div>
+						<div class="col-auto">
+						  <label class="form-label"><span class="text-danger">*</span> Select Ministry</label>
+							<select class="form-select form-select-sm">
+								<option>All</option>
+								<option>Ministry </option>
+								<option>State</option>
+							</select>	
+						  </div>
+							  </form>		  
+						  </div>
+					  </div><!--filter-->
+	  <div class="row">
+	  <div class="col-lg-12"> 
+		  <div class="container d-flex align-items-center flex-wrap">
+			<div class="me-auto"><h4 class="subheading blue_leftborder">CENTRAL POLICIES</h4> </div>
+			<a href="#" class="btnview_sm">View All</a>
+		</div>
+		  
+  			<div class="container">
+  	<div class="resources_scroller">
+    <div class="owl-carousel owl-theme scroller">
+    <%
+								String title="";
+    String fileUrl="";
+    String fileUrl1="";
+								DynamicQuery dq1= null;
+								dq1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
+								dq1.add(RestrictionsFactoryUtil.eq("type","CENTRAL POLICIES"));
+								
+								List<InfraKnowledge> ikd=null;
+								try{
+									  ikd = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq1, 0,
+											  InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
+									}
+  catch(Exception e){
+	  e.getMessage();
+  }
+for(InfraKnowledge newik:ikd)
+{
+	try{
+	title=newik.getHeadingText();
+	}
+	catch(Exception e)
+	{
+		
+	}
+	  long fileEntryId=newik.getThumbnailfileEntryId();
+	  if(fileEntryId!=0L){
+			try{
+				fileUrl =InfraKnowledgePortlet.getFile(fileEntryId, themeDisplay.getScopeGroupId());	  
+			}
+			catch(Exception e){
+				
+			}
+	  }
+	  long fileEntryId1=newik.getFileEntryId();
+	  if(fileEntryId1!=0L){
+			try{
+				fileUrl1 =InfraKnowledgePortlet.getFile(fileEntryId1, themeDisplay.getScopeGroupId());	  
+			}
+			catch(Exception e){
+				
+			}
+	  }
+	
+%>
+		<div class="item"><div class="card">
+		<img src="<%=fileUrl %>" class="card-img-top" alt="...">
+		<div class="card-body">
+		  <p class="card-title"><%=title %></p>
+		<p class="card-link"><a href="<%=fileUrl1%>?download=true">Download</a></p></div>
+		</div>
+		</div><!--item-->
+	<%} %>		
+	</div><!--Owl Carousel-->
+   </div>
+  </div><!--Container-->
+		</div><!--Central Policies-->
+	  <hr class="seperator" />		  
+	  <div class="col-lg-12"> 
+		  
+		  
+		  <div class="container d-flex align-items-center flex-wrap">
+			<div class="me-auto"><h4 class="subheading yellow_leftborder">PPP Document Repository</h4></div>
+			<a href="#" class="btnview_sm">View All</a>
+		</div>
+		  
+  			<div class="container">
+		  <div class="col-lg-3">
+		  <label class="form-label"><span class="text-danger">*</span> Document Type</label>
+			<select class="form-select form-select-sm">
+				<option selected>All</option> 
+				<option>Policy</option> 
+				<option>Report </option>
+				<option>Model Concession Agreement </option>
+				<option>Model RFP</option>
+			</select>	
+		  </div>
+			<div class="resources_scroller">	
+    <div class="owl-carousel owl-theme scroller">
+    <%
+								String title1="";
+    String fileUrl2="";
+    String fileUrl3="";
+								DynamicQuery dq2= null;
+								dq2 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
+								dq2.add(RestrictionsFactoryUtil.eq("type","PPP DOCUMENT REPOSITORY"));
+								List<InfraKnowledge> ikd1=null;
+								try{
+									  ikd1 = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq2, 0,
+											  InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
+									}
+  catch(Exception e){
+	  e.getMessage();
+  }
+for(InfraKnowledge newik:ikd1)
+{
+	try{
+	title1=newik.getHeadingText();
+	}
+	catch(Exception e)
+	{
+		
+	}
+	long fileEntryId2=newik.getThumbnailfileEntryId();
+	  if(fileEntryId2!=0L){
+			try{
+				fileUrl2 =InfraKnowledgePortlet.getFile(fileEntryId2, themeDisplay.getScopeGroupId());	  
+			}
+			catch(Exception e){
+				
+			}
+	  }
+	  long fileEntryId3=newik.getFileEntryId();
+	  if(fileEntryId3!=0L){
+			try{
+				fileUrl3 =InfraKnowledgePortlet.getFile(fileEntryId3, themeDisplay.getScopeGroupId());	  
+			}
+			catch(Exception e){
+				
+			}
+	  }
+%>
+		<div class="item"><div class="card yellow_gradient">
+			<img src="<%=fileUrl2 %>" class="card-img-top" alt="...">
+			<div class="card-body">
+			  <p class="card-title"><%=title1 %></p>
+			<p class="card-link"><a href="<%=fileUrl3%>?download=true">Download</a></p></div>
+		  </div>
+		</div><!--item-->
+	<%tabIndex++; } %>	
+</div><!--Owl Carousel-->
+				</div>
+  </div><!--Container-->
+		</div><!--Central Policies-->
+	  </div>
+					  </div><!--Accordion Body-->
+					</div>
 
-                                    <div class="container">
-                                        <div class="resources_scroller">
-                                            <div class="owl-carousel owl-theme scroller">
-                                                <%
-                                                String title1 = "";
-                                                String fileUrl2 = "";
-                                                String fileUrl3 = "";
-                                                DynamicQuery dq2 = null;
-                                                dq2 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
-                                                dq2.add(RestrictionsFactoryUtil.eq("type", "PPP Document Repository"));
-                                                dq2.add(RestrictionsFactoryUtil.eq("catId", cid));
-                                                List<InfraKnowledge> ikd1 = null;
-                                                try {
-                                                    ikd1 = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq2, 0,
-                                                            InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                                for (InfraKnowledge newik1 : ikd1) {
-                                                    try {
-                                                        title1 = newik1.getHeadingText();
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                    long fileEntryId2 = newik1.getThumbnailfileEntryId();
-                                                    if (fileEntryId2 != 0L) {
-                                                        try {
-                                                            fileUrl2 = InfraKnowledgePortlet.getFile(fileEntryId2,
-                                                                    themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-                                                    long fileEntryId3 = newik1.getFileEntryId();
-                                                    if (fileEntryId3 != 0L) {
-                                                        try {
-                                                            fileUrl3 = InfraKnowledgePortlet.getFile(fileEntryId3,
-                                                                    themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-                                                %>
-                                                <div class="item">
-                                                    <div class="card">
-                                                        <img src="<%=fileUrl2 %>" class="card-img-top" alt="...">
-                                                        <div class="card-body">
-                                                            <p class="card-title"><%=title1 %></p>
-                                                            <p class="card-link"><a
-                                                                    href="<%=fileUrl3%>?download=true">Download</a>
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div><!-- item -->
-                                                <% } %>
-                                            </div><!-- Owl Carousel -->
-                                        </div>
-                                    </div><!-- Container -->
-                                </div><!-- PPP Document Repository -->
-                                <hr class="seperator" />
-                                <div class="col-lg-12">
-                                    <div class="container d-flex align-items-center flex-wrap">
-                                        <div class="me-auto">
-                                            <h4 class="subheading red_leftborder">Report / Study / Document</h4>
-                                        </div>
-                                        <a href="#" class="btnview_sm">View All</a>
-                                    </div>
-
-                                    <div class="container">
-                                        <div class="resources_scroller">
-                                            <div class="owl-carousel owl-theme scroller">
-                                                <%
-                                                String title2 = "";
-                                                String fileUrl4 = "";
-                                                String fileUrl5 = "";
-                                                DynamicQuery dq3 = null;
-                                                dq3 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
-                                                dq3.add(RestrictionsFactoryUtil.eq("type", "Report / Study / Document"));
-                                                dq3.add(RestrictionsFactoryUtil.eq("catId", cid));
-                                                List<InfraKnowledge> ikd2 = null;
-                                                try {
-                                                    ikd2 = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq3, 0,
-                                                            InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                                for (InfraKnowledge newik2 : ikd2) {
-                                                    try {
-                                                        title2 = newik2.getHeadingText();
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                    long fileEntryId4 = newik2.getThumbnailfileEntryId();
-                                                    if (fileEntryId4 != 0L) {
-                                                        try {
-                                                            fileUrl4 = InfraKnowledgePortlet.getFile(fileEntryId4,
-                                                                    themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-                                                    long fileEntryId5 = newik2.getFileEntryId();
-                                                    if (fileEntryId5 != 0L) {
-                                                        try {
-                                                            fileUrl5 = InfraKnowledgePortlet.getFile(fileEntryId5,
-                                                                    themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-                                                %>
-                                                <div class="item">
-                                                    <div class="card">
-                                                        <img src="<%=fileUrl4 %>" class="card-img-top" alt="...">
-                                                        <div class="card-body">
-                                                            <p class="card-title"><%=title2 %></p>
-                                                            <p class="card-link"><a
-                                                                    href="<%=fileUrl5%>?download=true">Download</a>
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div><!-- item -->
-                                                <% } %>
-                                            </div><!-- Owl Carousel -->
-                                        </div>
-                                    </div><!-- Container -->
-                                </div><!-- Report / Study / Document -->
-                                <hr class="seperator" />
-                                <div class="col-lg-12">
-                                    <div class="container d-flex align-items-center flex-wrap">
-                                        <div class="me-auto">
-                                            <h4 class="subheading green_leftborder">Toolkits / Guidelines / SOP</h4>
-                                        </div>
-                                        <a href="#" class="btnview_sm">View All</a>
-                                    </div>
-
-                                    <div class="container">
-                                        <div class="resources_scroller">
-                                            <div class="owl-carousel owl-theme scroller">
-                                                <%
-                                                String title3 = "";
-                                                String fileUrl6 = "";
-                                                String fileUrl7 = "";
-                                                DynamicQuery dq4 = null;
-                                                dq4 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
-                                                dq4.add(RestrictionsFactoryUtil.eq("type", "Toolkits / Guidelines / SOP"));
-                                                dq4.add(RestrictionsFactoryUtil.eq("catId", cid));
-                                                List<InfraKnowledge> ikd3 = null;
-                                                try {
-                                                    ikd3 = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq4, 0,
-                                                            InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
-                                                } catch (Exception e) {
-                                                    e.printStackTrace();
-                                                }
-                                                for (InfraKnowledge newik3 : ikd3) {
-                                                    try {
-                                                        title3 = newik3.getHeadingText();
-                                                    } catch (Exception e) {
-                                                        e.printStackTrace();
-                                                    }
-                                                    long fileEntryId6 = newik3.getThumbnailfileEntryId();
-                                                    if (fileEntryId6 != 0L) {
-                                                        try {
-                                                            fileUrl6 = InfraKnowledgePortlet.getFile(fileEntryId6,
-                                                                    themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-                                                    long fileEntryId7 = newik3.getFileEntryId();
-                                                    if (fileEntryId7 != 0L) {
-                                                        try {
-                                                            fileUrl7 = InfraKnowledgePortlet.getFile(fileEntryId7,
-                                                                    themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                            e.printStackTrace();
-                                                        }
-                                                    }
-                                                %>
-                                                <div class="item">
-                                                    <div class="card">
-                                                        <img src="<%=fileUrl6 %>" class="card-img-top" alt="...">
-                                                        <div class="card-body">
-                                                            <p class="card-title"><%=title3 %></p>
-                                                            <p class="card-link"><a
-                                                                    href="<%=fileUrl7%>?download=true">Download</a>
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div><!-- item -->
-                                                <% } %>
-                                            </div><!-- Owl Carousel -->
-                                        </div>
-                                    </div><!-- Container -->
-                                </div><!-- Toolkits / Guidelines / SOP -->
-                            </div><!-- row -->
-                        </div><!-- Collapse -->
-                    </div><!-- card -->
-                </div><!-- tab-pane -->
-                <%tabIndex++;
-                } %>
-            </div><!-- tab-content -->
-        </div><!-- container -->
-    </section>
-
-</main>
-
-<script>
-    $(document).ready(function () {
-        $("select[id^='subsector_']").change(function () {
-            var catId = $(this).attr("id").split("_")[1];
-            var selectedSubsector = $(this).val();
-            
-            // Make an AJAX call to fetch the updated content based on the selected subsector
-            $.ajax({
-                url: "/your-endpoint-url",
-                type: "POST",
-                data: {
-                    catId: catId,
-                    selectedSubsector: selectedSubsector
-                },
-                success: function (data) {
-                    // Update the content on the page
-                    $("#"+catId+"-tab-pane .resources_scroller").html(data);
-                },
-                error: function () {
-                    // Handle error case
-                }
-            });
-        });
-    });
-</script>
+				  </div>
+				 <%} %>
+				 
+				  
+				</div>
+										
+			
+		</div>
+		
+	</section>
+	</main>
