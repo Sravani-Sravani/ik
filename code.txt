@@ -18,28 +18,27 @@
                         cid = data.getCatId();
                 %>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link <%=tabIndex==0?"active":"" %>" id="<%=cid%>-tab" data-bs-toggle="tab"
-                        data-bs-target="#<%=cid %>-tab-pane" type="button" role="tab"
-                        aria-controls="#<%=cid %>-tab-pane" aria-selected="true"><%=tab %></button>
+                    <button class="nav-link <%=tabIndex==0?"active":"" %>" id="tab<%=cid%>" data-bs-toggle="tab"
+                        data-bs-target="#pane<%=cid %>" type="button" role="tab"
+                        aria-controls="pane<%=cid %>" aria-selected="<%=tabIndex==0?"true":"false" %>"><%=tab %></button>
                 </li>
                 <%tabIndex++; } } %>
             </ul>
             <div class="tab-content accordion" id="myTabContent">
                 <%
+                tabIndex = 0;
                 for (InfraKnowledgeCategory data : ik) {
-                    tabIndex = 0;
                     tab = data.getCategoryName();
                     cid = data.getCatId();
                 %>
                 <div class="tab-pane fade <%=tabIndex==0?"show active":"" %> accordion-item"
-                    id="<%=cid %>-tab-pane" role="tabpanel" aria-labelledby="<%=cid %>-tab"
-                    tabindex="<%=cid%>">
+                    id="pane<%=cid %>" role="tabpanel" aria-labelledby="tab<%=cid %>" tabindex="<%=cid%>">
                     <h2 class="accordion-header d-lg-none" id="heading<%=cid%>">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
                             data-bs-target="#collapse<%=cid %>" aria-expanded="true"
                             aria-controls="collapse<%=cid %>">All</button>
                     </h2>
-                    <div id="collapse<%=cid %>" class="accordion-collapse collapse show  d-lg-block"
+                    <div id="collapse<%=cid %>" class="accordion-collapse collapse show d-lg-block"
                         aria-labelledby="heading<%=cid %>" data-bs-parent="#myTabContent">
                         <div class="accordion-body">
                             <div class="filter_form">
@@ -65,7 +64,7 @@
                                                 for (InfraKnowledgeSubCategory c1 : ikc) {
                                                     options = c1.getSubCategoryName();
                                                 %>
-                                                <option value="<%=options%>"><%=options%></option>
+                                                <option><%=options%></option>
                                                 <% } %>
                                             </select>
                                         </div>
@@ -101,7 +100,7 @@
                                             img = data1.getThumbnailUrl();
                                             title = data1.getTitle();
                                     %>
-                                    <div class="item <%imageIndex == 0 ? "active" : ""%>">
+                                    <div class="item <%=imageIndex==0?"active":"" %>">
                                         <div class="img_wrapper">
                                             <img src="<%=img%>" alt="<%=title%>" />
                                         </div>
@@ -130,7 +129,7 @@
                                             img = data2.getThumbnailUrl();
                                             title = data2.getTitle();
                                     %>
-                                    <div class="item <%imageIndex == 0 ? "active" : ""%>">
+                                    <div class="item <%=imageIndex==0?"active":"" %>">
                                         <div class="img_wrapper">
                                             <img src="<%=img%>" alt="<%=title%>" />
                                         </div>
