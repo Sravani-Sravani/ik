@@ -146,11 +146,11 @@
                                             <select class="form-select form-select-sm">
                                                 <option selected>All</option>
                                                 <option>Policy</option>
-                                                <option>Report</option>
-                                                <option>Model Concession Agreement</option>
-                                                <option>Model RFP</option>
+                                                <option>Guideline</option>
                                             </select>
                                         </div>
+                                    </div>
+                                    <div class="container">
                                         <div class="resources_scroller">
                                             <div class="owl-carousel owl-theme scroller">
                                                 <%
@@ -159,7 +159,7 @@
                                                 String fileUrl3 = "";
                                                 DynamicQuery dq2 = null;
                                                 dq2 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
-                                                dq2.add(RestrictionsFactoryUtil.eq("type", "PPP Document Repository"));
+                                                dq2.add(RestrictionsFactoryUtil.eq("type", "PPP DOCUMENT REPOSITORY"));
                                                 dq2.add(RestrictionsFactoryUtil.eq("cateId", cid));
                                                 List<InfraKnowledge> ikd1 = null;
                                                 try {
@@ -202,12 +202,16 @@
                                         </div>
                                     </div><!-- Container -->
                                 </div><!-- PPP Document Repository -->
-                            </div><!-- row -->
-                        </div><!-- Accordion Body -->
-                    </div><!-- Accordion Collapse -->
-                </div><!-- Accordion Item -->
-                <% innerTabIndex++; } %>
-            </div><!-- tab-content -->
+                                <hr class="seperator" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%
+                innerTabIndex++;
+                }
+                %>
+            </div>
         </div><!-- container -->
     </section>
 </main>
