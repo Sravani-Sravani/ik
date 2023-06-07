@@ -45,10 +45,8 @@
                                         <label class="form-label"><span class="text-danger">*</span>Select Subsector</label>
                                         <select class="form-select form-select-sm">
                                             <option selected>All</option>
-                                            <%
-                                            String options = "";
-                                            DynamicQuery dynamicQuery1 = null;
-                                            dynamicQuery1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
+                                            <% String options = "";
+                                            DynamicQuery dynamicQuery1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
                                             dynamicQuery1.add(RestrictionsFactoryUtil.eq("catId", cid));
                                             List<InfraKnowledgeSubCategory> ikc = null;
                                             try {
@@ -88,8 +86,7 @@
                                                 String title = "";
                                                 String fileUrl = "";
                                                 String fileUrl1 = "";
-                                                DynamicQuery dq1 = null;
-                                                dq1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
+                                                DynamicQuery dq1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
                                                 dq1.add(RestrictionsFactoryUtil.eq("type", "CENTRAL POLICIES"));
                                                 dq1.add(RestrictionsFactoryUtil.eq("cateId", cid));
                                                 List<InfraKnowledge> ikd = null;
@@ -133,7 +130,9 @@
                                         </div>
                                     </div><!-- Container -->
                                 </div><!-- Central Policies -->
-                                <hr class="seperator" />
+                            </div><!-- row -->
+                            <hr class="seperator" />
+                            <div class="row">
                                 <div class="col-lg-12">
                                     <div class="container d-flex align-items-center flex-wrap">
                                         <div class="me-auto"><h4 class="subheading yellow_leftborder">PPP Document Repository</h4></div>
@@ -146,20 +145,19 @@
                                             <select class="form-select form-select-sm">
                                                 <option selected>All</option>
                                                 <option>Policy</option>
-                                                <option>Guideline</option>
+                                                <option>Report</option>
+                                                <option>Model Concession Agreement</option>
+                                                <option>Model RFP</option>
                                             </select>
                                         </div>
-                                    </div>
-                                    <div class="container">
                                         <div class="resources_scroller">
                                             <div class="owl-carousel owl-theme scroller">
                                                 <%
                                                 String title1 = "";
                                                 String fileUrl2 = "";
                                                 String fileUrl3 = "";
-                                                DynamicQuery dq2 = null;
-                                                dq2 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
-                                                dq2.add(RestrictionsFactoryUtil.eq("type", "PPP DOCUMENT REPOSITORY"));
+                                                DynamicQuery dq2 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
+                                                dq2.add(RestrictionsFactoryUtil.eq("type", "PPP Document Repository"));
                                                 dq2.add(RestrictionsFactoryUtil.eq("cateId", cid));
                                                 List<InfraKnowledge> ikd1 = null;
                                                 try {
@@ -202,16 +200,12 @@
                                         </div>
                                     </div><!-- Container -->
                                 </div><!-- PPP Document Repository -->
-                                <hr class="seperator" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <%
-                innerTabIndex++;
-                }
-                %>
-            </div>
+                            </div><!-- row -->
+                        </div><!-- Accordion Body -->
+                    </div><!-- Accordion Collapse -->
+                </div><!-- Accordion Item -->
+                <% innerTabIndex++; } %>
+            </div><!-- tab-content -->
         </div><!-- container -->
     </section>
 </main>
