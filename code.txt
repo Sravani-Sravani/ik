@@ -7,8 +7,12 @@
                 List<InfraKnowledgeCategory> ik = null;
                 String tab = "";
                 long cid = 0L;
+                DynamicQuery dyq = null;
+                dyq = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery();
+                dyq.addOrder(OrderFactoryUtil.asc("catId"));
                 try {
-                    ik = InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategories(0, InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
+                    ik = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery(dyq, 0,
+                            InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
                 } catch (Exception e) {
                     e.getMessage();
                 }
@@ -16,6 +20,7 @@
                     for (InfraKnowledgeCategory data : ik) {
                         tab = data.getCategoryName();
                         cid = data.getCatId();
+                        System.out.println(cid);
                 %>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link <%=tabIndex==0?"active":"" %>" id="<%=cid%>-tab" data-bs-toggle="tab" data-bs-target="#<%=cid %>-tab-pane" type="button" role="tab" aria-controls="#<%=cid %>-tab-pane" aria-selected="true"><%=tab %></button>
