@@ -20,16 +20,16 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link <%=tabIndex==0?"active":"" %>" id="<%=cid%>-tab" data-bs-toggle="tab" data-bs-target="#<%=cid %>-tab-pane" type="button" role="tab" aria-controls="#<%=cid %>-tab-pane" aria-selected="true"><%=tab %></button>
                 </li>
-                <%tabIndex++; } } %>
+                <% tabIndex++; } } %>
             </ul>
             <div class="tab-content accordion" id="myTabContent">
                 <%
                 for (InfraKnowledgeCategory data : ik) {
-                    tabIndex = 0;
+                    int innerTabIndex = 0;
                     tab = data.getCategoryName();
                     cid = data.getCatId();
                 %>
-                <div class="tab-pane fade <%=tabIndex==0?"show active":"" %> accordion-item" id="<%=cid %>-tab-pane" role="tabpanel" aria-labelledby="<%=cid %>-tab" tabindex="<%=cid%>">
+                <div class="tab-pane fade <%=innerTabIndex==0?"show active":"" %> accordion-item" id="<%=cid %>-tab-pane" role="tabpanel" aria-labelledby="<%=cid %>-tab" tabindex="<%=cid%>">
                     <h2 class="accordion-header d-lg-none" id="heading<%=cid%>">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%=cid %>" aria-expanded="true" aria-controls="collapse<%=cid %>">All</button>
                     </h2>
@@ -154,7 +154,7 @@
                                                 String fileUrl3 = "";
                                                 DynamicQuery dq2 = null;
                                                 dq2 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
-                                                dq2.add(RestrictionsFactoryUtil.eq("type", "PPP DOCUMENT REPOSITORY"));
+                                                dq2.add(RestrictionsFactoryUtil.eq("type", "PPP Document Repository"));
                                                 List<InfraKnowledge> ikd1 = null;
                                                 try {
                                                     ikd1 = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq2, 0,
@@ -162,19 +162,19 @@
                                                 } catch (Exception e) {
                                                     e.getMessage();
                                                 }
-                                                for (InfraKnowledge newik : ikd1) {
+                                                for (InfraKnowledge newik1 : ikd1) {
                                                     try {
-                                                        title1 = newik.getHeadingText();
+                                                        title1 = newik1.getHeadingText();
                                                     } catch (Exception e) {
                                                     }
-                                                    long fileEntryId2 = newik.getThumbnailfileEntryId();
+                                                    long fileEntryId2 = newik1.getThumbnailfileEntryId();
                                                     if (fileEntryId2 != 0L) {
                                                         try {
                                                             fileUrl2 = InfraKnowledgePortlet.getFile(fileEntryId2, themeDisplay.getScopeGroupId());
                                                         } catch (Exception e) {
                                                         }
                                                     }
-                                                    long fileEntryId3 = newik.getFileEntryId();
+                                                    long fileEntryId3 = newik1.getFileEntryId();
                                                     if (fileEntryId3 != 0L) {
                                                         try {
                                                             fileUrl3 = InfraKnowledgePortlet.getFile(fileEntryId3, themeDisplay.getScopeGroupId());
@@ -183,7 +183,7 @@
                                                     }
                                                 %>
                                                 <div class="item">
-                                                    <div class="card yellow_gradient">
+                                                    <div class="card">
                                                         <img src="<%=fileUrl2 %>" class="card-img-top" alt="...">
                                                         <div class="card-body">
                                                             <p class="card-title"><%=title1 %></p>
@@ -191,25 +191,17 @@
                                                         </div>
                                                     </div>
                                                 </div><!-- item -->
-                                                <% tabIndex++;
-                                                } %>
+                                                <% } %>
                                             </div><!-- Owl Carousel -->
                                         </div>
                                     </div><!-- Container -->
-                                </div>
-                            </div><!-- Accordion Body -->
-                        </div>
-
-                    </div>
-                    <% }
-                    } %>
-
-
-                </div>
-
-
-            </div>
-
-        </section>
-    </main>
-</div>
+                                </div><!-- PPP Document Repository -->
+                            </div><!-- row -->
+                        </div><!-- Accordion Body -->
+                    </div><!-- Accordion Collapse -->
+                </div><!-- Accordion Item -->
+                <% innerTabIndex++; } %>
+            </div><!-- tab-content -->
+        </div><!-- container -->
+    </section>
+</main>
