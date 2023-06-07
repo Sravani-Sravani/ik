@@ -91,7 +91,7 @@
                                                 DynamicQuery dq1 = null;
                                                 dq1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
                                                 dq1.add(RestrictionsFactoryUtil.eq("type", "CENTRAL POLICIES"));
-                                                dq1.add(RestrictionsFactoryUtil.eq("catId", cid));
+                                                dq1.add(RestrictionsFactoryUtil.eq("cateId", cid));
                                                 List<InfraKnowledge> ikd = null;
                                                 try {
                                                     ikd = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq1, 0,
@@ -160,7 +160,7 @@
                                                 DynamicQuery dq2 = null;
                                                 dq2 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
                                                 dq2.add(RestrictionsFactoryUtil.eq("type", "PPP Document Repository"));
-                                                dq2.add(RestrictionsFactoryUtil.eq("catId", cid));
+                                                dq2.add(RestrictionsFactoryUtil.eq("cateId", cid));
                                                 List<InfraKnowledge> ikd1 = null;
                                                 try {
                                                     ikd1 = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq2, 0,
