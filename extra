@@ -1,0 +1,18 @@
+List<Ministry> ministries = null;
+        DynamicQuery ministryQuery = MinistryLocalServiceUtil.dynamicQuery();
+        ministryQuery.add(RestrictionsFactoryUtil.eq("subcatId", subcatId));
+        
+        try {
+            ministries = MinistryLocalServiceUtil.dynamicQuery(ministryQuery, 0, MinistryLocalServiceUtil.getMinistriesCount());
+        } catch (Exception e) {
+            e.getMessage();
+        }
+        
+        if (ministries != null) {
+            for (Ministry ministry : ministries) {
+                String ministryName = ministry.getMName();
+        %>
+        <option><%= ministryName %></option>
+        <% 
+            } 
+        } 
