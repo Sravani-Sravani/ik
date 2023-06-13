@@ -8,9 +8,9 @@
                 String tab = "";
                 long cid = 0L;
                 DynamicQuery dyq = null;
-                dyq = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery();
-                dyq.addOrder(OrderFactoryUtil.asc("catId"));
                 try {
+                	dyq = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery();
+                    dyq.addOrder(OrderFactoryUtil.asc("catId"));
                     ik = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery(dyq, 0,
                             InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
                 } catch (Exception e) {
@@ -22,18 +22,21 @@
                         cid = data.getCatId();
                 %>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link <%=tabIndex==0?"active":"" %>" id="<%=cid%>-tab" data-bs-toggle="pill" data-bs-target="#<%=cid %>-tab-pane" type="button" role="tab" aria-controls="<%=cid %>-tab-pane" aria-selected="true"><%=tab %></button>
+                
+                    <button class="nav-link <%=tabIndex==0?"active":"" %>" id="tab-<%=cid%>" data-bs-toggle="tab" data-bs-target="#tab-pane-<%=cid %>" type="button" role="tab" aria-controls="tab-pane-<%=cid %>" aria-selected="<%=tabIndex==0?"true":"false" %>"><%=tab %></button>
                 </li>
                 <% tabIndex++; } } %>
             </ul>
-            <div class="tab-content" id="myTabContent">
+            <div class="tab-content accordion" id="myTabContent">
                 <%
+                int innerTabIndex = 0;
                 for (InfraKnowledgeCategory data : ik) {
-                    int innerTabIndex = 0;
+                  
                     tab = data.getCategoryName();
                     cid = data.getCatId();
                 %>
-                <div class="tab-pane fade <%=innerTabIndex==0?"show active":"" %> accordion-item" id="<%=cid %>-tab-pane" role="tabpanel" aria-labelledby="<%=cid %>-tab" tabindex="<%=cid%>">
+                <div class="tab-pane fade <%if(innerTabIndex==0){%>show active<%} %> accordion-item" id="tab-pane-<%=cid %>" role="tabpanel" aria-labelledby="tab-<%=cid %>" tabindex="0">
+                    
                     <h2 class="accordion-header d-lg-none" id="heading<%=cid%>">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%=cid %>" aria-expanded="true" aria-controls="collapse<%=cid %>">All</button>
                     </h2>
@@ -43,7 +46,7 @@
                                 <div class="row">
                                     <div class="col-auto">
                                         <label class="form-label"><span class="text-danger">*</span>Select Subsector</label>
-                                        <select class="form-select form-select-sm" id="subsector-select-<%=cid%>">
+                                        <select class="form-select form-select-sm">
                                             <option selected>All</option>
                                             <% String options = "";
                                             DynamicQuery dynamicQuery1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
@@ -64,7 +67,7 @@
                                     </div>
                                     <div class="col-auto">
                                         <label class="form-label"><span class="text-danger">*</span>Select Ministry</label>
-                                        <select class="form-select form-select-sm" id="ministry-select-<%=cid%>">
+                                        <select class="form-select form-select-sm">
                                             <option>All</option>
                                             <option>Ministry</option>
                                             <option>State</option>
@@ -75,13 +78,13 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="container d-flex align-items-center flex-wrap">
-                                        <div class="me-auto"><h4 class="subheading blue_leftborder">CENTRAL POLICIES</h4></div>
+                                        <div class="me-auto"><h4 class="subheading blue_leftborder">POLICIES AND GUIDELINES</h4></div>
                                         <a href="#" class="btnview_sm">View All</a>
                                     </div>
 
                                     <div class="container">
                                         <div class="resources_scroller">
-                                            <div class="owl-carousel owl-theme scroller" id="central-policies-carousel-<%=cid%>">
+                                            <div class="owl-carousel owl-theme scroller">
                                                 <%
                                                 String title = "";
                                                 String fileUrl = "";
@@ -135,23 +138,23 @@
                             <div class="row">
                                 <div class="col-lg-12">
                                     <div class="container d-flex align-items-center flex-wrap">
-                                        <div class="me-auto"><h4 class="subheading yellow_leftborder">PPP Document Repository</h4></div>
+                                        <div class="me-auto"><h4 class="subheading yellow_leftborder">IFS Document Repository</h4></div>
                                         <a href="#" class="btnview_sm">View All</a>
                                     </div>
 
                                     <div class="container">
-                                        <div class="col-lg-3">
+                                       <!--  <div class="col-lg-3">
                                             <label class="form-label"><span class="text-danger">*</span> Document Type</label>
-                                            <select class="form-select form-select-sm" id="document-type-select-<%=cid%>">
+                                            <select class="form-select form-select-sm">
                                                 <option selected>All</option>
                                                 <option>Policy</option>
                                                 <option>Report</option>
                                                 <option>Model Concession Agreement</option>
                                                 <option>Model RFP</option>
                                             </select>
-                                        </div>
+                                        </div> -->
                                         <div class="resources_scroller">
-                                            <div class="owl-carousel owl-theme scroller" id="ppp-documents-carousel-<%=cid%>">
+                                            <div class="owl-carousel owl-theme scroller">
                                                 <%
                                                 String title1 = "";
                                                 String fileUrl2 = "";
@@ -209,45 +212,3 @@
         </div><!-- container -->
     </section>
 </main>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        <% for (InfraKnowledgeCategory data : ik) {
-            cid = data.getCatId();
-        %>
-        var ministrySelect<%=cid%> = document.getElementById('ministry-select-<%=cid%>');
-        var documentTypeSelect<%=cid%> = document.getElementById('document-type-select-<%=cid%>');
-
-        ministrySelect<%=cid%>.addEventListener('change', function () {
-            var selectedMinistry = this.value;
-            filterDocuments('<%=cid%>', selectedMinistry, documentTypeSelect<%=cid%>.value);
-        });
-
-        documentTypeSelect<%=cid%>.addEventListener('change', function () {
-            var selectedDocumentType = this.value;
-            filterDocuments('<%=cid%>', ministrySelect<%=cid%>.value, selectedDocumentType);
-        });
-        <% } %>
-
-        function filterDocuments(categoryId, ministry, documentType) {
-            var carouselId = 'central-policies-carousel-' + categoryId;
-            if (documentType === 'PPP Document Repository') {
-                carouselId = 'ppp-documents-carousel-' + categoryId;
-            }
-
-            var carousel = document.getElementById(carouselId);
-            var items = carousel.getElementsByClassName('item');
-
-            for (var i = 0; i < items.length; i++) {
-                var item = items[i];
-                var ministryLabel = item.querySelector('.card-link a').innerText;
-
-                if (ministry === 'All' || ministryLabel.includes(ministry)) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            }
-        }
-    });
-</script>
