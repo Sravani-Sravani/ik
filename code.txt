@@ -9,7 +9,7 @@
                 long cid = 0L;
                 DynamicQuery dyq = null;
                 try {
-                	dyq = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery();
+                    dyq = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery();
                     dyq.addOrder(OrderFactoryUtil.asc("catId"));
                     ik = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery(dyq, 0,
                             InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
@@ -22,7 +22,6 @@
                         cid = data.getCatId();
                 %>
                 <li class="nav-item" role="presentation">
-                
                     <button class="nav-link <%=tabIndex==0?"active":"" %>" id="tab-<%=cid%>" data-bs-toggle="tab" data-bs-target="#tab-pane-<%=cid %>" type="button" role="tab" aria-controls="tab-pane-<%=cid %>" aria-selected="<%=tabIndex==0?"true":"false" %>"><%=tab %></button>
                 </li>
                 <% tabIndex++; } } %>
@@ -31,12 +30,10 @@
                 <%
                 int innerTabIndex = 0;
                 for (InfraKnowledgeCategory data : ik) {
-                  
                     tab = data.getCategoryName();
                     cid = data.getCatId();
                 %>
                 <div class="tab-pane fade <%if(innerTabIndex==0){%>show active<%} %> accordion-item" id="tab-pane-<%=cid %>" role="tabpanel" aria-labelledby="tab-<%=cid %>" tabindex="0">
-                    
                     <h2 class="accordion-header d-lg-none" id="heading<%=cid%>">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%=cid %>" aria-expanded="true" aria-controls="collapse<%=cid %>">All</button>
                     </h2>
@@ -68,17 +65,15 @@
                                         <label class="form-label"><span class="text-danger">*</span>Select Ministry</label>
                                         <select class="form-select form-select-sm">
                                             <% for (InfraKnowledgeSubCategory c1 : ikc) {
-                                            	long subCatId=c1.getSubcatId();
-                                            	List<Ministry> ministries = null;
+                                                long subCatId=c1.getSubcatId();
+                                                List<Ministry> ministries = null;
                                                 DynamicQuery ministryQuery = MinistryLocalServiceUtil.dynamicQuery();
                                                 ministryQuery.add(RestrictionsFactoryUtil.eq("subcatId", subCatId));
-                                                
                                                 try {
                                                     ministries = MinistryLocalServiceUtil.dynamicQuery(ministryQuery, 0, MinistryLocalServiceUtil.getMinistriesCount());
                                                 } catch (Exception e) {
                                                     e.getMessage();
                                                 }
-                                                
                                                 if (ministries != null) {
                                                     for (Ministry ministry : ministries) {
                                                         String ministryName = ministry.getMName();
@@ -87,8 +82,7 @@
                                                 <% 
                                                     } 
                                                 } 
-                                            	%>
-                                           <%} %> 
+                                            } %> 
                                         </select>
                                     </div>
                                 </div>
@@ -99,7 +93,6 @@
                                         <div class="me-auto"><h4 class="subheading blue_leftborder">POLICIES AND GUIDELINES</h4></div>
                                         <a href="#" class="btnview_sm">View All</a>
                                     </div>
-
                                     <div class="container">
                                         <div class="resources_scroller">
                                             <div class="owl-carousel owl-theme scroller">
@@ -159,18 +152,7 @@
                                         <div class="me-auto"><h4 class="subheading yellow_leftborder">IFS Document Repository</h4></div>
                                         <a href="#" class="btnview_sm">View All</a>
                                     </div>
-
                                     <div class="container">
-                                       <!--  <div class="col-lg-3">
-                                            <label class="form-label"><span class="text-danger">*</span> Document Type</label>
-                                            <select class="form-select form-select-sm">
-                                                <option selected>All</option>
-                                                <option>Policy</option>
-                                                <option>Report</option>
-                                                <option>Model Concession Agreement</option>
-                                                <option>Model RFP</option>
-                                            </select>
-                                        </div> -->
                                         <div class="resources_scroller">
                                             <div class="owl-carousel owl-theme scroller">
                                                 <%
