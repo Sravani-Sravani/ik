@@ -47,7 +47,6 @@
                                     <div class="col-auto">
                                         <label class="form-label"><span class="text-danger">*</span>Select Subsector</label>
                                         <select class="form-select form-select-sm">
-                                            <option selected>All</option>
                                             <% String options = "";
                                             DynamicQuery dynamicQuery1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
                                             dynamicQuery1.add(RestrictionsFactoryUtil.eq("catId", cid));
@@ -68,9 +67,28 @@
                                     <div class="col-auto">
                                         <label class="form-label"><span class="text-danger">*</span>Select Ministry</label>
                                         <select class="form-select form-select-sm">
-                                            <option>All</option>
-                                            <option>Ministry</option>
-                                            <option>State</option>
+                                            <% for (InfraKnowledgeSubCategory c1 : ikc) {
+                                            	long subCatId=c1.getSubcatId();
+                                            	List<Ministry> ministries = null;
+                                                DynamicQuery ministryQuery = MinistryLocalServiceUtil.dynamicQuery();
+                                                ministryQuery.add(RestrictionsFactoryUtil.eq("subcatId", subCatId));
+                                                
+                                                try {
+                                                    ministries = MinistryLocalServiceUtil.dynamicQuery(ministryQuery, 0, MinistryLocalServiceUtil.getMinistriesCount());
+                                                } catch (Exception e) {
+                                                    e.getMessage();
+                                                }
+                                                
+                                                if (ministries != null) {
+                                                    for (Ministry ministry : ministries) {
+                                                        String ministryName = ministry.getMName();
+                                                %>
+                                                <option><%= ministryName %></option>
+                                                <% 
+                                                    } 
+                                                } 
+                                            	%>
+                                           <%} %> 
                                         </select>
                                     </div>
                                 </div>
