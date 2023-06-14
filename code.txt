@@ -71,12 +71,12 @@
                 %>
                 <div class="tab-pane fade <%if(innerTabIndex==0){%>show active<%} %> accordion-item" id="tab-pane-<%=cid %>" role="tabpanel" aria-labelledby="tab-<%=cid %>" tabindex="0">
                     
-                    <h2 class="accordion-header d-lg-none" id="heading<%=cid%>">
+                    <%-- <h2 class="accordion-header d-lg-none" id="heading<%=cid%>">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%=cid %>" aria-expanded="true" aria-controls="collapse<%=cid %>">All</button>
-                    </h2>
+                    </h2> --%>
                     <div id="collapse<%=cid %>" class="accordion-collapse collapse show d-lg-block" aria-labelledby="heading<%=cid %>" data-bs-parent="#myTabContent">
-                    <%if(tab=="All"){ %>
-                    System.out.println("Inside All");
+                    <%if(cid==1){ 
+                    	System.out.println("Inside All");%>
                     <div class="accordion-body">
                             <div class="row">
                                 <div class="col-lg-12">
@@ -208,12 +208,13 @@
                                 </div><!-- PPP Document Repository -->
                             </div><!-- row -->
                         </div>
-                        <%}else{ %>
+                        <%}else{ 
+                        System.out.println(cid);
+                        System.out.println(tab);
+                        %>
                     
                     
-                    
-                    
-                        <div class="accordion-body">
+                    <div class="accordion-body">
                             <div class="filter_form">
                                 <div class="row">
                                     <div class="col-auto">
