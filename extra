@@ -1,18 +1,342 @@
-List<Ministry> ministries = null;
-        DynamicQuery ministryQuery = MinistryLocalServiceUtil.dynamicQuery();
-        ministryQuery.add(RestrictionsFactoryUtil.eq("subcatId", subcatId));
-        
-        try {
-            ministries = MinistryLocalServiceUtil.dynamicQuery(ministryQuery, 0, MinistryLocalServiceUtil.getMinistriesCount());
-        } catch (Exception e) {
-            e.getMessage();
-        }
-        
-        if (ministries != null) {
-            for (Ministry ministry : ministries) {
-                String ministryName = ministry.getMName();
-        %>
-        <option><%= ministryName %></option>
-        <% 
-            } 
-        } 
+<%@page import="com.kpmg.citizenTables.service.InfraKnowledgeSubCategoryLocalServiceUtil"%>
+<%@page import="com.kpmg.citizenTables.service.InfraKnowledgeCategoryLocalServiceUtil"%>
+<%@page import="java.util.List"%>
+<%@page import="com.kpmg.infraknowledge.portlet.InfraKnowledgePortlet"%>
+<%@page import="com.kpmg.infraknowledge.constants.InfraKnowledgePortletKeys"%>
+<%@page import="com.kpmg.citizenTables.service.InfraKnowledgeLocalServiceUtil"%>
+<%@page import="com.kpmg.citizenTables.model.InfraKnowledge"%>
+<%@page import="com.kpmg.citizenTables.model.Ministry"%>
+<%@page import="com.kpmg.citizenTables.service.MinistryLocalServiceUtil"%>
+<%@page import="com.kpmg.citizenTables.model.InfraKnowledgeCategory"%>
+<%@page import="com.kpmg.citizenTables.model.InfraKnowledgeSubCategory"%>
+ <%@page import="java.text.SimpleDateFormat"%>
+<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+ <%@page import="com.kpmg.citizenTables.service.constants.CustomTablePortletKeys"%>
+<%@ include file="/init.jsp"%>  
+<%
+    long infraId = ParamUtil.getLong(request, "infraId");
+	long SubCatId = 0;
+	long cateId = 0;
+	int isPPPDoc = 0;
+	int documentType = 0;
+	int ministry = 0;
+	String headingText = "";
+	String hi_headingText = "";
+	/* String description = "";
+	String hi_description = ""; */
+	long thumbnailfileEntryId = 0;
+	long fileEntryId = 0;
+	String fileUrl="";
+	InfraKnowledge ik=null;
+	if(infraId!=0)
+	{
+
+    	try{
+    		ik=InfraKnowledgeLocalServiceUtil.fetchInfraKnowledge(infraId);
+    		 if(ik!=null){
+    			/*  description=ik.getDescription();
+    			 hi_description=ik.getHi_description(); */
+    			 headingText=ik.getHeadingText();
+    			 hi_headingText=ik.getHi_headingText();
+    			  fileEntryId=ik.getFileEntryId();
+    			
+    			 if(fileEntryId!=0L){
+						try{
+							fileUrl =InfraKnowledgePortlet.getFile(fileEntryId, themeDisplay.getScopeGroupId());	  
+						}
+						catch(Exception e){
+							
+						}
+		      	  }
+    		
+
+    			     		 }
+    	}
+    	catch(Exception e){
+    		
+    	}
+    
+	}
+%>
+
+<portlet:resourceURL var="getSubCategoryURL"></portlet:resourceURL>
+<portlet:resourceURL var="getMinistryURL"></portlet:resourceURL>
+
+
+ <portlet:actionURL var="infraKnowledgeSaveURL" name="saveInfraKnowledge" ></portlet:actionURL>
+
+<div class="createuser-page">
+	<div class="formDiv">
+		<div class=" jhansiall-pages">
+		  <div class="tenderspage-main">
+		  	<div class="container">
+		  		<liferay-ui:error key="name.errorMsg.missing" message="name.errorMsg.missing"/>
+			    <liferay-ui:error key="hi_name.errorMsg.missing" message="hi_name.errorMsg.missing"/>
+			    <liferay-ui:error key="redirectLink.errorMsg.missing" message="redirectLink.errorMsg.missing"/>
+			    <liferay-ui:error key="hi_redirectLink.errorMsg.missing" message="hi_redirectLink.errorMsg.missing"/>
+			  	<liferay-ui:error key="document.errorMsg.missing" message="document.errorMsg.missing"/>
+			    <liferay-ui:error key="document.errorMsg.sizeIssue" message="document.errorMsg.sizeIssue"/>
+			    
+			    <div class="col-md-12">
+	                <h1 class="tendertext-main mb-5"><span><%
+	                	if(infraId==0){
+	                %>Create <%
+	                	} else {
+	                %>Update <%
+	                	}
+	                %> Infra Knowledge</span></h1>
+	                
+	           </div>
+	           
+	           <div class="tender-form">
+	      		<aui:form  action="<%=infraKnowledgeSaveURL%>" method="post" name="saveinfraknowledge">
+	         	 
+	         		<aui:input type="hidden" label="" name="infraId" value="<%=infraId%>"></aui:input>
+	         		
+	         		
+	         	 	<div class="row"> 
+	       				<div class="col-md-6">
+	       					<div class="form-group">
+	       						<aui:select name="category" onchange="getSubCategoryData(this.value);" value="<%=cateId%>" label="Select Category" >
+									<aui:option selected="true" value="-1">Select Category</aui:option>
+									<% List<InfraKnowledgeCategory> infraKnowledgeCategory=null;
+									try{
+										infraKnowledgeCategory=InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategories(0, InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
+									
+									for(InfraKnowledgeCategory data:infraKnowledgeCategory){
+									%>
+									<aui:option value="<%=data.getCatId() %>"><%=data.getCategoryName() %></aui:option>
+					<% } }catch(Exception e){} %>			 
+								</aui:select>
+					        </div>
+	       				</div>
+	       				<div class="col-md-6">
+	       					<div class="form-group">
+	       						<aui:select name="subCatId" onchange="getMinistry(this.value);"  value="<%=SubCatId%>" label="Select Sub Category">
+									<aui:option  selected="true" value="-1">Select Sub Category</aui:option>
+										<% 
+										List<InfraKnowledgeSubCategory> infraKnowledgesubCategory=null;
+									try{
+										infraKnowledgesubCategory=InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategories(0, InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
+									
+									for(InfraKnowledgeSubCategory data1:infraKnowledgesubCategory){
+									%>
+									
+									<aui:option value="<%=data1.getSubcatId() %>"><%=data1.getSubCategoryName()%></aui:option>
+									
+									<% } }catch(Exception e){} %>	
+								</aui:select>
+
+					        </div>
+	       				</div>
+	       			</div>
+	       			<div class="row">
+	       				<div class="col-md-6">
+	       					<div class="form-group">
+	       					 	<aui:input type="text" value="<%=headingText%>" onkeypress="return ((event.charCode > 64 && 
+									event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode > 39 && event.charCode < 58) || event.charCode == 0 || event.charCode == 32)" name="headingText" label="Enter Title" cssClass="form-control">
+					          		<aui:validator name="required"></aui:validator>
+									<aui:validator name="custom" errorMessage="Please remove special characters.">
+									function (val, fieldNode, ruleValue) {
+										var returnValue = true;
+										var iChars = "<%=CustomTablePortletKeys.FRONTEND_NOT_ALLOWES_SPECIAL_CHARACTERS%>";
+										   for (var i = 0; i < val.length; i++) {
+												if (iChars.indexOf(val.charAt(i)) != -1) {    
+												 returnValue = false;
+												}
+											}
+											if(val.includes("&lt;") || val.includes("&gt;") || val.includes("&apos;") || val.includes("&quot;") ||val.includes("&QUOT;") ||val.includes("&equals;")){
+											   returnValue = false;
+											}
+										return returnValue;
+									}
+								 </aui:validator>
+					          </aui:input>
+	       					 </div>
+	       				</div>
+	       				<div class="col-md-6">
+	       					<div class="form-group">
+	       					 	<aui:input type="text" value="<%=hi_headingText%>" onkeypress="return ((event.charCode > 64 && 
+									event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode > 39 && event.charCode < 58) || event.charCode == 0 || event.charCode == 32)" name="hi_headingText" label="Enter Title in Hindi" cssClass="form-control">
+					          		<aui:validator name="required"></aui:validator>
+									<aui:validator name="custom" errorMessage="Please remove special characters.">
+									function (val, fieldNode, ruleValue) {
+										var returnValue = true;
+										var iChars = "<%=CustomTablePortletKeys.FRONTEND_NOT_ALLOWES_SPECIAL_CHARACTERS%>";
+										   for (var i = 0; i < val.length; i++) {
+												if (iChars.indexOf(val.charAt(i)) != -1) {    
+												 returnValue = false;
+												}
+											}
+											if(val.includes("&lt;") || val.includes("&gt;") || val.includes("&apos;") || val.includes("&quot;") ||val.includes("&QUOT;") ||val.includes("&equals;")){
+											   returnValue = false;
+											}
+										return returnValue;
+									}
+								 </aui:validator>
+					          </aui:input>
+	       					</div>
+	       				</div>
+	       			
+	       			
+	       			</div>
+	       			
+	       			<div class="row"> 
+	       				<div class="col-md-6">
+	       					<div class="form-group">
+	       						<aui:select name="ministry" value="<%=ministry%>" label="Select Ministry">
+	       						<aui:option selected="true" value="-1">Select Ministry</aui:option>
+									<% List<Ministry> ministrylist=null;
+									try{
+										ministrylist=MinistryLocalServiceUtil.getMinistries(0, MinistryLocalServiceUtil.getMinistriesCount());
+									
+									for(Ministry data:ministrylist){
+									%>
+									<aui:option value="<%=data.getMId() %>"><%=data.getMName() %></aui:option>
+					<% } }catch(Exception e){} %>	
+								
+								</aui:select>
+					        </div>
+	       				</div>
+	       				<%-- <div class="col-md-6">
+	       					<div class="form-group">
+	       						<aui:select name="doctype" value="<%=SubCatId%>" label="Document Type">
+									<aui:option selected="true" value="All">All</aui:option>
+									<aui:option value="Policy">Policy</aui:option>
+									<aui:option value="Report">Report</aui:option>
+									<aui:option value="Model Concession Agreement">Model Concession Agreement</aui:option>
+									<aui:option value="Model RFP">Model RFP</aui:option>
+									
+								</aui:select>
+
+					        </div>
+	       				</div> --%>
+	       					<div class="col-md-6">
+	       					<div class="form-group">
+	       						<aui:select name="maintype" value="<%=SubCatId%>" label="Main Type">
+									<aui:option selected="true" value="All">All</aui:option>
+									<aui:option value="PPP DOCUMENT REPOSITORY">PPP DOCUMENT REPOSITORY</aui:option>
+									<aui:option value="CENTRAL POLICIES">CENTRAL POLICIES</aui:option>
+								</aui:select>
+
+					        </div>
+	       				</div>
+	       			</div>
+	       			<div class="row"> 
+	       			<div class="col-md-6"> 
+	       <div class="form-group">
+	          <aui:input type="file" name="ifkDocument" label="Upload Document (Note: Upload document accept only .pdf,.jpg,.png,.gif and .webp format.)" accept="<%=InfraKnowledgePortletKeys.INFRAKNOWLEDGE_FILE_CHOOSE_TYPE%>" cssClass="form-control">
+	           <aui:validator name="custom" errorMessage="File too Big, please select a file less than 20mb.">
+					 function (val, fieldNode, ruleValue) {
+							 const fi = document.getElementById('<portlet:namespace />ifkDocument');
+							 var returnValue = true;
+						        if (fi.files.length > 0) { 
+						                const fsize = fi.files.item(0).size; 
+						                const fileSize = Math.round((fsize / 1024)); 
+											if (fileSize > 20480) { 
+							                 returnValue = false;
+							                }
+									}        
+				                      return returnValue;
+								    }
+				 </aui:validator>
+	          </aui:input>
+	          <p><b>Max file upload size 20MB</b></p>
+	        </div>
+	       </div> 
+	        <div class="col-md-6">
+	          <aui:input type="file" onChange="getUploadImageURL(this);" name="gimage" label="Image Upload (Note: Upload image accept only .jpg,.png,.gif format.)" accept="<%=InfraKnowledgePortletKeys.INFRAKNOWLEDGE_FILE_CHOOSE_TYPE %>" cssClass="form-control">
+	          <aui:validator name="acceptFiles">'<%=InfraKnowledgePortletKeys.INFRAKNOWLEDGE_FILE_UPLOAD_TYPES %>'</aui:validator>
+	          <% if(cateId==0){ %>
+	          <aui:validator name="required"></aui:validator>	
+	          <% } %>
+	            <aui:validator name="custom" errorMessage="File too Big, please select a file less than 2mb.">
+					 function (val, fieldNode, ruleValue) {
+							 const fi = document.getElementById('<portlet:namespace />carouselDocument');
+							 var returnValue = true;
+						        if (fi.files.length > 0) { 
+						                const fsize = fi.files.item(0).size; 
+						                const fileSize = Math.round((fsize / 1024)); 
+											if (fileSize > 2048) { 
+							                 returnValue = false;
+							                }
+									}        
+				                      return returnValue;
+								    }
+				 </aui:validator>					
+	          </aui:input>
+	            </div>
+	       
+	       </div>
+	       
+	         	  <aui:button type="submit" name="createink" value="Submit" cssClass="btn btn-submit" />
+	          	</aui:form>
+	         </div>
+	        </div>
+	    </div>
+	</div>
+</div>
+<script>
+function getUploadImageURL(uploader){
+	if ( uploader.files && uploader.files[0]){
+        $('#uploadImage').attr('src',  window.URL.createObjectURL(uploader.files[0]) );	
+         $('#uploadImage').show();
+    }
+	else{
+		$('#uploadImage').attr('src',"");
+		$('#uploadImage').hide();
+	}
+}
+function getSubCategoryData(categoryId){alert(categoryId);
+	AUI().use('aui-base','aui-io-request-deprecated', 'aui-node', function(A){
+	        A.io.request('<%=getSubCategoryURL.toString() %>',{
+	            dataType : 'json',
+	            method : 'POST',
+	            data : {
+	<portlet:namespace />categoryId :categoryId,
+	<portlet:namespace />cmd:'getsubcategories'
+	            },
+	            on : {
+	            success : function() {
+	                            var data=this.get('responseData');
+	                            var textElement="";
+	                            textElement= textElement+"<option value=''>Select SubCategory</option>";
+	                            $('#<portlet:namespace />subCatId').html("");
+	                            jQuery.each(data, function(i, val) {
+	                            textElement=textElement+"<option value='" + val.id + "'>"+ val.name + "</option>";
+	                           });
+	                            $('#<portlet:namespace />subCatId').append(textElement);
+	                             //$("select").select2();
+	                            }  
+	               }
+	           });
+	    }); 
+	     //$("select").select2();
+	}
+function getMinistry(subcategoryId){alert(subcategoryId);
+AUI().use('aui-base','aui-io-request-deprecated', 'aui-node', function(A){
+        A.io.request('<%=getMinistryURL.toString() %>',{
+            dataType : 'json',
+            method : 'POST',
+            data : {
+
+<portlet:namespace />subcategoryId :subcategoryId,
+	<portlet:namespace />cmd:'getministries'
+            },
+            on : {
+            success : function() {
+                            var data=this.get('responseData');
+                            var textElement="";
+                            textElement= textElement+"<option value=''>Select Ministry</option>";
+                            $('#<portlet:namespace />mId').html("");
+                            jQuery.each(data, function(i, val) {
+                            textElement=textElement+"<option value='" + val.id + "'>"+ val.name + "</option>";
+                           });
+                            $('#<portlet:namespace />mId').append(textElement);
+                            }  
+               }
+           });
+    }); 
+     //$("select").select2();
+}
+	</script>
