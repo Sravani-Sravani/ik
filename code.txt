@@ -89,12 +89,13 @@
                                         <div class="resources_scroller">
                                             <div class="owl-carousel owl-theme scroller">
                                                 <%
+                                                
                                                 String title = "";
                                                 String fileUrl = "";
                                                 String fileUrl1 = "";
                                                 DynamicQuery dq1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
                                                 dq1.add(RestrictionsFactoryUtil.eq("type", "CENTRAL POLICIES"));
-                                              //  dq1.add(RestrictionsFactoryUtil.eq("cateId", cid));
+                                             //   dq1.add(RestrictionsFactoryUtil.eq("cateId", cid));
                                                 List<InfraKnowledge> ikd = null;
                                                 try {
                                                     ikd = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq1, 0,
@@ -102,9 +103,11 @@
                                                 } catch (Exception e) {
                                                     e.getMessage();
                                                 }
+                                                System.out.println("Size----------"+ikd.size());
                                                 for (InfraKnowledge newik : ikd) {
                                                     try {
                                                         title = newik.getHeadingText();
+                                                        System.out.println(title);
                                                     } catch (Exception e) {
                                                     }
                                                     long fileEntryId = newik.getThumbnailfileEntryId();
@@ -162,16 +165,18 @@
                                                 String title1 = "";
                                                 String fileUrl2 = "";
                                                 String fileUrl3 = "";
-                                                DynamicQuery dq2 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
-                                                dq2.add(RestrictionsFactoryUtil.eq("type", "PPP Document Repository"));
-                                              //  dq2.add(RestrictionsFactoryUtil.eq("cateId", cid));
+                                                DynamicQuery dqt1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
+                                                dqt1.add(RestrictionsFactoryUtil.eq("type", "PPP Document Repository"));
+                                               //dq2.add(RestrictionsFactoryUtil.eq("cateId", cid));
                                                 List<InfraKnowledge> ikd1 = null;
                                                 try {
-                                                    ikd1 = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq2, 0,
+                                                    ikd1 = InfraKnowledgeLocalServiceUtil.dynamicQuery(dqt1, 0,
                                                             InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
                                                 } catch (Exception e) {
                                                     e.getMessage();
                                                 }
+                                                System.out.println("size PPP------------"+ikd1.size());
+                                                System.out.println("C ID------------"+cid);
                                                 for (InfraKnowledge newik1 : ikd1) {
                                                     try {
                                                         title1 = newik1.getHeadingText();
@@ -290,6 +295,7 @@
                                                 } catch (Exception e) {
                                                     e.getMessage();
                                                 }
+                                                System.out.println(cid+"Size:-----"+ikd.size());
                                                 for (InfraKnowledge newik : ikd) {
                                                     try {
                                                         title = newik.getHeadingText();
@@ -360,6 +366,7 @@
                                                 } catch (Exception e) {
                                                     e.getMessage();
                                                 }
+                                                System.out.println(cid+"Size:----- PPP"+ikd.size());
                                                 for (InfraKnowledge newik1 : ikd1) {
                                                     try {
                                                         title1 = newik1.getHeadingText();
