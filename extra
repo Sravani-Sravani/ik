@@ -1,60 +1,21 @@
-@Override
-	public void serveResource(ResourceRequest request, ResourceResponse response) {
-       String cmd = ParamUtil.getString(request, "cmd");
-        _log.info("cmd----------->"+cmd);
-	if(cmd.equalsIgnoreCase("getsubcategories")) {
-		long categoryId = ParamUtil.getLong(request, "categoryId");
-		_log.info("categoryId>>"+categoryId);
-		try {
-			JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-			DynamicQuery dynamicQuery = null;
-			dynamicQuery = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
-		     if(categoryId!=0) {
-		         dynamicQuery.add(RestrictionsFactoryUtil.eq("catId", categoryId));
-		    }
-           dynamicQuery.addOrder(OrderFactoryUtil.asc("SubCategoryName"));
-           List<InfraKnowledgeSubCategory> iksList=InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dynamicQuery, 0, InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
-           //_log.info("iksList.size>>"+iksList.size());
-           for(InfraKnowledgeSubCategory data:iksList) {
-           	JSONObject jsonOb = JSONFactoryUtil.createJSONObject();
-           	jsonOb.put("id", data.getSubcatId());
-           	String str = data.getSubCategoryName();
-           	 jsonOb.put("name",str);
-               jsonArray.put(jsonOb);
-               }
-                    System.out.println("jsonArray length"+jsonArray.length());
-                    PrintWriter writer = response.getWriter();
-                    writer.print( jsonArray.toJSONString());
-		} catch (Exception e) {
-			// TODO: handle exception
-		}  
-		}
-	else if(cmd.equalsIgnoreCase("getministries")) {
-		long subcategoryId = ParamUtil.getLong(request, "subcategoryId");
-		_log.info("subcategoryId>>"+subcategoryId);
-		try {
-			JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-			DynamicQuery dynamicQuery = null;
-			dynamicQuery = MinistryLocalServiceUtil.dynamicQuery();
-		     if(subcategoryId!=0) {
-		         dynamicQuery.add(RestrictionsFactoryUtil.eq("subcatId", subcategoryId));
-		    }
-           dynamicQuery.addOrder(OrderFactoryUtil.asc("mName"));
-           List<Ministry> iksList=MinistryLocalServiceUtil.dynamicQuery(dynamicQuery, 0, MinistryLocalServiceUtil.getMinistriesCount());
-           //_log.info("iksList.size>>"+iksList.size());
-           for(Ministry data:iksList) {
-           	JSONObject jsonOb = JSONFactoryUtil.createJSONObject();
-           	jsonOb.put("id", data.getMId());
-           	String str = data.getMName();
-           	 jsonOb.put("name",str);
-               jsonArray.put(jsonOb);
-               }
-                    System.out.println("jsonArray length"+jsonArray.length());
-                    PrintWriter writer = response.getWriter();
-                    writer.print( jsonArray.toJSONString());
-		} catch (Exception e) {
-			// TODO: handle exception
-		}  
-		}
-	}
-	
+<a href="/eventlist?eventId=<%=eventid%>&eventtype=<%=heventtype%>">Read More</a>
+currURL = PortalUtil.getCurrentURL(request); 
+      System.out.println("currURL="+currURL);
+      String[] strArray = null;  
+      strArray = currURL.split("\\?");
+      if(strArray.length>1){
+         String[] mainArray = null;   
+         mainArray = strArray[1].split("\\&");  
+         for (int i = 0; i< mainArray.length; i++){
+    	 	 String[] subArray = null; 
+    	 	 subArray =mainArray[i].split("\\=");
+    	 	  if(subArray.length>0){
+    	 		System.out.println("subArray[0]="+subArray[0]);
+    	 		 if(subArray[0].equalsIgnoreCase("eventId")){
+    	 		       if(subArray[1]!=""){	  
+    	 		    	  System.out.println("subArray[1]="+subArray[1]);
+    	 			      eventId=Long.valueOf(subArray[1]);
+    	 			      eventtype=String.valueOf(subArray[3]);
+    	 			      System.out.println("eventType"+eventtype);
+    	 			    }
+    	 	 	  }
