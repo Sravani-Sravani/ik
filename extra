@@ -277,33 +277,7 @@ public void manageEvents(ActionRequest request, ActionResponse response) throws 
 		}
 		return folder;
 	}
-	public void deleteFileEntry(long fileEntryId) {
-	   	 try
-	      	{
-				if(fileEntryId!=0) {
-					DLAppServiceUtil.deleteFileEntry(fileEntryId);
-				}
-		    } catch (Exception e)
-		    {
-		        _log.info(e.getMessage());
-		    }
-	}
- 
-public void deleteEvents(ActionRequest request, ActionResponse response) throws Exception {
-		
-        ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY); 
-		long eventId = ParamUtil.getLong(request, "eventId");
-		//System.out.print("eventId>>>"+eventId);
-	  if(eventId!=0) {
-		  try {
-            EventsLocalServiceUtil.deleteEvents(eventId);
-            SessionMessages.add(request, "entryDeleted");
-		  }
-		  catch(Exception e) {
-			  
-		  }
-	  }   
-	}
+
 	public long getUserFolderId(ThemeDisplay themeDisplay, ActionRequest request) {
 
 		long parentFolderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
@@ -446,18 +420,4 @@ public static String getFile(long docEntryId,long scopeId){
 	}
 	return fileUrl;	  
  }
-public void deleteEvents1(ActionRequest request, ActionResponse response) throws Exception {
-	
-    ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY); 
-	long eventId = ParamUtil.getLong(request, "galleryImageId");
-	//System.out.print("eventId>>>"+eventId);
-  if(eventId!=0) {
-	  try {
-        GalleryDocumentsLocalServiceUtil.deleteGalleryDocuments(eventId);
-        SessionMessages.add(request, "entryDeleted1");
-	  }
-	  catch(Exception e) {
-		  
-	  }
-  }   
-}
+
