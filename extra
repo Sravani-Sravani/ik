@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Online Training</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+
 <section class="light_bg my-0" style="padding: 60px 0;">
   <div class="container">
     <div class="row d-flex align-items-start">
@@ -7,58 +15,24 @@
       </div>
       <div class="col-lg-9">
         <div class="container online_training">
+          <!-- Replace the JSP code below with your actual logic -->
           <% 
-            Date todayDate1 = new Date();
-            todayDate1.setHours(0);
-            todayDate1.setMinutes(0);
-            todayDate1.setSeconds(0);
-            List<Events> eventLinks1 = null;
-            DynamicQuery dq = EventsLocalServiceUtil.dynamicQuery(); 
-            dq.add(RestrictionsFactoryUtil.eq("eventtype", "Training"));
-            dq.add(RestrictionsFactoryUtil.eq("trainingpartner", "Online Training"));
-            eventLinks1 = EventsLocalServiceUtil.dynamicQuery(dq);
-
-            try {
-                eventLinks1= EventsLocalServiceUtil.dynamicQuery(dq, 0,
-                  EventsLocalServiceUtil.getEventsesCount());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            // Your logic to fetch and iterate through online training events
             for (Events eventLink : eventLinks1) {
-                String heventtype=eventLink.getEventtype();
-                String eventtype=eventLink.getEventtype();
-                System.out.println(eventtype);
-                long eventid = eventLink.getEventId();
-                String eventtype1=eventLink.getEventtype();
-                String title = eventLink.getTitle();
-                String startTime = eventLink.getStartTime();
-                String endTime = eventLink.getEndTime();
-
-                String startDate = "";
-                String endDate = "";
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-
-                try {  
-                    Date dt = eventLink.getStartDate();
-                    startDate = sdf.format(dt);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                try {  
-                    Date dt = eventLink.getEndDate();
-                    endDate = sdf.format(dt);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-          %> 
-          <div class="card">
-            <a href="#"><%= title %></a>
-            <div class="card-footer">
-              <p class="d-flex align-items-center flex-wrap"><span class="me-auto"><%= startDate %></span> <a href="onlinetrainingdetails.html" class="arrow_button">Read More <i class="fa-regular fa-chevrons-right"></i></a></p>
-            </div>
-          </div>
+              String title = eventLink.getTitle();
+              String startDate = ""; // Replace with your logic to get the start date
+              %>
+              <div class="card">
+                <a href="#"><%= title %></a>
+                <div class="card-footer">
+                  <p class="d-flex align-items-center flex-wrap">
+                    <span class="me-auto"><%= startDate %></span>
+                    <a href="onlinetrainingdetails.html" class="arrow_button">Read More <i class="fa-regular fa-chevrons-right"></i></a>
+                  </p>
+                </div>
+              </div>
           <% } %>
+          <!-- End of JSP code replacement -->
         </div>
         <ul id="pagination" class="pagination justify-content-end">
           <!-- Pagination links will be dynamically added here -->
@@ -107,12 +81,18 @@
     // Handle page click event
     $("#pagination").on("click", ".page-link", function(e) {
       e.preventDefault();
-      var currentPage = parseInt($(this).text());
-      showItems(currentPage);
+      var page = parseInt($(this).text());
+      showItems(page);
+      currentPage = page;
+      generatePagination();
     });
 
-    // Show the initial set of items and generate pagination
-    showItems(1);
+    // Initial page setup
+    var currentPage = 1;
+    showItems(currentPage);
     generatePagination();
   });
 </script>
+
+</body>
+</html>
