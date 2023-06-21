@@ -1,11 +1,106 @@
-// Show the items for the given page
-function showItems(page) {
-  var startIndex = (page - 1) * itemsPerPage;
-  var endIndex = startIndex + itemsPerPage;
-  var $cards = $(".online_training .card");
-  $cards.hide(); // Hide all items
+<section class="light_bg my-0" style="padding: 60px 0;">
+  <div class="container">
+    <div class="row d-flex align-items-start">
+      <div class="col-lg-3">
+        <h3 class="sub_heading">Online Training</h3>
+        <p class="large_text">Placeholder for text.</p>
+      </div>
+      <div class="col-lg-9">
+        <div class="container online_training">
+          <% 
+          Date todayDate1 = new Date();
+          todayDate1.setHours(0);
+          todayDate1.setMinutes(0);
+          todayDate1.setSeconds(0);
+          List<Events> eventLinks1 = null;
+          DynamicQuery dq = EventsLocalServiceUtil.dynamicQuery(); 
+          dq.add(RestrictionsFactoryUtil.eq("eventtype", "Training"));
+          dq.add(RestrictionsFactoryUtil.eq("trainingpartner", "Online Training"));
+          eventLinks1 = EventsLocalServiceUtil.dynamicQuery(dq);
+          try {
+              eventLinks1= EventsLocalServiceUtil.dynamicQuery(dq, 0,
+                      EventsLocalServiceUtil.getEventsesCount());
+          } catch (Exception e) {
+              e.printStackTrace();
+          }
+          int totalItems = eventLinks1.size();
+          for (Events eventLink : eventLinks1) {
+              String title = eventLink.getTitle();
+              String startDate = ""; // Replace with your logic to get the start date
+          %>
+          <div class="card">
+            <a href="#"><%= title %></a>
+            <div class="card-footer">
+              <p class="d-flex align-items-center flex-wrap">
+                <span class="me-auto"><%= startDate %></span>
+                <a href="onlinetrainingdetails.html" class="arrow_button">Read More <i class="fa-regular fa-chevrons-right"></i></a>
+              </p>
+            </div>
+          </div>
+          <% } %>
+          <!-- End of JSP code replacement -->
+        </div>
+        <ul id="pagination" class="pagination justify-content-end">
+          <!-- Pagination links will be dynamically added here -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
-  for (var i = startIndex; i < endIndex && i < totalItems; i++) {
-    $cards.eq(i).show(); // Show the items within the range
-  }
-}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var itemsPerPage = 4; // Number of items to display per page
+    // Show the items for the given page
+    function showItems(page) {
+      var startIndex = (page - 1) * itemsPerPage;
+      var endIndex = startIndex + itemsPerPage;
+
+      // Hide all items
+      $(".online_training .card").hide();
+
+      // Show items for the current page
+      $(".online_training .card").slice(startIndex, endIndex).show();
+    }
+
+    // Generate pagination links
+    function generatePagination() {
+      var totalItems = $(".online_training .card").length; // Total number of items
+      var totalPages = Math.ceil(totalItems / itemsPerPage); // Calculate total number of pages
+      var pagination = $("#pagination");
+      pagination.empty();
+
+      // Previous page link
+      if (currentPage > 1) {
+        pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage - 1) + '"><i class="fa-regular fa-chevrons-left"></i></a></li>');
+      }
+
+      // Page links
+      for (var i = 1; i <= totalPages; i++) {
+        var activeClass = (i === currentPage) ? "active" : "";
+        pagination.append('<li class="page-item ' + activeClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
+      }
+
+      // Next page link
+      if (currentPage < totalPages) {
+        pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage + 1) + '"><i class="fa-regular fa-chevrons-right"></i></a></li>');
+      }
+    }
+
+    // Handle page click event
+    $("#pagination").on("click", ".page-link", function(e) {
+      e.preventDefault();
+      var page = parseInt($(this).data("page"));
+      currentPage = page;
+      showItems(currentPage);
+      generatePagination();
+    });
+
+    // Initial page setup
+    var currentPage = 1;
+    showItems(currentPage);
+    generatePagination();
+    itemsPerPage=4;
+  });
+</script>
