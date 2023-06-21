@@ -47,9 +47,9 @@
       e.preventDefault();
       if (currentPage > 1) {
         currentPage -= 1;
-        showItems(currentPage);
-        generatePagination();
       }
+      showItems(currentPage);
+      generatePagination();
     });
 
     $("#pagination").on("click", ".next-link", function(e) {
@@ -57,9 +57,9 @@
       var totalPages = Math.ceil($(".online_training .card").length / itemsPerPage);
       if (currentPage < totalPages) {
         currentPage += 1;
-        showItems(currentPage);
-        generatePagination();
       }
+      showItems(currentPage);
+      generatePagination();
     });
 
     // Initial page setup
