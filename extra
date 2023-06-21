@@ -17,35 +17,27 @@
           dq.add(RestrictionsFactoryUtil.eq("eventtype", "Training"));
           dq.add(RestrictionsFactoryUtil.eq("trainingpartner", "Online Training"));
           eventLinks1 = EventsLocalServiceUtil.dynamicQuery(dq);
-
           try {
               eventLinks1= EventsLocalServiceUtil.dynamicQuery(dq, 0,
               		EventsLocalServiceUtil.getEventsesCount());
           } catch (Exception e) {
               e.printStackTrace();
           }
-          int itemsPerPage = 5;
-          int totalItems = eventLinks1.size();
-          int totalPages = (int) Math.ceil((double) totalItems / itemsPerPage);
-          int startIndex = (currentPage - 1) * itemsPerPage;
-          int endIndex = Math.min(startIndex + itemsPerPage, totalItems);
-
-          for (int i = startIndex; i < endIndex; i++) {
-            Events eventLink = eventLinks1.get(i);
-            String title = eventLink.getTitle();
-            String startDate = ""; // Replace with your logic to get the start date
-            %>
-            <div class="card">
-              <a href="#"><%= title %></a>
-              <div class="card-footer">
-                <p class="d-flex align-items-center flex-wrap">
-                  <span class="me-auto"><%= startDate %></span>
-                  <a href="onlinetrainingdetails.html" class="arrow_button">Read More <i class="fa-regular fa-chevrons-right"></i></a>
-                </p>
+          int totalItems=eventLinks1.size();
+            for (Events eventLink : eventLinks1) {
+              String title = eventLink.getTitle();
+              String startDate = ""; // Replace with your logic to get the start date
+              %>
+              <div class="card">
+                <a href="#"><%= title %></a>
+                <div class="card-footer">
+                  <p class="d-flex align-items-center flex-wrap">
+                    <span class="me-auto"><%= startDate %></span>
+                    <a href="onlinetrainingdetails.html" class="arrow_button">Read More <i class="fa-regular fa-chevrons-right"></i></a>
+                  </p>
+                </div>
               </div>
-            </div>
-            <% 
-          } %>
+          <% } %>
           <!-- End of JSP code replacement -->
         </div>
         <ul id="pagination" class="pagination justify-content-end">
@@ -75,14 +67,9 @@
       var pagination = $("#pagination");
       pagination.empty();
 
-      // First page link
-      if (currentPage > 1) {
-        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevron-left"></i><i class="fa-regular fa-chevron-left"></i></a></li>');
-      }
-
       // Previous page link
       if (currentPage > 1) {
-        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevron-left"></i></a></li>');
+        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevrons-left"></i></a></li>');
       }
 
       // Page links
@@ -93,12 +80,7 @@
 
       // Next page link
       if (currentPage < totalPages) {
-        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevron-right"></i></a></li>');
-      }
-
-      // Last page link
-      if (currentPage < totalPages) {
-        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevron-right"></i><i class="fa-regular fa-chevron-right"></i></a></li>');
+        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevrons-right"></i></a></li>');
       }
     }
 
