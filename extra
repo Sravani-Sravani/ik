@@ -1,99 +1,81 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Online Training</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-
 <section class="light_bg my-0" style="padding: 60px 0;">
   <div class="container">
-    <div class="row d-flex align-items-start">
-      <div class="col-lg-3">
-        <h3 class="sub_heading">Online Training</h3>
-        <p class="large_text">Placeholder for text.</p>
-      </div>
-      <div class="col-lg-9">
-        <div class="container online_training">
-          <!-- Replace the JSP code below with your actual logic -->
-          <% 
-            // Your logic to fetch and iterate through online training events
-            for (Events eventLink : eventLinks1) {
-              String title = eventLink.getTitle();
-              String startDate = ""; // Replace with your logic to get the start date
-              %>
-              <div class="card">
-                <a href="#"><%= title %></a>
-                <div class="card-footer">
-                  <p class="d-flex align-items-center flex-wrap">
-                    <span class="me-auto"><%= startDate %></span>
-                    <a href="onlinetrainingdetails.html" class="arrow_button">Read More <i class="fa-regular fa-chevrons-right"></i></a>
-                  </p>
-                </div>
-              </div>
-          <% } %>
-          <!-- End of JSP code replacement -->
+      <div class="row d-flex align-items-start">
+        <div class="col-lg-3">
+          <h3 class="sub_heading">Online Training</h3>
+          <p class="large_text">Placeholder for text.</p>
+
         </div>
-        <ul id="pagination" class="pagination justify-content-end">
-          <!-- Pagination links will be dynamically added here -->
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
+        <div class="col-lg-9 ">
+           <div class="container online_training">
+			    <% 
+         //   ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+            Date todayDate1 = new Date();
+            todayDate1.setHours(0);
+            todayDate1.setMinutes(0);
+            todayDate1.setSeconds(0);
+            List<Events> eventLinks1 = null;
+            DynamicQuery dq = EventsLocalServiceUtil.dynamicQuery(); 
+            dq.add(RestrictionsFactoryUtil.eq("eventtype", "Training"));
+            dq.add(RestrictionsFactoryUtil.eq("trainingpartner", "Online Training"));
+            eventLinks1 = EventsLocalServiceUtil.dynamicQuery(dq);
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-  $(document).ready(function() {
-    var itemsPerPage = 4; // Number of items to display per page
+            try {
+                eventLinks1= EventsLocalServiceUtil.dynamicQuery(dq, 0,
+                		EventsLocalServiceUtil.getEventsesCount());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            for (Events eventLink : eventLinks1) {
+                String heventtype=eventLink.getEventtype();
+                String eventtype=eventLink.getEventtype();
+                System.out.println(eventtype);
+                long eventid = eventLink.getEventId();
+                String eventtype1=eventLink.getEventtype();
+                String title = eventLink.getTitle();
+                String startTime = eventLink.getStartTime();
+                String endTime = eventLink.getEndTime();
+                                
+                                String startDate = "";
+                                String endDate = "";
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-    // Show the items for the given page
-    function showItems(page) {
-      var startIndex = (page - 1) * itemsPerPage;
-      var endIndex = startIndex + itemsPerPage;
+                                try {	
+                                    Date dt = eventLink.getStartDate();
+                                    startDate = sdf.format(dt);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
 
-      $(".online_training .card").hide().slice(startIndex, endIndex).show();
-    }
+                                try {	
+                                    Date dt = eventLink.getEndDate();
+                                    endDate = sdf.format(dt);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
 
-    // Generate pagination links
-    function generatePagination() {
-      var totalItems = $(".online_training .card").length; // Total number of items
-      var totalPages = Math.ceil(totalItems / itemsPerPage); // Calculate total number of pages
-      var pagination = $("#pagination");
-      pagination.empty();
-
-      // Previous page link
-      if (currentPage > 1) {
-        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevron-left"></i></a></li>');
-      }
-
-      // Page links
-      for (var i = 1; i <= totalPages; i++) {
-        var activeClass = (i === currentPage) ? "active" : "";
-        pagination.append('<li class="page-item ' + activeClass + '"><a class="page-link" href="#">' + i + '</a></li>');
-      }
-
-      // Next page link
-      if (currentPage < totalPages) {
-        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevron-right"></i></a></li>');
-      }
-    }
-
-    // Pagination link click event
-    $(document).on("click", "#pagination .page-link", function(e) {
-      e.preventDefault();
-      var page = parseInt($(this).text());
-      showItems(page);
-      currentPage = page;
-      generatePagination();
-    });
-
-    // Initial page setup
-    var currentPage = 1;
-    showItems(currentPage);
-    generatePagination();
-  });
-</script>
-
-</body>
-</html>
+                               
+                                    %> 
+			   <div class="card">
+				<a href="#"><%=title %></a>
+				<div class="card-footer">
+				 <p class="d-flex align-items-center flex-wrap"><span class="me-auto">May 25,2023</span> <a href="onlinetrainingdetails.html" class="arrow_button">Read More <i class="fa-regular fa-chevrons-right"></i></a></p>
+				</div>
+			</div>
+			<%} %>
+    	</div>
+			  <ul class="pagination justify-content-end">
+				<li class="page-item">
+				  <a class="page-link" href="#" tabindex="-1"><i class="fa-regular fa-chevrons-left"></i></a>
+				</li>
+				<li class="page-item"><a class="page-link" href="#">1</a></li>
+				<li class="page-item"><a class="page-link" href="#">2</a></li>
+				<li class="page-item"><a class="page-link" href="#">3</a></li>
+				<li class="page-item">
+				  <a class="page-link" href="#"><i class="fa-regular fa-chevrons-right"></i></a>
+				</li>
+			  </ul>
+  		</div>
+		  </div>
+	  </div>
+</section><!--end of Event Section-->
