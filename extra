@@ -1,423 +1,81 @@
-public void manageEvents(ActionRequest request, ActionResponse response) throws Exception {
-		
-         ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-		 long userId = themeDisplay.getUserId();
-		// _log.info("userId "+userId);
-		  
-		 String title = ParamUtil.getString(request, "title"); 
-		 String description = ParamUtil.getString(request, "description"); 
-		 String hi_description = ParamUtil.getString(request, "hi_description");  
-		 String hi_title = ParamUtil.getString(request, "hi_title"); 
-		 String endTime=ParamUtil.getString(request, "endTime"); 
-		 String startTime=ParamUtil.getString(request, "startTime");  
-		 //_log.info("endTime "+endTime);
-		// _log.info("startTime "+startTime);
-		 long eventId = ParamUtil.getLong(request, "eventId");
-		 String startDate = ParamUtil.getString(request, "startDate"); 
-		 String endDate = ParamUtil.getString(request, "endDate"); 
-		 SimpleDateFormat DbDataFormate=new SimpleDateFormat("yyyy-MM-dd");
-		 String location=ParamUtil.getString(request,"location");
-		 String venue=ParamUtil.getString(request,"venue");
-		 String eventtype=ParamUtil.getString(request,"eventtype");
-		 String trainingtype=ParamUtil.getString(request,"trainingtype");
-		 String trainingpname=ParamUtil.getString(request,"trainingpname");
-		 boolean flag = true;
-	 
-		 String[] specialChars= new String[] {":",";","=","<",">","{","}"};
+<section class="light_bg my-0" style="padding: 60px 0;">
+  <div class="container">
+      <div class="row d-flex align-items-start">
+        <div class="col-lg-3">
+          <h3 class="sub_heading">Online Training</h3>
+          <p class="large_text">Placeholder for text.</p>
 
-		 if(Validator.isNull(title)){
-				SessionErrors.add(request, "title.errorMsg.missing");
-				flag =false;
-			}
-		 if(Validator.isNull(hi_title)){
-			SessionErrors.add(request, "hi_title.errorMsg.missing");
-			flag =false;
-		 }
-		 for (String item : specialChars) {
-		        if (title.contains(item)) {
-		        	SessionErrors.add(request, "title.errorMsg.missing");
-					flag =false;
-		        }
-		        if (hi_title.contains(item)) {
-		        	SessionErrors.add(request, "hi_title.errorMsg.missing");
-					flag =false;
-		        }
-		        if (Validator.isNotNull(description) && description.contains(item)) {
-		        	SessionErrors.add(request, "description.errorMsg.missing");
-					flag =false;
-		        }
-                if (Validator.isNotNull(hi_description) && hi_description.contains(item)) {
-                	SessionErrors.add(request, "hi_description.errorMsg.missing");
-    				flag =false;
-		        }
-                
-                if(!item.equals(":")) {
-                    if (Validator.isNull(startTime) || startTime.contains(item)) {
-			        	SessionErrors.add(request, "startTime.errorMsg.missing");
-						flag =false;
-			        }
-                    if (Validator.isNull(endTime) || endTime.contains(item)) {
-                    	SessionErrors.add(request, "endTime.errorMsg.missing");
-        				flag =false;
-			        }
-                }
-		    }
-			UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(request);
-			String uploadFileName = null;
-			String uploadType="document";
-			uploadFileName = uploadPortletRequest.getFileName(uploadType);
-			long uploadSize =  uploadPortletRequest.getSize(uploadType);
-			int fileSize= Math.round((uploadSize / 1024));
-             if (fileSize > 2048) {
-            	    SessionErrors.add(request, "document.errorMsg.sizeIssue");
-					flag =false;
-             } 
-			 String nameArray[]=uploadFileName.split("\\.");
-			 if (uploadFileName != null && !uploadFileName.isEmpty()) {
-				 String[] extensionsList= new String[]  {"jpeg","jpg","png","gif"};
-			 if(nameArray.length>2 || !(Arrays.asList(extensionsList).contains(nameArray[nameArray.length-1]))){
-					SessionErrors.add(request, "document.errorMsg.missing");
-					flag =false;
-				}
-			 }
-			 Date startDate1 = null;
-			 Date endDate1 = null;
-		     if(Validator.isNotNull(startDate)){
-					try {
-						startDate1=DbDataFormate.parse(startDate);
-					} catch (java.text.ParseException e) {
-						 SessionErrors.add(request, "startDate.errorMsg.missing");
-							flag =false;
-						e.printStackTrace();
-					}
-			}
-		     else {
-		    	 SessionErrors.add(request, "startDate.errorMsg.missing");
-					flag =false;
-		     }
-		     if(Validator.isNotNull(endDate)){
-					try {
-						endDate1=DbDataFormate.parse(endDate);
-					 
-					} catch (java.text.ParseException e) {
-						 SessionErrors.add(request, "endDate.errorMsg.missing");
-							flag =false;
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-			}
-		     else {
-		    	 SessionErrors.add(request, "endDate.errorMsg.missing");
-					flag =false;
-		     }
-		     if(endDate1.before(startDate1)) {
-		    	 SessionErrors.add(request, "endDate.errorMsg.notlessThan");
-					flag =false;
-		     }
-		     
-	if(flag) {
-		 boolean isnewRecord=true;
-	
-	      
-		Events events=null;
-	  if(eventId==0) {
-		  events=new EventsImpl();
-		   eventId=CounterLocalServiceUtil.increment(Events.class.getName());
-		   events.setEventId(eventId);
-		   events.setCreatedBy(userId);
-		   events.setCreatedDate(new Date());
-	  }
-	  else {
-		  isnewRecord=false;
-		  events=EventsLocalServiceUtil.fetchEvents(eventId);
-		  events.setModifiedBy(userId);
-		  events.setModifiedDate(new Date());
-	  }
-	  events.setTitle(title);
-	  events.setDescription(description);
-	  events.setStartTime(startTime);
-	  events.setEndTime(endTime);
-	  events.setStartDate(startDate1);
-	  events.setEndDate(endDate1);
-	  events.setHi_description(hi_description);
-	  events.setHi_title(hi_title);
-	  events.setLocation(location);
-	  events.setVenue(venue);
-	  events.setEventtype(eventtype);
-	  events.setTrainingpartner(trainingtype);
-	  events.setTrainingname(trainingpname);
-	  long folderId = getUserFolderId(themeDisplay, request);
-		 long userFolderId = getUserFolderId(themeDisplay, request);
-		  long folderId1 = getUserFolderId1(themeDisplay, request);
-			 long userFolderId1 = getUserFolderId1(themeDisplay, request);
-       try {
- 		 	FileEntry entry = fileUpload(themeDisplay, request, "document","", themeDisplay.getUserId(),userFolderId, eventId);
-			if(entry!=null){
-				events.setFileEntryId(entry.getFileEntryId());
-			} 
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-      // System.out.println("isnewRecord>>>"+isnewRecord); 
-  	 try {
-		 UploadPortletRequest uploadPortletRequest1 = PortalUtil.getUploadPortletRequest(request);
-			
-			Map<String, FileItem[]> files= uploadPortletRequest1.getMultipartParameterMap();
-			Folder folder = getFolder1(themeDisplay);
-			//InputStream is;
-			//File file;
-			Date currentDate = new Date();
- 			//long repositoryId;
-			for (Entry<String, FileItem[]> file2 : files.entrySet()) {
-				
-				FileItem item[] =file2.getValue();
+        </div>
+        <div class="col-lg-9 ">
+           <div class="container online_training">
+			    <% 
+         //   ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+            Date todayDate1 = new Date();
+            todayDate1.setHours(0);
+            todayDate1.setMinutes(0);
+            todayDate1.setSeconds(0);
+            List<Events> eventLinks1 = null;
+            DynamicQuery dq = EventsLocalServiceUtil.dynamicQuery(); 
+            dq.add(RestrictionsFactoryUtil.eq("eventtype", "Training"));
+            dq.add(RestrictionsFactoryUtil.eq("trainingpartner", "Online Training"));
+            eventLinks1 = EventsLocalServiceUtil.dynamicQuery(dq);
 
-				try {
-					for (FileItem fileItem : item) {
+            try {
+                eventLinks1= EventsLocalServiceUtil.dynamicQuery(dq, 0,
+                		EventsLocalServiceUtil.getEventsesCount());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            for (Events eventLink : eventLinks1) {
+                String heventtype=eventLink.getEventtype();
+                String eventtype=eventLink.getEventtype();
+                System.out.println(eventtype);
+                long eventid = eventLink.getEventId();
+                String eventtype1=eventLink.getEventtype();
+                String title = eventLink.getTitle();
+                String startTime = eventLink.getStartTime();
+                String endTime = eventLink.getEndTime();
+                                
+                                String startDate = "";
+                                String endDate = "";
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
+                                try {	
+                                    Date dt = eventLink.getStartDate();
+                                    startDate = sdf.format(dt);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
 
-						long repositoryId = themeDisplay.getScopeGroupId();
-						_log.info("repositoryId=" + repositoryId);
-						String uploadFileName1 = currentDate.getTime() + "_-_" +fileItem.getFileName().replaceAll(" ", "_");
-						uploadFileName1=uploadFileName1;
-						String uploadFiledescription = "This file is added via programatically";
-						String uploadMimeType = fileItem.getContentType();	
-						long uploadSize1 =fileItem.getSize();
-						File uploadFile = fileItem.getStoreLocation();
-						InputStream is =fileItem.getInputStream();
-						//_log.info("userFolderId 11>>"+userFolderId);
-						_log.info("title 11>>"+uploadFileName1);
-				    	try {
-				    		 
-				    		try {
-				    			boolean folderExist = isFolderExist(themeDisplay.getScopeGroupId(), PARENT_FOLDER_ID, ROOT_FOLDER_NAME);
-				    			if (!folderExist) {
-				    				Folder userFolder =  folder=createFolder(request, themeDisplay, PARENT_FOLDER_ID, ROOT_FOLDER_NAME, ROOT_FOLDER_DESCRIPTION);
-									
-				    				folderId1 = userFolder.getFolderId();
-				    			} else {
-				    				Folder userFolder = getFolder(themeDisplay.getScopeGroupId(), PARENT_FOLDER_ID, ROOT_FOLDER_NAME);
-				    				folderId1 = userFolder.getFolderId();
-				    			}
-				    			
-				    		    }
-				    		catch(Exception e) {
-				    			_log.info("userFolderId Exception>>"+folderId1);	
-				    		} 
-				    		ServiceContext serviceContext = ServiceContextFactory.getInstance(DLFileEntry.class.getName(), request);
-							
-				    		FileEntry fileEntry1 = DLAppServiceUtil.addFileEntry(repositoryId, folderId1, uploadFileName1, uploadMimeType, uploadFileName1, description, "changeLog",uploadFile, serviceContext);
-							
-				    		 
-							
-							if(fileEntry1!=null){
-								
-								
-								  GalleryDocuments document1=new GalleryDocumentsImpl();
-								  long documentId= CounterLocalServiceUtil.increment( GalleryDocuments.class.getName());
-								  document1.setDocumentId(documentId);
-								  document1.setDocumentTypeId(1);
-								  document1.setEventId(eventId);
-								 _log.info("uploaded fileEntry Id="+fileEntry1.getFileEntryId());
-								  document1.setCreatedBy(userId); 
-								  document1.setCreatedDate(new Date());
-								  document1.setModifiedDate(new Date()); 
-								     document1.setFileEntryId(fileEntry1.getFileEntryId());
-					              	document1=GalleryDocumentsLocalServiceUtil.addGalleryDocuments(document1);
-								//galleryGroup.setFileEntryId(fileEntry.getFileEntryId());
-							} 
-				    	
-				    	} catch (PortalException e) {
-							e.printStackTrace();
-						} catch (SystemException e) {
-							e.printStackTrace();
-						}
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}	
-			}
-		
-	 }
-	 catch(Exception e) {
-	 }
-       if(isnewRecord) {
-    	//   System.out.println("isnewRecord 123>>>"+isnewRecord);
-    	   EventsLocalServiceUtil.addEvents(events);
-    	   SessionMessages.add(request, "entryAdded");
-       }
-       else {
-    	   //System.out.println("isnewRecord 456>>>"+isnewRecord);
-    	   EventsLocalServiceUtil.updateEvents(events);
-    	   SessionMessages.add(request, "entryUpdated");
-       }
-	 }
-		 else {
-			// SessionMessages.add(request, "entryAdded");
-			// request.setAttribute("formValue", "3");
-		    String redirectpage="/addEvent.jsp";
-		     response.setRenderParameter("jspPage",redirectpage);
-		 }
- }
-	public Folder getFolder1(ThemeDisplay themeDisplay){
-		Folder folder = null;
-		try {
-			folder =DLAppServiceUtil.getFolder(themeDisplay.getScopeGroupId(), PARENT_FOLDER_ID, ROOT_FOLDER_NAME);
-		} catch (Exception e) {	
-			System.out.println(e.getMessage());
-		}
-		return folder;
-	}
-	public Folder getFolder(long scopeGroupId, long parentFolderId, String rootFolderName) {
-		Folder folder = null;
-		try {
-			folder = DLAppServiceUtil.getFolder(scopeGroupId, parentFolderId, rootFolderName);
-		} catch (Exception e) {
-			_log.info(e.getMessage());
-		}
-		return folder;
-	}
+                                try {	
+                                    Date dt = eventLink.getEndDate();
+                                    endDate = sdf.format(dt);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
 
-	public long getUserFolderId(ThemeDisplay themeDisplay, ActionRequest request) {
-
-		long parentFolderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
-		String usersFolderName = "users";
-		String usersFolderDesc = "This folder is created for Upload all Users documnets";
-		String rootFolderDescription = "This folder is create for Upload User(" + themeDisplay.getUserId()
-				+ ") documents";
-		Folder usersRootFolder = null;
-		long userFolderId = 0L;
-		String rootFolderName = Long.toString(themeDisplay.getUserId());
-
-		boolean UsersFolderExist = isFolderExist(themeDisplay.getScopeGroupId(), parentFolderId, usersFolderName);
-		long usersRootFolderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
-		if (!UsersFolderExist) {
-			usersRootFolder = createFolder(request, themeDisplay, parentFolderId, usersFolderName, usersFolderDesc);
-			usersRootFolderId = usersRootFolder.getFolderId();
-		} else {
-			usersRootFolder = getFolder(themeDisplay.getScopeGroupId(), parentFolderId, usersFolderName);
-			usersRootFolderId = usersRootFolder.getFolderId();
-		}
-
-		boolean folderExist = isFolderExist(themeDisplay.getScopeGroupId(), usersRootFolderId, rootFolderName);
-		if (!folderExist) {
-			Folder userFolder = createFolder(request, themeDisplay, usersRootFolderId, rootFolderName,
-					rootFolderDescription);
-			userFolderId = userFolder.getFolderId();
-		} else {
-			Folder userFolder = getFolder(themeDisplay.getScopeGroupId(), usersRootFolderId, rootFolderName);
-			userFolderId = userFolder.getFolderId();
-		}
-		return userFolderId;
-	}
-	public long getUserFolderId1(ThemeDisplay themeDisplay, ActionRequest request) {
-
-		long parentFolderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
-		String usersFolderName = "users";
-		String usersFolderDesc = "This folder is created for Upload all Users documnets";
-		String rootFolderDescription = "This folder is create for Upload User(" + themeDisplay.getUserId()
-				+ ") documents";
-		Folder usersRootFolder = null;
-		long userFolderId = 0L;
-		String rootFolderName = Long.toString(themeDisplay.getUserId());
-
-		boolean UsersFolderExist = isFolderExist(themeDisplay.getScopeGroupId(), parentFolderId, usersFolderName);
-		long usersRootFolderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
-		if (!UsersFolderExist) {
-			usersRootFolder = createFolder(request, themeDisplay, parentFolderId, usersFolderName, usersFolderDesc);
-			usersRootFolderId = usersRootFolder.getFolderId();
-		} else {
-			usersRootFolder = getFolder(themeDisplay.getScopeGroupId(), parentFolderId, usersFolderName);
-			usersRootFolderId = usersRootFolder.getFolderId();
-		}
-
-		boolean folderExist = isFolderExist(themeDisplay.getScopeGroupId(), usersRootFolderId, rootFolderName);
-		if (!folderExist) {
-			Folder userFolder = createFolder(request, themeDisplay, usersRootFolderId, rootFolderName,
-					rootFolderDescription);
-			userFolderId = userFolder.getFolderId();
-		} else {
-			Folder userFolder = getFolder(themeDisplay.getScopeGroupId(), usersRootFolderId, rootFolderName);
-			userFolderId = userFolder.getFolderId();
-		}
-		return userFolderId;
-	}
-
-	public boolean isFolderExist(long scopeGroupId, long parentFolderId, String rootFolderName) {
-		boolean folderExist = false;
-		try {
-			DLAppServiceUtil.getFolder(scopeGroupId, parentFolderId, rootFolderName);
-			folderExist = true;
-			//_log.info("Folder is already Exist");
-		} catch (Exception e) {
-			_log.info(e.getMessage());
-		}
-		return folderExist;
-	}
-
-	public Folder createFolder(ActionRequest actionRequest, ThemeDisplay themeDisplay, long parentFolderId,
-			String rootFolderName, String rootFolderDescription) {
-		Folder folder = null;
-		long repositoryId = themeDisplay.getScopeGroupId();
-		try {
-			ServiceContext serviceContext = ServiceContextFactory.getInstance(DLFolder.class.getName(), actionRequest);
-			folder = DLAppServiceUtil.addFolder(repositoryId, parentFolderId, rootFolderName, rootFolderDescription,
-					serviceContext);
-		} catch (PortalException e1) {
-			e1.printStackTrace();
-		} catch (SystemException e1) {
-			e1.printStackTrace();
-		}
-		return folder;
-	}
-
-public FileEntry fileUpload(ThemeDisplay themeDisplay, ActionRequest actionRequest, String uploadType, String docNumber, long userId, long folderId, long jobPortalJobId) {
-	///_log.info("calling file uplodad" + docNumber);
-	UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(actionRequest);
-	String uploadFileName = null;
-	FileEntry fileEntry = null;
-	//_log.info("uploadType>>" + uploadType);
-	uploadFileName = uploadPortletRequest.getFileName(uploadType);
-	File uploadFile = uploadPortletRequest.getFile(uploadType);
-	long uploadSize =  uploadPortletRequest.getSize(uploadType);
-	String uploadMimeType = uploadPortletRequest.getContentType(uploadType);
-	//_log.info("uploadFileName>>" + uploadFileName);
-	String description = "This file is added via programatically";
-	long repositoryId = themeDisplay.getScopeGroupId();
-	if (uploadFileName != null && !uploadFileName.isEmpty()) {
-		try {
-			Date currentDate = new Date();
-			ServiceContext serviceContext = ServiceContextFactory.getInstance(DLFileEntry.class.getName(),
-					actionRequest);
-			serviceContext.setScopeGroupId(repositoryId);
-			uploadFileName = currentDate.getTime() + "_-_" + uploadFileName.replaceAll(" ", "_");
-			String ProfilePictureTitle = uploadFileName;
-			fileEntry = DLAppServiceUtil.addFileEntry(repositoryId, folderId, uploadFileName, uploadMimeType, ProfilePictureTitle, description, "changeLog",uploadFile, serviceContext);
-				 
-		} catch (Exception e) {
-			_log.info(e.getMessage());
-			e.printStackTrace();
-		}
-	}
-	return fileEntry;
-}
-public static String getFile(long docEntryId,long scopeId){
-	String fileUrl="";
-	 FileEntry fileEntry;
-	 //_log.info("Enter to getFile");
-	// _log.info("docEntryId>>>>>"+docEntryId);
-	// _log.info("scopeId>>>>"+scopeId);
-	try {
-		fileEntry = DLAppServiceUtil.getFileEntry(docEntryId);
-		if(fileEntry!=null){
-		//	_log.info("Enter to fileEntry not empty");
-			fileUrl = "/documents/" + scopeId + "/" + 
-					fileEntry.getFolderId() +  "/" +fileEntry.getTitle();
-		  }
-	} catch (PortalException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	return fileUrl;	  
- }
-
+                               
+                                    %> 
+			   <div class="card">
+				<a href="#"><%=title %></a>
+				<div class="card-footer">
+				 <p class="d-flex align-items-center flex-wrap"><span class="me-auto">May 25,2023</span> <a href="onlinetrainingdetails.html" class="arrow_button">Read More <i class="fa-regular fa-chevrons-right"></i></a></p>
+				</div>
+			</div>
+			<%} %>
+    	</div>
+			  <ul class="pagination justify-content-end">
+				<li class="page-item">
+				  <a class="page-link" href="#" tabindex="-1"><i class="fa-regular fa-chevrons-left"></i></a>
+				</li>
+				<li class="page-item"><a class="page-link" href="#">1</a></li>
+				<li class="page-item"><a class="page-link" href="#">2</a></li>
+				<li class="page-item"><a class="page-link" href="#">3</a></li>
+				<li class="page-item">
+				  <a class="page-link" href="#"><i class="fa-regular fa-chevrons-right"></i></a>
+				</li>
+			  </ul>
+  		</div>
+		  </div>
+	  </div>
+</section>
