@@ -23,7 +23,7 @@
           } catch (Exception e) {
               e.printStackTrace();
           }
-          int totalItems=eventLinks1.size();
+          int totalItems = eventLinks1.size();
           for (Events eventLink : eventLinks1) {
               String title = eventLink.getTitle();
               String startDate = ""; // Replace with your logic to get the start date
@@ -73,7 +73,10 @@
       }
 
       // Page links
-      for (var i = 1; i <= totalPages; i++) {
+      var startPage = Math.max(currentPage - 1, 1); // Calculate the start page number
+      var endPage = Math.min(startPage + 2, totalPages); // Calculate the end page number
+
+      for (var i = startPage; i <= endPage; i++) {
         var activeClass = (i === currentPage) ? "active" : "";
         pagination.append('<li class="page-item ' + activeClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
       }
