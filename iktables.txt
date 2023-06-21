@@ -52,6 +52,7 @@
 <script>
   $(document).ready(function() {
     var itemsPerPage = 4; // Number of items to display per page
+
     // Show the items for the given page
     function showItems(page) {
       var startIndex = (page - 1) * itemsPerPage;
@@ -86,6 +87,12 @@
       if (currentPage < totalPages) {
         pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage + 1) + '"><i class="fa-regular fa-chevrons-right"></i></a></li>');
       }
+
+      // Adjust the number of items displayed on the last page
+      if (currentPage === totalPages && totalItems % itemsPerPage !== 0) {
+        var lastPageItems = totalItems % itemsPerPage;
+        $(".online_training .card").slice(-lastPageItems).hide();
+      }
     }
 
     // Handle page click event
@@ -101,6 +108,5 @@
     var currentPage = 1;
     showItems(currentPage);
     generatePagination();
-    itemsPerPage=4;
   });
 </script>
