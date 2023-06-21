@@ -82,6 +82,16 @@
       if (currentPage < totalPages) {
         pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevrons-right"></i></a></li>');
       }
+
+      // First page link
+      if (currentPage > 1) {
+        pagination.prepend('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevron-double-left"></i></a></li>');
+      }
+
+      // Last page link
+      if (currentPage < totalPages) {
+        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevron-double-right"></i></a></li>');
+      }
     }
 
     // Handle page click event
