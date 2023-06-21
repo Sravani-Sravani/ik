@@ -51,10 +51,12 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   $(document).ready(function() {
-    var itemsPerPage = 4; // Number of items to display per page
+    var initialItemsPerPage = 5; // Number of items to display on the first page
+    var remainingItemsPerPage = 4; // Number of items to display on the remaining pages
 
     // Show the items for the given page
     function showItems(page) {
+      var itemsPerPage = (page === 1) ? initialItemsPerPage : remainingItemsPerPage;
       var startIndex = (page - 1) * itemsPerPage;
       var endIndex = startIndex + itemsPerPage;
 
@@ -68,7 +70,7 @@
     // Generate pagination links
     function generatePagination() {
       var totalItems = $(".online_training .card").length; // Total number of items
-      var totalPages = Math.ceil(totalItems / itemsPerPage); // Calculate total number of pages
+      var totalPages = Math.ceil(totalItems / remainingItemsPerPage); // Calculate total number of pages
       var pagination = $("#pagination");
       pagination.empty();
 
@@ -86,12 +88,6 @@
       // Next page link
       if (currentPage < totalPages) {
         pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage + 1) + '"><i class="fa-regular fa-chevrons-right"></i></a></li>');
-      }
-
-      // Adjust the number of items displayed on the last page
-      if (currentPage === totalPages && totalItems % itemsPerPage !== 0) {
-        var lastPageItems = totalItems % itemsPerPage;
-        $(".online_training .card").slice(-lastPageItems).hide();
       }
     }
 
