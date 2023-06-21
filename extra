@@ -39,8 +39,8 @@
     $("#pagination").on("click", ".page-link", function(e) {
       e.preventDefault();
       var page = parseInt($(this).data("page"));
-      showItems(page);
       currentPage = page;
+      showItems(currentPage);
       generatePagination();
     });
 
