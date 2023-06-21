@@ -7,8 +7,12 @@
     function showItems(page) {
       var startIndex = (page - 1) * itemsPerPage;
       var endIndex = startIndex + itemsPerPage;
-      $(".online_training .card").hide(); // Hide all items
-      $(".online_training .card").slice(startIndex, endIndex).show(); // Show items for the current page
+
+      // Hide all items
+      $(".online_training .card").hide();
+
+      // Show items for the current page
+      $(".online_training .card").slice(startIndex, endIndex).show();
     }
 
     // Generate pagination links
@@ -46,7 +50,7 @@
 
     // Initial page setup
     var currentPage = 1;
-    generatePagination();
     showItems(currentPage);
+    generatePagination();
   });
 </script>
