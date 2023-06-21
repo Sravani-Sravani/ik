@@ -1,46 +1,111 @@
-CREATE TABLE IF NOT EXISTS public.dea_infraknowledge
-(
-    uuid_ character varying(75) COLLATE pg_catalog."default",
-    infraid bigint NOT NULL,
-    cateid bigint,
-    subcatid bigint,
-    type_ character varying(75) COLLATE pg_catalog."default",
-    documenttype character varying(75) COLLATE pg_catalog."default",
-    ministry character varying(75) COLLATE pg_catalog."default",
-    headingtext character varying(75) COLLATE pg_catalog."default",
-    hi_headingtext character varying(75) COLLATE pg_catalog."default",
-    description character varying(75) COLLATE pg_catalog."default",
-    hi_description character varying(75) COLLATE pg_catalog."default",
-    thumbnailfileentryid bigint,
-    fileentryid bigint,
-    createddate timestamp without time zone,
-    createdby bigint,
-    modifieddate timestamp without time zone,
-    modifiedby bigint,
-    CONSTRAINT dea_infraknowledge_pkey PRIMARY KEY (infraid)
-)
+<section class="light_bg my-0" style="padding: 60px 0;">
+  <div class="container">
+    <div class="row d-flex align-items-start">
+      <div class="col-lg-3">
+        <h3 class="sub_heading">Online Training</h3>
+        <p class="large_text">Placeholder for text.</p>
+      </div>
+      <div class="col-lg-9">
+        <div class="container online_training">
+          <% 
+          Date todayDate1 = new Date();
+          todayDate1.setHours(0);
+          todayDate1.setMinutes(0);
+          todayDate1.setSeconds(0);
+          List<Events> eventLinks1 = null;
+          DynamicQuery dq = EventsLocalServiceUtil.dynamicQuery(); 
+          dq.add(RestrictionsFactoryUtil.eq("eventtype", "Training"));
+          dq.add(RestrictionsFactoryUtil.eq("trainingpartner", "Online Training"));
+          eventLinks1 = EventsLocalServiceUtil.dynamicQuery(dq);
 
-CREATE TABLE IF NOT EXISTS public.dea_infraknowledgecategory
-(
-    uuid_ character varying(75) COLLATE pg_catalog."default",
-    catid bigint NOT NULL,
-    categoryname character varying(75) COLLATE pg_catalog."default",
-    createddate timestamp without time zone,
-    createdby bigint,
-    modifieddate timestamp without time zone,
-    modifiedby bigint,
-    CONSTRAINT dea_infraknowledgecategory_pkey PRIMARY KEY (catid)
-)
+          try {
+              eventLinks1= EventsLocalServiceUtil.dynamicQuery(dq, 0,
+              		EventsLocalServiceUtil.getEventsesCount());
+          } catch (Exception e) {
+              e.printStackTrace();
+          }
+          int itemsPerPage = 4;
+          int totalPages = (int) Math.ceil((double) eventLinks1.size() / itemsPerPage);
+          int startIndex = (currentPage - 1) * itemsPerPage;
+          int endIndex = Math.min(startIndex + itemsPerPage, eventLinks1.size());
 
-CREATE TABLE IF NOT EXISTS public.dea_infraknowledgesubcategory
-(
-    uuid_ character varying(75) COLLATE pg_catalog."default",
-    subcatid bigint NOT NULL,
-    catid bigint,
-    subcategoryname character varying(75) COLLATE pg_catalog."default",
-    createddate timestamp without time zone,
-    createdby bigint,
-    modifieddate timestamp without time zone,
-    modifiedby bigint,
-    CONSTRAINT dea_infraknowledgesubcategory_pkey PRIMARY KEY (subcatid)
-)
+          for (int i = startIndex; i < endIndex; i++) {
+            Events eventLink = eventLinks1.get(i);
+            String title = eventLink.getTitle();
+            String startDate = ""; // Replace with your logic to get the start date
+            %>
+            <div class="card">
+              <a href="#"><%= title %></a>
+              <div class="card-footer">
+                <p class="d-flex align-items-center flex-wrap">
+                  <span class="me-auto"><%= startDate %></span>
+                  <a href="onlinetrainingdetails.html" class="arrow_button">Read More <i class="fa-regular fa-chevrons-right"></i></a>
+                </p>
+              </div>
+            </div>
+            <% 
+          } %>
+          <!-- End of JSP code replacement -->
+        </div>
+        <ul id="pagination" class="pagination justify-content-end">
+          <!-- Pagination links will be dynamically added here -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var currentPage = 1;
+    var totalPages = <%= totalPages %>;
+    var itemsPerPage = 4;
+
+    // Show the items for the given page
+    function showItems(page) {
+      var startIndex = (page - 1) * itemsPerPage;
+      var endIndex = startIndex + itemsPerPage;
+      $(".online_training .card").hide().slice(startIndex, endIndex).show();
+    }
+
+    // Generate pagination links
+    function generatePagination() {
+      var pagination = $("#pagination");
+      pagination.empty();
+
+      // Previous page link
+      if (currentPage > 1) {
+        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevron-left"></i></a></li>');
+      } else {
+        pagination.append('<li class="page-item disabled"><a class="page-link" href="#"><i class="fa-regular fa-chevron-left"></i></a></li>');
+      }
+
+      // Page links
+      for (var i = 1; i <= totalPages; i++) {
+        var activeClass = (i === currentPage) ? "active" : "";
+        pagination.append('<li class="page-item ' + activeClass + '"><a class="page-link" href="#">' + i + '</a></li>');
+      }
+
+      // Next page link
+      if (currentPage < totalPages) {
+        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevron-right"></i></a></li>');
+      } else {
+        pagination.append('<li class="page-item disabled"><a class="page-link" href="#"><i class="fa-regular fa-chevron-right"></i></a></li>');
+      }
+    }
+
+    // Handle page click event
+    $("#pagination").on("click", ".page-link", function(e) {
+      e.preventDefault();
+      var page = parseInt($(this).text());
+      showItems(page);
+      currentPage = page;
+      generatePagination();
+    });
+
+    // Initial page setup
+    showItems(currentPage);
+    generatePagination();
+  });
+</script>
