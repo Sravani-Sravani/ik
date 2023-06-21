@@ -46,7 +46,7 @@
 
     // Initial page setup
     var currentPage = 1;
-    showItems(currentPage);
     generatePagination();
+    showItems(currentPage);
   });
 </script>
