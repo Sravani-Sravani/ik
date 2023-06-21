@@ -45,12 +45,13 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
   $(document).ready(function() {
-    var itemsPerPage = 3; // Number of items to display per page
+    var itemsPerPage = 4; // Number of items to display per page
 
     // Show the items for the given page
     function showItems(page) {
       var startIndex = (page - 1) * itemsPerPage;
       var endIndex = startIndex + itemsPerPage;
+
       $(".online_training .card").hide().slice(startIndex, endIndex).show();
     }
 
@@ -63,7 +64,7 @@
 
       // Previous page link
       if (currentPage > 1) {
-        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevrons-left"></i></a></li>');
+        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevron-left"></i></a></li>');
       }
 
       // Page links
@@ -74,12 +75,12 @@
 
       // Next page link
       if (currentPage < totalPages) {
-        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevrons-right"></i></a></li>');
+        pagination.append('<li class="page-item"><a class="page-link" href="#"><i class="fa-regular fa-chevron-right"></i></a></li>');
       }
     }
 
-    // Handle page click event
-    $("#pagination").on("click", ".page-link", function(e) {
+    // Pagination link click event
+    $(document).on("click", "#pagination .page-link", function(e) {
       e.preventDefault();
       var page = parseInt($(this).text());
       showItems(page);
