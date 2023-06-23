@@ -1,6 +1,6 @@
 <%@page import="com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil"%>
 <%@page import="com.liferay.portal.kernel.dao.orm.DynamicQuery"%>
-<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>   
+<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ListUtil"%>
 <%@page import="javax.portlet.PortletURL"%>
 <%@page import ="com.liferay.portal.kernel.dao.orm.OrderFactoryUtil"%>
@@ -67,10 +67,28 @@ try {
 }
 
 int start = (currentPage - 1) * pageSize;
+
+List<InfraKnowledge> infraKnowledgeList = null;
+DynamicQuery dynamicQuery = InfraKnowledgeLocalServiceUtil.dynamicQuery();
+dynamicQuery.add(RestrictionsFactoryUtil.eq("type", type));
+dynamicQuery.add(RestrictionsFactoryUtil.eq("cateId", tab));
+dynamicQuery.addOrder(OrderFactoryUtil.asc("createDate"));
+
+try {
+    infraKnowledgeList = InfraKnowledgeLocalServiceUtil.dynamicQuery(dynamicQuery, start, pageSize);
+} catch (Exception e) {
+    e.printStackTrace();
+}
+
 %>
-<section class="top_innerBanner" style="margin-top: -60px !important;">
-    <div class="container top_bannerImg d-flex align-items-center flex-wrap">
-        <div class="me-auto"><h1>Transport &amp; Infrastructure</h1></div>
+<!-- HTML markup -->
+<section class="page-title">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Infra-Knowledge: <%=type%></h1>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -78,26 +96,15 @@ int start = (currentPage - 1) * pageSize;
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <%
-                List<InfraKnowledge> ikd = null;
-                DynamicQuery dq1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
-                dq1.add(RestrictionsFactoryUtil.eq("type", type));
-                dq1.add(RestrictionsFactoryUtil.eq("cateId", tab));
-                try {
-                    ikd = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq1, start, pageSize);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                if (ikd != null && !ikd.isEmpty()) {
-                    for (InfraKnowledge ik : ikd) {
-                        %>
+                <% if (ListUtil.isNotEmpty(infraKnowledgeList)) {
+                    for (InfraKnowledge infraKnowledge : infraKnowledgeList) { %>
                         <div class="row">
                             <!-- Resource cards loop -->
                             <div class="col-12">
                                 <div class="card mb-3">
                                     <div class="card-body">
-                                        <h5 class="card-title"><%= ik.getTitle() %></h5>
-                                        <p class="card-text"><%= ik.getDescription() %></p>
+                                        <h5 class="card-title"><%= infraKnowledge.getTitle() %></h5>
+                                        <p class="card-text"><%= infraKnowledge.getDescription() %></p>
                                     </div>
                                 </div>
                             </div>
@@ -115,7 +122,8 @@ int start = (currentPage - 1) * pageSize;
 
                 <div class="row">
                     <ul class="pagination justify-content-center mt-2">
-                        <% int totalPages = (int) Math.ceil(ikd.size() / (double) pageSize);
+                        <% int totalItems = InfraKnowledgeLocalServiceUtil.dynamicQueryCount(dynamicQuery);
+                        int totalPages = (int) Math.ceil(totalItems / (double) pageSize);
                         for (int i = 1; i <= totalPages; i++) { %>
                             <li class="page-item <%= currentPage == i ? "active" : "" %>">
                                 <a class="page-link" href="<%= currURL + "?page=" + i %>"><%= i %></a>
