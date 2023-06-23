@@ -1,1 +1,114 @@
+	<%
+	JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+	 Date todayDate1 = new Date();
+    todayDate1.setHours(0);
+    todayDate1.setMinutes(0);
+    todayDate1.setSeconds(0);
+    List<Events> eventLinksot1 = null;
+    DynamicQuery dqot = EventsLocalServiceUtil.dynamicQuery(); 
+    dqot.add(RestrictionsFactoryUtil.eq("eventtype", "Training"));
+    dqot.add(RestrictionsFactoryUtil.eq("trainingpartner", "Offline Training"));
+    eventLinksot1 = EventsLocalServiceUtil.dynamicQuery(dqot);
+    try {
+        eventLinksot1= EventsLocalServiceUtil.dynamicQuery(dqot, 0,
+                EventsLocalServiceUtil.getEventsesCount());
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    for(Events data:eventLinksot1) {
+       	JSONObject jsonOb = JSONFactoryUtil.createJSONObject();
+       	jsonOb.put("id", data.getEventId());
+       	String str = data.getTitle();
+       	 jsonOb.put("title",str);
+           jsonArray.put(jsonOb);
+           }
+	%>
+	<script src='<%=renderRequest.getContextPath()%>/js/index.global.js'></script>
+<script>
 
+ 
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+
+ 
+
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialDate: '2023-01-12',
+      initialView: 'timeGridWeek',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      },
+      height: 'auto',
+      navLinks: true, // can click day/week names to navigate views
+      editable: true,
+      selectable: true,
+      selectMirror: true,
+      nowIndicator: true,
+      events: [
+        {
+          title: "All Day Event",
+          start: '2023-01-01T12:30:00',
+          end: '2023-01-03T12:30:00',
+          url:'http://google.co.in'
+        },
+         {
+	          title: "New Event",
+	          start: '2023-01-04T12:30:00',
+	          end: '2023-01-06T12:30:00',
+	          url:'http://google.co.in'
+	        },
+	 {
+		          title: "Upcoming Event",
+		          start: '2023-01-09T12:30:00',
+		          end: '2023-01-12T12:30:00',
+		          url:'http://google.co.in'
+		        },
+		 {
+			          title: "All Day Event 1",
+			          start: '2023-01-01T12:30:00',
+			          end: '2023-01-03T12:30:00',
+			          url:'http://google.co.in'
+			        },
+			 {
+				          title: "All Day Event 2",
+				          start: '2023-01-01T12:30:00',
+				          end: '2023-01-03T12:30:00',
+				          url:'http://google.co.in'
+				        },
+      ]
+    });
+
+ 
+
+    calendar.render();
+  });
+
+ 
+
+</script>
+<style>
+
+ 
+
+  body {
+    margin: 40px 10px;
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+  }
+
+ 
+
+  #calendar {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+ 
+
+</style>
+
+<div id='calendar'></div>
