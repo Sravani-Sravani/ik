@@ -30,9 +30,11 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
-    var jsonArrayString= '<%=jsonArray.toString()%>'
-    var events= JSON.parse(jsonArrayString); 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
+   <%--  var jsonArrayString= '<%=jsonArray.toString()%>'
+    var events= JSON.parse(jsonArrayString);  --%>
+    var events1=<%=jsonArray.toString()%>;
+    console.log(events1);
+    var calendar = new FullCalendar.Calendar(calendarEl, {
       initialDate: '2023-01-12',
       initialView: 'timeGridWeek',
       headerToolbar: {
@@ -46,9 +48,10 @@
       selectable: true,
       selectMirror: true,
       nowIndicator: true,
-      events: events
+      events: events1
     });
     calendar.render();
+console.log(events1);
   });
 </script>
 <style>
