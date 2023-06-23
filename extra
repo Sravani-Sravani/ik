@@ -1,118 +1,135 @@
-<main class="main_innerlayout">
-	<section>
-	<div class="container resources_scroller">
-	<div class="main_heading"><h1>POLICIES AND GUIDELINES</h1></div>
-		<div class="accordion accordion-flush filterbar" id="accordionFlushExample">
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="flush-headingOne">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                          Filter
-                        </button>
-                      </h2>
-                      <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body">
-                        <div class="row">
-						<form class="row row-cols-lg-auto align-items-center"> 
-						<div class="col-auto">
-						  <label  class="form-label"><span class="text-danger">*</span> Select Subsector</label>
-							     <%String subcat="subCatId-"+tab;
-                                          String min="getMinistry2(this.value,"+tab+");";
-                                          long subcatid=0l;
-                                        %>
-                                        <aui:select  name="<%=subcat %>" label="" onChange="<%=min %>" value="<%=subcatid%>" class="form-select form-select-sm">
-                                         <aui:option selected="true" value="-1">All</aui:option>
-                                            <% String options = "";
-                                            DynamicQuery dynamicQuery1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
-                                            dynamicQuery1.add(RestrictionsFactoryUtil.eq("catId",tab));
-                                            List<InfraKnowledgeSubCategory> ikc = null;
-                                            try {
-                                                ikc = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dynamicQuery1, 0,
-                                                        InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
-                                            } catch (Exception e) {
-                                                e.getMessage();
-                                            }
-                                            for (InfraKnowledgeSubCategory c1 : ikc) {
-                                                options = c1.getSubCategoryName();
-                                                subcatid=c1.getSubcatId();
-                                            %>
-                                            <option value="<%=subcatid%>"><%=options %></option>
-                                            <% } %>
-                                        </aui:select>
-						  </div>
-						   <div class="col-auto">
-                                        <label class="form-label"><span class="text-danger">*</span>Select Ministry</label>
-                                        <%String ministryname="ministry-"+tab; %>
-                                        <aui:select name="<%=ministryname %>" label="" class="form-select form-select-sm">
-                                        <aui:option selected="true" value="-1">All</aui:option>
-                                        </aui:select>
-                                    </div>
-							  </form>		  
-						  </div>							
-                        </div>
-                      </div>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Policies and Guidelines</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    /* Add your custom styles here */
+  </style>
+</head>
+<body>
+  <main class="main_innerlayout">
+    <section>
+      <div class="container resources_scroller">
+        <div class="main_heading">
+          <h1>POLICIES AND GUIDELINES</h1>
+        </div>
+        <div class="accordion accordion-flush filterbar" id="accordionFlushExample">
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-headingOne">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                Filter
+              </button>
+            </h2>
+            <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+              <div class="accordion-body">
+                <div class="row">
+                  <form class="row row-cols-lg-auto align-items-center">
+                    <div class="col-auto">
+                      <label class="form-label"><span class="text-danger">*</span> Select Subsector</label>
+                      <!-- Add your select input code here -->
                     </div>
-                  </div>
-		<div class="row">
-		<%
-                                                String title = "";
-                                                String fileUrl = "";
-                                                String fileUrl1 = "";
-                                                DynamicQuery dq1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
-                                                dq1.add(RestrictionsFactoryUtil.eq("type", type));
-                                                dq1.add(RestrictionsFactoryUtil.eq("cateId", tab));
-                                                List<InfraKnowledge> ikd = null;
-                                                try {
-                                                    ikd = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq1, 0,
-                                                            InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
-                                                } catch (Exception e) {
-                                                    e.getMessage();
-                                                }
-                                                System.out.println(tab+"Size:-----"+ikd.size());
-                                                for (InfraKnowledge newik : ikd) {
-                                                    try {
-                                                        title = newik.getHeadingText();
-                                                    } catch (Exception e) {
-                                                    }
-                                                    long fileEntryId = newik.getThumbnailfileEntryId();
-                                                    if (fileEntryId != 0L) {
-                                                        try {
-                                                            fileUrl = InfraKnowledgePortlet.getFile(fileEntryId, themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                        }
-                                                    }
-                                                    long fileEntryId1 = newik.getFileEntryId();
-                                                    if (fileEntryId1 != 0L) {
-                                                        try {
-                                                            fileUrl1 = InfraKnowledgePortlet.getFile(fileEntryId1, themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                        }
-                                                    }
-                                                %>
-		<div class="col-lg-4 col-sm-12 p-2">	
-			<div class="card h-100 yellow_gradient">
-			<img src="<%=fileUrl %>" class="card-img-top" alt="...">
-			<div class="card-body">
-			  <p class="card-title"><%=title %></p>
-			<p class="card-link"><a href="<%=fileUrl1%>?download=true">Download</a></p></div>
-		  </div><!--card-->
-		</div>
-		 <% } %>
-	</div>
-		
-	<div class="row">
-			<ul class="pagination justify-content-center mt-2">
-				<li class="page-item">
-				  <a class="page-link" href="#" tabindex="-1"><i class="fa-regular fa-chevrons-left"></i></a>
-				</li>
-				<li class="page-item"><a class="page-link" href="#">1</a></li>
-				<li class="page-item"><a class="page-link" href="#">2</a></li>
-				<li class="page-item"><a class="page-link" href="#">3</a></li>
-				<li class="page-item">
-				  <a class="page-link" href="#"><i class="fa-regular fa-chevrons-right"></i></a>
-				</li>
-			  </ul>
-	</div>	
-  </div>
-</section>
-	
-</main>
+                    <div class="col-auto">
+                      <label class="form-label"><span class="text-danger">*</span>Select Ministry</label>
+                      <!-- Add your select input code here -->
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div id="itemContainer">
+            <!-- Existing item cards code here -->
+          </div>
+        </div>
+        <div class="row">
+          <ul class="pagination justify-content-center mt-2" id="pagination">
+            <!-- Pagination links will be added dynamically here -->
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    $(document).ready(function() {
+      var itemsPerPage = 9; // Number of items per page
+      var items = $("#itemContainer .col-lg-4.col-sm-12.p-2"); // Get all item cards
+      var numItems = items.length; // Total number of items
+      var numPages = Math.ceil(numItems / itemsPerPage); // Calculate the number of pages
+      var currentPage = 1; // Current active page
+
+      // Display the first page and hide the rest
+      items.slice(itemsPerPage).hide();
+
+      // Generate pagination links
+      var pagination = $("#pagination");
+      for (var i = 1; i <= numPages; i++) {
+        pagination.append('<li class="page-item"><a href="#" class="page-link">' + i + '</a></li>');
+      }
+
+      // Add active class to the first page link
+      pagination.find("a:first").addClass("active");
+
+      // Handle click event on pagination links
+      pagination.on("click", "a", function(e) {
+        e.preventDefault();
+        var page = parseInt($(this).text()); // Get the clicked page number
+        if (page === currentPage) return; // Ignore if the clicked page is the current active page
+
+        var start = (page - 1) * itemsPerPage;
+        var end = start + itemsPerPage;
+
+        // Show/hide the items based on the active page
+        items.hide().slice(start, end).show();
+
+        // Update active class for pagination links
+        pagination.find("a").removeClass("active");
+        $(this).addClass("active");
+
+        currentPage = page; // Update the current page
+      });
+
+      // Handle click event on previous button
+      pagination.on("click", ".previous", function(e) {
+        e.preventDefault();
+        if (currentPage === 1) return; // Ignore if the current page is already the first page
+
+        var page = currentPage - 1;
+        var start = (page - 1) * itemsPerPage;
+        var end = start + itemsPerPage;
+
+        // Show/hide the items based on the active page
+        items.hide().slice(start, end).show();
+
+        // Update active class for pagination links
+        pagination.find("a").removeClass("active");
+        pagination.find("a").eq(page - 1).addClass("active");
+
+        currentPage = page; // Update the current page
+      });
+
+      // Handle click event on next button
+      pagination.on("click", ".next", function(e) {
+        e.preventDefault();
+        if (currentPage === numPages) return; // Ignore if the current page is already the last page
+
+        var page = currentPage + 1;
+        var start = (page - 1) * itemsPerPage;
+        var end = start + itemsPerPage;
+
+        // Show/hide the items based on the active page
+        items.hide().slice(start, end).show();
+
+        // Update active class for pagination links
+        pagination.find("a").removeClass("active");
+        pagination.find("a").eq(page - 1).addClass("active");
+
+        currentPage = page; // Update the current page
+      });
+    });
+  </script>
+</body>
+</html>
