@@ -20,9 +20,11 @@
  <%@page import="com.kpmg.citizenTables.service.constants.CustomTablePortletKeys"%>
  <%@page import="com.liferay.portal.kernel.util.PortalUtil;import javax.*"%>
   <portlet:resourceURL var="getMinistryOption1"></portlet:resourceURL>
+    <portlet:resourceURL var="getMinistryOption2"></portlet:resourceURL>
  <%
  String currURL="";
  String type="";
+ String stitle="";
  long tab=0l;
  try{
      currURL = PortalUtil.getCurrentURL(request); 
@@ -57,14 +59,22 @@
  	 }
  	 catch(Exception e){ }
  if(type.equals("PAG"))
+ {
 	 type="CENTRAL POLICIES";
+	 stitle="POLICIES AND GUIDELINES";
+ }  
  if(type.equals("IFS"))
+ {
  type="PPP DOCUMENT REPOSITORY";
+ stitle="IFS Document Repository";
+ }
  System.out.println(type);
+ InfraKnowledgeCategory infraknowledge=null;
+ infraknowledge= InfraKnowledgeCategoryLocalServiceUtil.fetchInfraKnowledgeCategory(tab);
  %>
 <section class="top_innerBanner" style="margin-top: -60px !important;">
 <div class="container top_bannerImg d-flex align-items-center flex-wrap">
-			<div class="me-auto"><h1>Transport &amp; Logistics</h1></div>
+			<div class="me-auto"><h1><%=infraknowledge.getCategoryName() %></h1></div>
 			<nav style="--bs-breadcrumb-divider: '>';">
 			  <ol class="breadcrumb">
 				<li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -75,9 +85,155 @@
 </section> <!--Top Inner Banner-->
 
 <main class="main_innerlayout">
+<%if(tab==1){ %>
+<section>
+	<div class="container resources_scroller">
+	<div class="main_heading"><h1><%=stitle %></h1></div>
+		<div class="accordion accordion-flush filterbar" id="accordionFlushExample">
+                    <div class="accordion-item">
+                      <h2 class="accordion-header" id="flush-headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                          Filter
+                        </button>
+                      </h2>
+                      <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                        <div class="row">
+						<form class="row row-cols-lg-auto align-items-center">
+						<div class="col-auto">
+						  <label  class="form-label"><span class="text-danger">*</span> Select Sector</label>
+							 
+                                          <% 
+                                          String min1="getMinistryall(this.value,"+tab+",'sector');";
+                                          long catid=0l;
+                                        %>
+                                        <aui:select  name="" label="" onChange="<%=min1 %>" value="<%=catid%>" class="form-select form-select-sm">
+                                         <aui:option selected="true" value="-1">All</aui:option>
+                                            <% String options = "";
+                                            DynamicQuery dynamicQuery1 = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery();
+                                          //  dynamicQuery1.add(RestrictionsFactoryUtil.eq("catId",tab));
+                                            List<InfraKnowledgeCategory> ikc = null;
+                                            try {
+                                                ikc = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery(dynamicQuery1, 0,
+                                                        InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
+                                            } catch (Exception e) {
+                                                e.getMessage();
+                                            }
+                                            for (InfraKnowledgeCategory c1 : ikc) {
+                                                options = c1.getCategoryName();
+                                                catid=c1.getCatId();
+                                            %>
+                                            <option value="<%=catid%>"><%=options %></option>
+                                            <% } %>
+                                        </aui:select>
+						  </div> 
+						<div class="col-auto">
+						  <label  class="form-label"><span class="text-danger">*</span> Select Subsector</label>
+							 
+                                          <% String subcat="subCatId-"+tab;
+                                          String min="getMinistryall(this.value,"+tab+",'Subsector');";
+                                          long subcatid=0l;
+                                        %>
+                                        <aui:select  name="<%=subcat %>" label="" onChange="<%=min %>" value="<%=subcatid%>" class="form-select form-select-sm">
+                                         <aui:option selected="true" value="-1">All</aui:option>
+                                            <% String options = "";
+                                            DynamicQuery dynamicQuery1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
+                                          //  dynamicQuery1.add(RestrictionsFactoryUtil.eq("catId",tab));
+                                            List<InfraKnowledgeSubCategory> ikc = null;
+                                            try {
+                                                ikc = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dynamicQuery1, 0,
+                                                        InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
+                                            } catch (Exception e) {
+                                                e.getMessage();
+                                            }
+                                            for (InfraKnowledgeSubCategory c1 : ikc) {
+                                                options = c1.getSubCategoryName();
+                                                subcatid=c1.getSubcatId();
+                                            %>
+                                            <option value="<%=subcatid%>"><%=options %></option>
+                                            <% } %>
+                                        </aui:select>
+						  </div>
+						   <div class="col-auto">
+                                        <label class="form-label"><span class="text-danger">*</span>Select Ministry</label>
+                                        <%String ministryname="ministry-"+tab;
+                                        String method="getMinistryall(this.value,"+tab+",'Ministry');";
+                                        
+                                        %>
+                                        <aui:select name="<%=ministryname %>" label="" onChange="<%=method %>" class="form-select form-select-sm">
+                                        <aui:option selected="true" value="-1">All</aui:option>
+                                        </aui:select>
+                                    </div>
+							  </form>		  
+						  </div>							
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <%
+                  String idname="";
+                  if(type.equals("CENTRAL POLICIES"))
+                	  idname="policiesAndGuidelines-"+tab;
+                  if(type.equals("PPP DOCUMENT REPOSITORY"))
+                	  idname="IFSDocuments-"+tab; 
+                  System.out.println("ID Name:"+idname);
+                  %>
+		<div class="row card-container" id="<%=idname%>">
+		<%
+                                                String title = "";
+                                                String fileUrl = "";
+                                                String fileUrl1 = "";
+                                                DynamicQuery dq1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
+                                                dq1.add(RestrictionsFactoryUtil.eq("type", type));
+                                               // dq1.add(RestrictionsFactoryUtil.eq("cateId", tab));
+                                                List<InfraKnowledge> ikd = null;
+                                                try {
+                                                    ikd = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq1, 0,
+                                                            InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
+                                                } catch (Exception e) {
+                                                    e.getMessage();
+                                                }
+                                                System.out.println(tab+"Size:-----"+ikd.size());
+                                                for (InfraKnowledge newik : ikd) {
+                                                    try {
+                                                        title = newik.getHeadingText();
+                                                    } catch (Exception e) {
+                                                    }
+                                                    long fileEntryId = newik.getThumbnailfileEntryId();
+                                                    if (fileEntryId != 0L) {
+                                                        try {
+                                                            fileUrl = InfraKnowledgePortlet.getFile(fileEntryId, themeDisplay.getScopeGroupId());
+                                                        } catch (Exception e) {
+                                                        }
+                                                    }
+                                                    long fileEntryId1 = newik.getFileEntryId();
+                                                    if (fileEntryId1 != 0L) {
+                                                        try {
+                                                            fileUrl1 = InfraKnowledgePortlet.getFile(fileEntryId1, themeDisplay.getScopeGroupId());
+                                                        } catch (Exception e) {
+                                                        }
+                                                    }
+                                                %>
+		<div class="col-lg-4 col-sm-12 p-2" id="itemContainer">	
+			<div class="card h-100 yellow_gradient">
+			<img src="<%=fileUrl %>" class="card-img-top" alt="...">
+			<div class="card-body">
+			  <p class="card-title"><%=title %></p>
+			<p class="card-link"><a href="<%=fileUrl1%>?download=true">Download</a></p></div>
+		  </div><!--card-->
+		</div>
+		 <% } %>
+	</div>
+	<div class="row">
+			<ul id="pagination" class="pagination justify-content-center mt-2">
+			  </ul>
+	</div>	
+  </div>
+</section>
+<%}else{ %>
 	<section>
 	<div class="container resources_scroller">
-	<div class="main_heading"><h1>POLICIES AND GUIDELINES</h1></div>
+	<div class="main_heading"><h1><%=stitle %></h1></div>
 		<div class="accordion accordion-flush filterbar" id="accordionFlushExample">
                     <div class="accordion-item">
                       <h2 class="accordion-header" id="flush-headingOne">
@@ -91,8 +247,9 @@
 						<form class="row row-cols-lg-auto align-items-center"> 
 						<div class="col-auto">
 						  <label  class="form-label"><span class="text-danger">*</span> Select Subsector</label>
-							     <%String subcat="subCatId-"+tab;
-                                          String min="getMinistry2(this.value,"+tab+");";
+							 
+                                          <% String subcat="subCatId-"+tab;
+                                          String min="getMinistry1(this.value,"+tab+",'Subsector');";
                                           long subcatid=0l;
                                         %>
                                         <aui:select  name="<%=subcat %>" label="" onChange="<%=min %>" value="<%=subcatid%>" class="form-select form-select-sm">
@@ -117,8 +274,11 @@
 						  </div>
 						   <div class="col-auto">
                                         <label class="form-label"><span class="text-danger">*</span>Select Ministry</label>
-                                        <%String ministryname="ministry-"+tab; %>
-                                        <aui:select name="<%=ministryname %>" label="" class="form-select form-select-sm">
+                                        <%String ministryname="ministry-"+tab;
+                                        String method="getMinistry1(this.value,"+tab+",'Ministry');";
+                                        
+                                        %>
+                                        <aui:select name="<%=ministryname %>" label="" onChange="<%=method %>" class="form-select form-select-sm">
                                         <aui:option selected="true" value="-1">All</aui:option>
                                         </aui:select>
                                     </div>
@@ -128,7 +288,15 @@
                       </div>
                     </div>
                   </div>
-		<div class="row">
+                  <%
+                  String idname="";
+                  if(type.equals("CENTRAL POLICIES"))
+                	  idname="policiesAndGuidelines-"+tab;
+                  if(type.equals("PPP DOCUMENT REPOSITORY"))
+                	  idname="IFSDocuments-"+tab; 
+                  System.out.println("ID Name:"+idname);
+                  %>
+		<div class="row card-container" id="<%=idname%>">
 		<%
                                                 String title = "";
                                                 String fileUrl = "";
@@ -174,98 +342,248 @@
 		</div>
 		 <% } %>
 	</div>
-		
 	<div class="row">
-			<ul id="pagination" class="pagination justify-content-end">
+			<ul id="pagination" class="pagination justify-content-center mt-2">
 			  </ul>
 	</div>	
   </div>
 </section>
-	
+	<%} %>
 </main>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script>
-    $(document).ready(function() {
-      var initialItemsPerPage = 5; // Number of items to display on the first page
-      var remainingItemsPerPage = 4; // Number of items to display on the remaining pages
   
-      // Show the items for the given page
-      function showItems(page) {
-        var itemsPerPage = (page === 1) ? initialItemsPerPage : remainingItemsPerPage;
-        var startIndex = (page - 1) * itemsPerPage;
-        var endIndex = startIndex + itemsPerPage;
-  
-        // Hide all items
-        $(".row .col-lg-4 col-sm-12 p-2").hide();
-  
-        // Show items for the current page
-        $(".row .col-lg-4 col-sm-12 p-2").slice(startIndex, endIndex).show();
+<script>
+$(document).ready(function() {
+    var initialItemsPerPage = 9; // Number of items to display on the first page
+    var remainingItemsPerPage = 9; // Number of items to display on the remaining pages
+
+    // Show the items for the given page
+    function showItems(page) {
+      var itemsPerPage = (page === 1) ? initialItemsPerPage : remainingItemsPerPage;
+      var startIndex = (page - 1) * itemsPerPage;
+      var endIndex = startIndex + itemsPerPage;
+
+      // Hide all items
+      $(".card-container .col-lg-4.col-sm-12.p-2").hide();
+
+      // Show items for the current page
+      $(".card-container .col-lg-4.col-sm-12.p-2").slice(startIndex, endIndex).show();
+    }
+
+    // Generate pagination links
+    function generatePagination() {
+      var totalItems = $(".card-container .col-lg-4.col-sm-12.p-2").length; // Total number of items
+      var totalPages = Math.ceil(totalItems / remainingItemsPerPage); // Calculate total number of pages
+      var pagination = $("#pagination");
+      pagination.empty();
+
+      // Previous page link
+      if (currentPage > 1) {
+        pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage - 1) + '"><i class="fa-regular fa-chevrons-left"></i></a></li>');
       }
-  
-      // Generate pagination links
-      function generatePagination() {
-        var totalItems = $(".row .col-lg-4 col-sm-12 p-2").length; // Total number of items
-        var totalPages = Math.ceil(totalItems / remainingItemsPerPage); // Calculate total number of pages
-        var pagination = $("#pagination");
-        pagination.empty();
-  
-        // Previous page link
-        if (currentPage > 1) {
-          pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage - 1) + '"><i class="fa-regular fa-chevrons-left"></i></a></li>');
-        }
-  
-        // Page links
-        for (var i = 1; i <= totalPages; i++) {
-          var activeClass = (i === currentPage) ? "active" : "";
-          pagination.append('<li class="page-item ' + activeClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
-        }
-  
-        // Next page link
-        if (currentPage < totalPages) {
-          pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage + 1) + '"><i class="fa-regular fa-chevrons-right"></i></a></li>');
-        }
+      else
+	  {
+	  pagination.append('<li class="page-item disabled"><a class="page-link" href="#"><i class="fa-regular fa-chevrons-left"></i></a></li>');
+	  }
+      // Page links
+      for (var i = 1; i <= totalPages; i++) {
+        var activeClass = (i === currentPage) ? "active" : "";
+        pagination.append('<li class="page-item ' + activeClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
       }
-  
-      // Handle page click event
-      $("#pagination").on("click", ".page-link", function(e) {
-        e.preventDefault();
-        var page = parseInt($(this).data("page"));
-        currentPage = page;
-        showItems(currentPage);
-        generatePagination();
-      });
-  
-      // Initial page setup
-      var currentPage = 1;
+
+      // Next page link
+      if (currentPage < totalPages) {
+        pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage + 1) + '"><i class="fa-regular fa-chevrons-right"></i></a></li>');
+      }
+      else
+    	  {
+    	  pagination.append('<li class="page-item disabled"><a class="page-link" href="#"><i class="fa-regular fa-chevrons-right"></i></a></li>');
+    	  }
+    }
+
+    // Handle page click event
+    $("#pagination").on("click", ".page-link", function(e) {
+      e.preventDefault();
+      var page = parseInt($(this).data("page"));
+      currentPage = page;
       showItems(currentPage);
       generatePagination();
     });
-  </script>
-  
-<script>
-function getMinistry2(subcategoryId,cid){alert(subcategoryId);
+
+    // Initial page setup
+    var currentPage = 1;
+    showItems(currentPage);
+    generatePagination();
+  });
+
+function getMinistry1(reordId,cid,seletion){
+	//alert(subcategoryId);
+	var subcategoryId="";
+	var ministryId="";
+	if(seletion=="Subsector"){
+		subcategoryId=reordId;
+	}
+	else{
+		subcategoryId=$("#<portlet:namespace />subCatId-"+cid).val();
+		ministryId=reordId;
+	}
+	
+	
 AUI().use('aui-base','aui-io-request-deprecated', 'aui-node', function(A){
  A.io.request('<%=getMinistryOption1.toString() %>',{
  dataType : 'json',
  method : 'POST',
  data : {
-
 <portlet:namespace />subcategoryId :subcategoryId,
-	<portlet:namespace />cmd:'getministries1'
+<portlet:namespace />ministryId :ministryId,
+<portlet:namespace />cid :cid,
+<portlet:namespace />scopeGroupId :"<%=themeDisplay.getScopeGroupId()%>",
+	<portlet:namespace />cmd:'getministries2'
  },
  on : {
  success : function() {
-
 	                       var data=this.get('responseData');
-                           // console.log(data);
-                            var textElement="";
-                            textElement= textElement+"<option value=''>All</option>";
+                            console.log(data); 
+                            var length=data['centralPoliciesData'].length;
+                            var ifslength=data['ifsDocumentData'].length;
+                            console.log(length);
+                            console.log(ifslength);
+                            
+if(seletion=="Subsector"){
+                            var textElement="";
+                            textElement="<option value=''>All</option>"; 
                             $('#<portlet:namespace />ministry-'+cid).html("");
-                            jQuery.each(data, function(i, val) {
+                            jQuery.each(data['ministryData'], function(i, val) {
                             textElement=textElement+"<option value='" + val.id + "'>"+ val.name + "</option>";
                            });
                             $('#<portlet:namespace />ministry-'+cid).append(textElement);
-                            }  
+}
+
+ 	         $('#policiesAndGuidelines-'+cid).html("");
+	         var j=0;
+	         var centralPoliciesText="";
+			jQuery.each(data['centralPoliciesData'], function(i, val) { 
+				j++;
+				    centralPoliciesText=centralPoliciesText+"<div class='col-lg-4 col-sm-12 p-2' id='itemContainer'><div class='card h-100 yellow_gradient'><img src='"+val.fileUrl2+"' class='card-img-top' alt='...'><div class='card-body'><p class='card-title'>"+val.title1+"</p><p class='card-link'><a href='"+val.fileUrl3+"?download=true'>Download</a></p></div></div></div>";
+			
+					});
+			
+			if(j==0)
+			 $('#policiesAndGuidelines-'+cid).append("<p style='text-align: center;'>No Record Found.</p>");
+			else{ 
+				var centralPolicies="";
+			
+				centralPolicies="<div class='row card-container'>"+centralPoliciesText+"</div>";
+			 
+			  $('#policiesAndGuidelines-'+cid).append(centralPolicies);
+			
+			
+			}
+ $('#IFSDocuments-'+cid).html("");
+  var IFSDocsText="";
+jQuery.each(data['ifsDocumentData'], function(i, val) { 
+ 
+
+	    IFSDocsText=IFSDocsText+"<div class='col-lg-4 col-sm-12 p-2' id='temContainer'><div class='card h-100 yellow_gradient'><img src='"+val.fileUrl2+"' class='card-img-top' alt='...'><div class='card-body'><p class='card-title'>"+val.title1+"</p><p class='card-link'><a href='"+val.fileUrl3+"?download=true'>Download</a></p></div></div></div>";
+
+		});
+
+if(ifslength==0)
+ $('#IFSDocuments-'+cid).append("<p style='text-align: center;'>No Record Found.</p>");
+else{ 
+	var ifsPolicies="";
+
+	ifsPolicies="<div class='row card-container'>"+IFSDocsText+"</div>";
+  $('#IFSDocuments-'+cid).append(ifsPolicies);
+}
+                              }  
+ }
+ });
+ });
+ //$("select").select2();
+}
+
+function getMinistryall(reordId,cid,seletion){
+	//alert(subcategoryId);
+	var subcategoryId="";
+	var ministryId="";
+	if(seletion=="Subsector"){
+		subcategoryId=reordId;
+	}
+	else{
+		subcategoryId=$("#<portlet:namespace />subCatId-"+cid).val();
+		ministryId=reordId;
+	}
+	
+	
+AUI().use('aui-base','aui-io-request-deprecated', 'aui-node', function(A){
+ A.io.request('<%=getMinistryOption2.toString() %>',{
+ dataType : 'json',
+ method : 'POST',
+ data : {
+<portlet:namespace />subcategoryId :subcategoryId,
+<portlet:namespace />ministryId :ministryId,
+<portlet:namespace />cid :cid,
+<portlet:namespace />scopeGroupId :"<%=themeDisplay.getScopeGroupId()%>",
+	<portlet:namespace />cmd:'getministriesall'
+ },
+ on : {
+ success : function() {
+	                       var data=this.get('responseData');
+                            console.log(data); 
+                            var length=data['centralPoliciesData'].length;
+                            var ifslength=data['ifsDocumentData'].length;
+                            console.log(length);
+                            console.log(ifslength);
+                            
+if(seletion=="Subsector"){
+                            var textElement="";
+                            textElement="<option value=''>All</option>"; 
+                            $('#<portlet:namespace />ministry-'+cid).html("");
+                            jQuery.each(data['ministryData'], function(i, val) {
+                            textElement=textElement+"<option value='" + val.id + "'>"+ val.name + "</option>";
+                           });
+                            $('#<portlet:namespace />ministry-'+cid).append(textElement);
+}
+
+ 	         $('#policiesAndGuidelines-'+cid).html("");
+	         var j=0;
+	         var centralPoliciesText="";
+			jQuery.each(data['centralPoliciesData'], function(i, val) { 
+				j++;
+				    centralPoliciesText=centralPoliciesText+"<div class='col-lg-4 col-sm-12 p-2' id='itemContainer'><div class='card h-100 yellow_gradient'><img src='"+val.fileUrl2+"' class='card-img-top' alt='...'><div class='card-body'><p class='card-title'>"+val.title1+"</p><p class='card-link'><a href='"+val.fileUrl3+"?download=true'>Download</a></p></div></div></div>";
+			
+					});
+			
+			if(j==0)
+			 $('#policiesAndGuidelines-'+cid).append("<p style='text-align: center;'>No Record Found.</p>");
+			else{ 
+				var centralPolicies="";
+			
+				centralPolicies="<div class='row card-container'>"+centralPoliciesText+"</div>";
+			 
+			  $('#policiesAndGuidelines-'+cid).append(centralPolicies);
+			
+			
+			}
+ $('#IFSDocuments-'+cid).html("");
+  var IFSDocsText="";
+jQuery.each(data['ifsDocumentData'], function(i, val) { 
+ 
+
+	    IFSDocsText=IFSDocsText+"<div class='col-lg-4 col-sm-12 p-2' id='temContainer'><div class='card h-100 yellow_gradient'><img src='"+val.fileUrl2+"' class='card-img-top' alt='...'><div class='card-body'><p class='card-title'>"+val.title1+"</p><p class='card-link'><a href='"+val.fileUrl3+"?download=true'>Download</a></p></div></div></div>";
+
+		});
+
+if(ifslength==0)
+ $('#IFSDocuments-'+cid).append("<p style='text-align: center;'>No Record Found.</p>");
+else{ 
+	var ifsPolicies="";
+
+	ifsPolicies="<div class='row card-container'>"+IFSDocsText+"</div>";
+  $('#IFSDocuments-'+cid).append(ifsPolicies);
+}
+                              }  
  }
  });
  });
