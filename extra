@@ -1,566 +1,359 @@
-<%@page import="com.kpmg.events.portlet.EventsPortlet"%>
-<%@page import="com.kpmg.citizenTables.service.EventsLocalServiceUtil"%>
-<%@page import="java.text.SimpleDateFormat"%>
-<%@page import="com.kpmg.citizenTables.model.Events"%>
-<%@page import="com.kpmg.citizenTables.model.GalleryDocuments"%>
-<%@page import="com.kpmg.citizenTables.service.GalleryDocumentsLocalServiceUtil"%>
-<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
-<%@page import="com.kpmg.events.constants.EventsPortletKeys"%>
-<%@page import="java.util.List"%>
-<%@page import="com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil"%>
-<%@page import="com.liferay.portal.kernel.dao.orm.OrderFactoryUtil"%>
-<%@page import="com.liferay.portal.kernel.dao.orm.DynamicQuery"%>
-
-
-<%@ include file="/init.jsp" %>
-<%@page import="com.liferay.portal.kernel.util.UnicodeFormatter"%>
-  <style>
-/*****************************Events In JhansiForm CSS Start**************************************/
-
-.tenderspage-main .tendersdata-table h1, .tenderspage-main h1.tendertext-main {
-  color: #001A46;
-  text-align: center;
-  margin-bottom: 30px;
-}
-.tenderspage-main .tendersdata-table h1 span, .tenderspage-main h1.tendertext-main span {
-  border-bottom: 10px solid #FF6F0C;
-} 
-
-
-/*.tenderspage-main .tender-form {
-  width: 500px;
-  margin: 0px auto;
-}*/
-
-.tenderspage-main .tender-form  .btn-submit{
-  background-color: #83C127;
-  color: #fff;
-  padding: 10px 20px;
-  border-radius: 8px;
-  width: 32%;
-}
-
-.tenderspage-main .tender-form .form-group label {
-    color: #04537A;
-    font-weight: bold;
-}
-.btn-complaint {
-  border: 1px solid #707070;
-  text-align: left;
-}
-
-/*****************************Events In JhansiForm CSS End**************************************/
-  </style>
-  <portlet:defineObjects />
-<portlet:actionURL var="eventCreateURL" name="manageEvents">
- </portlet:actionURL>
- 
- 
- 
- <%
-    long eventId = ParamUtil.getLong(request, "eventId");
-    System.out.println("eventId >>>"+eventId );
-    Events events=null;
-    String description="";
-    String title="";
-    String hi_description="";
-    String hi_title="";
-    String startDate="";
-    String endDate="";
-    String startTime="";
-    String eventtype="";
-    String endTime="";
-    long fileEntryId=0L;
-    String fileUrl="";
-    String location="";
-    String venue="";
-    String trainingpname="";
-    String trainingtype="";
-    String email="";
-    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
-    if(eventId!=0){
-    	try{
-    		events=EventsLocalServiceUtil.fetchEvents(eventId);
-    		 if(events!=null){
-    			 description=events.getDescription();
-    			 title=events.getTitle();
-    			 hi_title=events.getHi_title();
-    			 hi_description=events.getHi_description();
-    			 startTime=events.getStartTime();
-    			 eventtype=events.getEventtype();
-    			  fileEntryId=events.getFileEntryId();
-    			 endTime=events.getEndTime();
-    			 location=events.getLocation();
-    			 venue=events.getVenue();
-    			 trainingpname=events.getTrainingname();
-    			 trainingtype=events.getTrainingpartner();
-    			 email=events.getEmail();
-    			 if(fileEntryId!=0L){
-						try{
-							fileUrl =EventsPortlet.getFile(fileEntryId, themeDisplay.getScopeGroupId());	  
-						}
-						catch(Exception e){
-							
-						}
-		      	  }
-    			 if(events.getStartDate()!=null){
-    				 startDate = dateformat.format(events.getStartDate());
-    			 }
-    			 if(events.getEndDate()!=null){
-    				 endDate = dateformat.format(events.getEndDate());
-    			 }
-    			 fileEntryId=events.getFileEntryId();
-    		 }
-    	}
-    	catch(Exception e){
-    		
-    	}
-    }
-    %>
-  
-  
-  <div class="jhansiall-pages">
-  <div class="tenderspage-main">
-    <div class="container">
-    
-    <liferay-ui:error key="title.errorMsg.missing" message="title.errorMsg.missing" />
- <liferay-ui:error key="hi_title.errorMsg.missing" message="hi_title.errorMsg.missing"/>
- <liferay-ui:error key="description.errorMsg.missing" message="description.errorMsg.missing"/>
- <liferay-ui:error key="hi_description.errorMsg.missing" message="hi_description.errorMsg.missing"/>
- <liferay-ui:error key="startDate.errorMsg.missing" message="startDate.errorMsg.missing"/>
-<liferay-ui:error key="startTime.errorMsg.missing" message="startTime.errorMsg.missing"/>
-<liferay-ui:error key="endDate.errorMsg.missing" message="endDate.errorMsg.missing"/>
-<liferay-ui:error key="endTime.errorMsg.missing" message="endTime.errorMsg.missing"/>
-<liferay-ui:error key="document.errorMsg.missing" message="document.errorMsg.missing"/>
-<liferay-ui:error key="document.errorMsg.sizeIssue" message="document.errorMsg.sizeIssue"/>
-<liferay-ui:error key="endDate.errorMsg.notlessThan" message="endDate.errorMsg.notlessThan"/>
-    
-          <div class="col-md-12">
-                <h1 class="tendertext-main"><span><% if(eventId==0){ %>Create<% }else{ %>Update<% } %> Event</span></h1>
-          </div>
-
-      <div class="tender-form">
-        <aui:form  action="<%=eventCreateURL%>" method="post" name="fm">
-	       <aui:input type="hidden" label="" name="eventId" value="<%=eventId %>"></aui:input>
-	       <div class="row">
-	       <div class="col-md-4">
-	       <div class="form-group"> 
-	           <aui:input type="text" label="Event Name" onkeypress="return ((event.charCode > 64 && 
-event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode > 43 && event.charCode < 58) || event.charCode == 0 || event.charCode == 32)"  name="title" value="<%=title %>" cssClass="form-control">
-	           <aui:validator name="required"></aui:validator>
-	          <aui:validator name="custom" errorMessage="Please remove special characters.">
-			 	function (val, fieldNode, ruleValue) {
-			     	var returnValue = true;
-			  		var iChars = "{}'\":;=<>$";
-			           for (var i = 0; i < val.length; i++) {
-			                if (iChars.indexOf(val.charAt(i)) != -1) {    
-			                 returnValue = false;
-			                }
-			            }
-			            if(val.includes("&lt;") || val.includes("&gt;") || val.includes("&apos;") || val.includes("&quot;") ||val.includes("&QUOT;") ||val.includes("&equals;")){
-			               returnValue = false;
-			            }
-			   		return returnValue;
-			    }
-			 </aui:validator>
-	          </aui:input>
-	        </div>
-	        
-	        <!-- Description -->
-	         <div class="col-md-12">
-	        <div class="form-group"> 
-             <label>Description</label>
-	         <liferay-ui:input-editor name="description"  initMethod="initEditor" width="50" height="20" resizable="true">
-             </liferay-ui:input-editor>   
-        </div>
-        </div>
-	          <%-- <div class="form-group">
-	          <aui:input type="textarea" onkeypress="return ((event.charCode > 64 && 
-event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode > 43 && event.charCode < 58) || event.charCode == 0 || event.charCode == 32)" value="<%=description %>" name="description" label="Description"  rows="4" cssClass="form-control">
-	         	          <aui:validator name="custom" errorMessage="Please remove special characters.">
-			 	function (val, fieldNode, ruleValue) {
-			     	var returnValue = true;
-			  		var iChars = "{}'\":;=<>$";
-			           for (var i = 0; i < val.length; i++) {
-			                if (iChars.indexOf(val.charAt(i)) != -1) {    
-			                 returnValue = false;
-			                }
-			            }
-			            if(val.includes("&lt;") || val.includes("&gt;") || val.includes("&apos;") || val.includes("&quot;") ||val.includes("&QUOT;") ||val.includes("&equals;")){
-			               returnValue = false;
-			            }
-			   		return returnValue;
-			    }
-			 </aui:validator>
-	          </aui:input> 
-	        </div> --%>
-	        
-	          <div class="form-group">
-	 	          <aui:input type="date" value="<%=endDate %>" name="endDate" label="End Date" cssClass="form-control">
-	           <aui:validator name="eventEndDate_Validation" errorMessage="Event End Date not less than Event Start date." />
-	      <aui:validator name="required"></aui:validator>
-	          </aui:input>
-	          </div>
-	          
-	               <div class="form-group">
-	           <aui:input type="text" value="<%=location %>" name="location" label="Location" cssClass="form-control">
-	  <aui:validator name="required"></aui:validator>
-	          </aui:input>
-	           </div>
-	        
-	           
+<main class="main_innerlayout">
 	
-	       </div>
-	       <div class="col-md-4">
-	       <div class="form-group"> 
-	           <aui:input type="text" label="Event Name in Hindi" onkeypress="return ((event.charCode > 64 && 
-event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode > 43 && event.charCode < 58) || event.charCode == 0 || event.charCode == 32)"  name="hi_title" value="<%=hi_title %>" cssClass="form-control">
-	        <aui:validator name="required"></aui:validator>
-	          <aui:validator name="custom" errorMessage="Please remove special characters.">
-			 	function (val, fieldNode, ruleValue) {
-			     	var returnValue = true;
-			  		var iChars = "{}'\":;=<>$";
-			           for (var i = 0; i < val.length; i++) {
-			                if (iChars.indexOf(val.charAt(i)) != -1) {    
-			                 returnValue = false;
-			                }
-			            }
-			            if(val.includes("&lt;") || val.includes("&gt;") || val.includes("&apos;") || val.includes("&quot;") ||val.includes("&QUOT;") ||val.includes("&equals;")){
-			               returnValue = false;
-			            }
-			   		return returnValue;
-			    }
-			 </aui:validator>
-	          </aui:input>
-	        </div>
-	              
-	         <div class="col-md-12">
-	        <div class="form-group"> 
-             <label>Description in Hindi</label>
-	         <liferay-ui:input-editor name="hi_description"  initMethod="initEditor" width="50" height="20" resizable="true">
-             </liferay-ui:input-editor>   
-        </div>
-        </div>
-	             <%--    <div class="form-group">
-	          <aui:input type="textarea" onkeypress="return ((event.charCode > 64 && 
-event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode > 43 && event.charCode < 58) || event.charCode == 0 || event.charCode == 32)" value="<%=hi_description %>" name="hi_description" label="Description in Hindi"  rows="4" cssClass="form-control">
-	          <aui:validator name="custom" errorMessage="Please remove special characters.">
-			 	function (val, fieldNode, ruleValue) {
-			     	var returnValue = true;
-			  		var iChars = "{}'\":;=<>$";
-			           for (var i = 0; i < val.length; i++) {
-			                if (iChars.indexOf(val.charAt(i)) != -1) {    
-			                 returnValue = false;
-			                }
-			            }
-			            if(val.includes("&lt;") || val.includes("&gt;") || val.includes("&apos;") || val.includes("&quot;") ||val.includes("&QUOT;") ||val.includes("&equals;")){
-			               returnValue = false;
-			            }
-			   		return returnValue;
-			    }
-			 </aui:validator>
-	          </aui:input> 
-	        </div> --%>
-	         <div class="form-group">
-	           <aui:input type="time" value="<%=endTime %>" name="endTime" label="End Time" cssClass="form-control">
-	  <aui:validator name="required"></aui:validator>
-	          </aui:input>
-	         
-	           </div>
-	            <div class="form-group">
-	           <aui:input type="text" value="<%=venue %>" name="venue" label="Venue" cssClass="form-control">
-	  <aui:validator name="required"></aui:validator>
-	          </aui:input>
-	           </div>
-	      </div>  
-	          <div class="col-md-4">
-	       <div class="form-group"> 
-	          <aui:input type="date" value="<%=startDate %>" name="startDate" label="Start Date" cssClass="form-control">
-	       <aui:validator name="required"></aui:validator>
-	          </aui:input>
-	          </div>
-	           
-	       					<div class="form-group">
-	       						<aui:select name="eventtype" value="<%=eventtype %>" label="Select Event Type">
-	       						<option selected="true" value="-1">Select</option>
-									<aui:option value="Events">All Events</aui:option>
-									<aui:option value="Training">Capacity Building</aui:option>
-									<aui:option value="Gallery">Infra Financing</aui:option>
-								</aui:select>
-					        </div>
-					  
-					        	<div class="form-group">
-	       						<aui:select name="trainingtype" value="<%=trainingtype %>" label="Select Training Type(Capacity Building)">
-	       						<option selected="true" value="-1">Select</option>
-									<aui:option value="Online Training">Online Training</aui:option>
-									<aui:option value="Offline Training">Offline Training</aui:option>
-								</aui:select>
-					        </div>
-					         <div class="form-group">
-	           <aui:input type="text" value="<%=trainingpname %>" name="trainingpname" label="Training Partner Name(Capacity Building)" cssClass="form-control">
-	          </aui:input>
-	           </div>
-	       				
-	        <div class="form-group">
-	            <aui:input type="time" value="<%=startTime %>" name="startTime" label="Start Time" cssClass="form-control">
-	          <aui:validator name="required"></aui:validator>
-	          </aui:input>
-	          </div>
-	        <div class="form-group">
-	          <div class="row">
-	          <div class="col-md-12" style="float:left">
-	            <aui:input type="file" name="document" onChange="getUploadImageURL(this);" label="Image Upload (Note: Upload image accept only .jpg,.png,.gif format.)" accept="<%=EventsPortletKeys.EVENT_FILE_CHOOSE_TYPE %>" cssClass="form-control">
-	          <aui:validator name="acceptFiles">'<%=EventsPortletKeys.EVENT_FILE_UPLOAD_TYPES %>'</aui:validator>					
-	           <aui:validator name="custom" errorMessage="File too Big, please select a file less than 2mb.">
-					 function (val, fieldNode, ruleValue) {
-							 const fi = document.getElementById('<portlet:namespace />document');
-							 var returnValue = true;
-						        if (fi.files.length > 0) { 
-						                const fsize = fi.files.item(0).size; 
-						                const fileSize = Math.round((fsize / 1024)); 
-											if (fileSize > 2048) { 
-							                 returnValue = false;
-							                }
-									}        
-				                      return returnValue;
-						 }
-				 </aui:validator>
-	          </aui:input>
-	          </div>
-	          <div class="col-md-9" style="float:right">
-	             <img src="<%= fileUrl %>" <% if(fileUrl==""){ %> style="display:none;" <% } %> id="uploadImage" width="100px;" height="100px;" class="">
-	          </div>
-	          </div>
-	          <p><b>Max file upload size 2MB</b></p>
-	          </div>
-	          	               <div class="form-group">
-	           <aui:input type="email" value="<%=email %>" name="email" label="Email(Not for Capacity Building)" cssClass="form-control">
-	          </aui:input>
-	           </div>
-	          
-	        </div>
-	        </div>
-	          <div class="row">
-	          <div class="col-md-12">
-	              <div class="col-md-9">
-	        <!-- <p><b>Images Upload (Note: Upload image accept only .jpg,.png,.gif format.)</b></p> -->
-	        <div class="form-group row"> 
-				<div class="col-lg-8" style="padding:0px;padding-left: 27px;">
-					<aui:input name="documents" multiple="true" type="file" onChange="getUploadImageURL1(this);" label="Images Upload (Note: Upload image accept only .jpg,.png,.gif format.)" accept="<%=EventsPortletKeys.EVENT_FILE_CHOOSE_TYPE %>" cssClass="form-control">
-					<aui:validator name="acceptFiles">'<%=EventsPortletKeys.EVENT_FILE_UPLOAD_TYPES %>'</aui:validator>
-          					</aui:input>
-				</div>
-				
-			</div>            
-	          <div class="row"> 
-              <%
-              List<GalleryDocuments> galleryDocumentsList=null;
-              int docsListSize=0;
-              try{
-            	     DynamicQuery dynamicQuery = null;
-            		 dynamicQuery = GalleryDocumentsLocalServiceUtil.dynamicQuery(); 
-            		 dynamicQuery.add(RestrictionsFactoryUtil.eq("eventId", eventId));
-            		 dynamicQuery.addOrder(OrderFactoryUtil.desc("documentId"));
-            		 
-       	         galleryDocumentsList=GalleryDocumentsLocalServiceUtil.dynamicQuery(dynamicQuery);
-       	         docsListSize=galleryDocumentsList.size();
-       	         int k=1;
-         for(GalleryDocuments galleryDocuments:galleryDocumentsList){
-              String galleryDepartmentFileUrl=""; 
-       	    	
-  	    	   if(galleryDocuments.getFileEntryId()!=0L){
-  					try{
-  						galleryDepartmentFileUrl =EventsPortlet.getFile(galleryDocuments.getFileEntryId(), themeDisplay.getScopeGroupId());	  	  
-  					}
-  					catch(Exception e){
-  						
-  					} 
-              %>
-               
-             <div class="col-lg-3" style="padding-right: 10px;"> 
-				<img id="<%=k++ %>" src="<%=galleryDepartmentFileUrl %>" width="100px;" height="70px;" style="padding: 1px 2px 1px 1px;" class="img1">					           
-			 <a class="btn btn-primary m-0 hotooltip" onClick="return deleteRecord1('<%=galleryDocuments.getDocumentId() %>');"><i class="fas fa-trash-alt deleteicon"><span class="hotooltiptext">Delete</span></i></a>
-			
-			 </div>
-		 
-                           
-              <% } 
-        	       } }catch(Exception e){
-            	  } %>
- 	       
-                            </div>
-                            
-	<div class="col-md-12" id="galleryFileImageDiv">
-	    
-</div> 
-	       </div> 
-	           <div id="member-fields">
- 
- <div class="form-group">
-           <aui:input label="Youtube URL"  fieldParam='youtube' id='youtube' name="youtube" required="true"/>
-            </div>
- 
-    </div>
-	          <div class="col-md-6">
-	              <aui:button type="submit" name="createEventsForm" value="Submit" cssClass="btn btn-submit" />
-	              </div>
-	              </div>
-	                
-	              </div>
-	      </aui:form>
-	          </div>
-	          </div>
-	          </div>
-          
-      </div>
-  </div>
-  </div>
- </div>
-<script>
-function getUploadImageURL(uploader){
-	if ( uploader.files && uploader.files[0] ){
-	 
-        $('#uploadImage').attr('src',  window.URL.createObjectURL(uploader.files[0]) );	
-         $('#uploadImage').show();
+	<%
+	JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+	 Date todayDate1 = new Date();
+    todayDate1.setHours(0);
+    todayDate1.setMinutes(0);
+    todayDate1.setSeconds(0);
+    List<Events> eventLinksot1 = null;
+    DynamicQuery dqot = EventsLocalServiceUtil.dynamicQuery(); 
+    dqot.add(RestrictionsFactoryUtil.eq("eventtype", "Training"));
+    dqot.add(RestrictionsFactoryUtil.eq("trainingpartner", "Offline Training"));
+    eventLinksot1 = EventsLocalServiceUtil.dynamicQuery(dqot);
+    try {
+        eventLinksot1= EventsLocalServiceUtil.dynamicQuery(dqot, 0,
+                EventsLocalServiceUtil.getEventsesCount());
+    } catch (Exception e) {
+        e.printStackTrace();
     }
-	else{
-		$('#uploadImage').attr('src',"");
-		 $('#uploadImage').hide();
-	}
+    for(Events data:eventLinksot1) {
+    	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+       	JSONObject jsonOb = JSONFactoryUtil.createJSONObject();
+       	jsonOb.put("groupId", data.getEventId());
+       	long evid=data.getEventId();
+       	String str = data.getTitle();
+        String languageId1=themeDisplay.getLanguageId();
+        //System.out.println("Capacity Building Language Id:"+languageId1);
+       	if(languageId1.equals("hi_IN")){
+       		str=data.getHi_title();
+       		System.out.println(str);
+       	}
+                  String startDate = ""; 
+       	            String link="/eventlist?eventId="+evid+"&eventtype=Training";
+           String endDate = ""; 
+           String st="";
+           String et="";
+           try{	
+   			Date dt = data.getStartDate();
+   			Date dt1 = data.getEndDate();
+   			startDate = sdf.format(dt);
+   			endDate=sdf.format(dt1);
+   			String starttime=data.getStartTime();
+   			String endtime=data.getEndTime();
+   			 st=startDate.substring(0,10)+" "+starttime+":00.0";
+   			 System.out.println(startDate);
+   			System.out.println(st);
+   		    et=endDate.substring(0,10)+" "+endtime+":00.0";
+   			System.out.println(et);
+   		}catch(Exception e){
+   			e.printStackTrace();
+   		}
+           jsonOb.put("title",str);
+           jsonOb.put("start",st);
+           jsonOb.put("end",et);
+           jsonOb.put("url",link);
+           jsonArray.put(jsonOb);
 
-}
-function getUploadImageURL1(uploader){
-    
-	  if (uploader.files.length > 0){
-		  $('#galleryFileImageDiv').empty();
-	  for (var i = 0; i < uploader.files.length; ++i) { 
-		 
-			  var e =$('<img id="galleryFileImage'+i+'" src="'+window.URL.createObjectURL(uploader.files[i])+'" width="100px;" height="70px;" style="padding: 1px 2px 1px 1px;" class="">');
-			   $('#galleryFileImageDiv').append(e);    
-			    
-			   e.attr('id', 'myid'+i);
-		 }
-	         $('#galleryFileImageDiv').show();
-	    }
-		else{
-			 $('#galleryFileImageDiv').empty();
-			 $('#galleryFileImageDiv').hide();
-		}
-	 } 
-function deleteRecord1(galleryImageId){
-	if(confirm('Are you sure you want to delete?')){
-		$('#<portlet:namespace />delete').find('input[name=<portlet:namespace />galleryImageId]').val(galleryImageId);
-		$('#<portlet:namespace />delete').submit();
-	}
-	else{
-		return false;
-	}
-}
-
+           }
+   /*  System.out.println(eventLinksot1.size());
+    System.out.println("JSON ARRAY Length:"+jsonArray.length());
+    System.out.println(jsonArray.toString());
+    System.out.println("Today Date:"+todayDate1); */
+    String newdate = new SimpleDateFormat("yyyy-MM-dd").format(todayDate1);
+   // System.out.println("Formatted Date_____"+newdate);
+	%>
+	<script src='<%=renderRequest.getContextPath()%>/js/index.global.js'></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+   <%--  var jsonArrayString= '<%=jsonArray.toString()%>'
+    var events= JSON.parse(jsonArrayString);  --%>
+    var events1=<%=jsonArray.toString()%>;
+    console.log(events1);
+    var date1="<%=newdate%>"
+    console.log("date:"+date1);
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+      initialDate: date1,
+      initialView: 'timeGridWeek',
+      headerToolbar: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+      },
+      height: 'auto',
+      navLinks: true, // can click day/week names to navigate views
+      editable: true,
+      selectable: true,
+      selectMirror: true,
+      nowIndicator: true,
+      events: events1
+    });
+    calendar.render();
+    console.log(events1);
+  });
 </script>
-<portlet:actionURL var="deleteRecordURL1" name="deleteEvents1"> 
-         </portlet:actionURL>
-<aui:form name="delete" method="post" action="<%=deleteRecordURL1 %>" style="display:none;">
-   <aui:input type="text" name="galleryImageId" value=""></aui:input>
-   </aui:form>
-<aui:script use="liferay-auto-fields">
-	var form = Liferay.Form.get('<portlet:namespace />fm');
-	var oldFieldRules = form.get('fieldRules');
-	var bookingPage = [ 
-	       {
-            body: function (val, fieldNode, ruleValue) {
-		                if(val!=""){
-		                
-		                 var eventStartDate=document.getElementById("<portlet:namespace />startDate").value;
-		                   console.log("eventStartDate>>>>"+eventStartDate);
-		                	var checkInDateArray=val.split("-");
-		                    var departureYear= checkInDateArray[0];
-	                        var departureMonth = checkInDateArray[1];
-	                        var departureDay = checkInDateArray[2];
-		                    if(departureYear.length!=4){
-		                         return false;
-		                    }
-	                        var eventEndDate = new Date(departureYear, departureMonth - 1, departureDay); 
-	                        
-	                          console.log("eventEndDate>>>>"+eventEndDate);
-		                
-	                        var todayDate = new Date();	 
-	                        
-	                        if(eventStartDate!=""){ 
-		                    var eventStartDateArray=eventStartDate.split("-");
-		                    var dateOftenderYear= eventStartDateArray[0];
-	                        var dateOftenderMonth = eventStartDateArray[1];
-	                        var dateOftenderDay = eventStartDateArray[2];
-	                        
-	                         var eventStDate = new Date(dateOftenderYear, dateOftenderMonth - 1, dateOftenderDay);
-			                  console.log("eventStDate>>>>"+eventStDate);
-			                      if (eventStDate > eventEndDate) {
-			                    	  return false;
-			                      }
-			                      else {
-			                      return true;
-			                      }
-		                   }          
-		                   else {
-		                    	  return true;
-		                    }
-		                }
-		                else{
-		                	return true;
-		                }
-            },
-            custom: true,
-            errorMessage: 'Event End Date not less than Event Start date.',
-            fieldName: "<portlet:namespace />endDate",
-            validatorName: 'eventEndDate_Validation'
-       }
-							
-	];
-	var durationPageRules = oldFieldRules.concat(bookingPage);
-	form.set('fieldRules', durationPageRules);
-	 </aui:script>
-	 
-	  <aui:script>
- function <portlet:namespace/>initEditor(){
- return  "<%= UnicodeFormatter.toString(description) %>";
- }
-function <portlet:namespace/>initEditor(){
- return  "<%= UnicodeFormatter.toString(hi_description) %>";
- }
-</aui:script>
-<aui:script>
- 
-AUI().use('liferay-auto-fields',function(A) {
- new Liferay.AutoFields(
-       {
-           contentBox: '#member-fields',
-           fieldIndexes: '<portlet:namespace />rowIndexes'
-       }
-   ).render();
-   });
-</aui:script>
+<style>
+
+ 
+
+  body {
+    margin: 40px 10px;
+    padding: 0;
+    font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+    font-size: 14px;
+}
 
 
+  #calendar {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+</style>
+<section  >
+  <div class="container">
+  <div class="main_heading"><h1>Offline Training</h1></div>
+<div id='calendar'></div>
+</div>
+</section>
+<section class="light_bg my-0" style="padding: 60px 0;">
+  <div class="container">
+    <div class="row d-flex align-items-start">
+      <div class="col-lg-3">
+        <h3 class="sub_heading">Online Training</h3>
+       <!--  <p class="large_text">Placeholder for text.</p> -->
+      </div>
+      <div class="col-lg-9">
+        <div class="container online_training">
+          <% 
+          Date todayDate11 = new Date();
+          todayDate11.setHours(0);
+          todayDate11.setMinutes(0);
+          todayDate11.setSeconds(0);
+          List<Events> eventLinks1 = null;
+          DynamicQuery dq = EventsLocalServiceUtil.dynamicQuery(); 
+          dq.add(RestrictionsFactoryUtil.eq("eventtype", "Training"));
+          dq.add(RestrictionsFactoryUtil.eq("trainingpartner", "Online Training"));
+          eventLinks1 = EventsLocalServiceUtil.dynamicQuery(dq);
+          try {
+              eventLinks1= EventsLocalServiceUtil.dynamicQuery(dq, 0,
+                      EventsLocalServiceUtil.getEventsesCount());
+          } catch (Exception e) {
+              e.printStackTrace();
+          }
+          int totalItems = eventLinks1.size();
+          for (Events eventLink : eventLinks1) {
+        	  SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+              String title = eventLink.getTitle();
+              long eid=eventLink.getEventId();
+              String startDate = ""; 
+              try{	
+      			Date dt = eventLink.getStartDate();
+      			startDate = sdf.format(dt);
+      		}catch(Exception e){
+      			e.printStackTrace();
+      		}
+           //   System.out.println(startDate);
+          %>
+          <div class="card">
+            <a href="#"><%= title %></a>
+            <div class="card-footer">
+              <p class="d-flex align-items-center flex-wrap">
+                <span class="me-auto"><%= startDate %></span>
+                <a onClick="viewRecords1('<%=eid %>');" class="arrow_button">Read More <i class="fa-regular fa-chevrons-right"></i></a>
+              </p>
+            </div>
+          </div>
+          <% } %>
+          <!-- End of JSP code replacement -->
+        </div>
+        <ul id="pagination" class="pagination justify-content-end">
+          <!-- Pagination links will be dynamically added here -->
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    var initialItemsPerPage = 4; // Number of items to display on the first page
+    var remainingItemsPerPage = 4; // Number of items to display on the remaining pages
+    function showItems(page) {
+      var itemsPerPage = (page === 1) ? initialItemsPerPage : remainingItemsPerPage;
+      var startIndex = (page - 1) * itemsPerPage;
+      var endIndex = startIndex + itemsPerPage;
+      $(".online_training .card").hide();
+      $(".online_training .card").slice(startIndex, endIndex).show();
+    }
+    function generatePagination() {
+      var totalItems = $(".online_training .card").length; // Total number of items
+      var totalPages = Math.ceil(totalItems / remainingItemsPerPage); // Calculate total number of pages
+      var pagination = $("#pagination");
+      pagination.empty();
+      if (currentPage > 1) {
+        pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage - 1) + '"><i class="fa-regular fa-chevrons-left"></i></a></li>');
+      }
+      else
+	  {
+	  pagination.append('<li class="page-item disabled"><a class="page-link" href="#"><i class="fa-regular fa-chevrons-left"></i></a></li>');
+	  }
+      for (var i = 1; i <= totalPages; i++) {
+        var activeClass = (i === currentPage) ? "active" : "";
+        pagination.append('<li class="page-item ' + activeClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
+      }
+      if (currentPage < totalPages) {
+        pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage + 1) + '"><i class="fa-regular fa-chevrons-right"></i></a></li>');
+      }
+      else
+	  {
+	  pagination.append('<li class="page-item disabled"><a class="page-link" href="#"><i class="fa-regular fa-chevrons-right"></i></a></li>');
+	  }
+    }
+    $("#pagination").on("click", ".page-link", function(e) {
+      e.preventDefault();
+      var page = parseInt($(this).data("page"));
+      currentPage = page;
+      showItems(currentPage);
+      generatePagination();
+    });
+    var currentPage = 1;
+    showItems(currentPage);
+    generatePagination();
+  });
+</script>
+ <section id="mediagallery_section" class="py-5 my-0">
+    <div class="container">
+        <div class="main_heading">
+            <h1>Media Gallery &amp; Videos</h1>
+        </div>
+        <div class="row mediagallery_slider mediagallery_card">
+            <% 
+         //   ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
+            Date todayDate = new Date();
+            todayDate.setHours(0);
+            todayDate.setMinutes(0);
+            todayDate.setSeconds(0);
+            List<Events> eventLinks = null;
+            DynamicQuery dq1 = EventsLocalServiceUtil.dynamicQuery(); 
+            dq1.add(RestrictionsFactoryUtil.eq("eventtype", "Training"));
+            eventLinks = EventsLocalServiceUtil.dynamicQuery(dq1);
 
+            try {
+                eventLinks= EventsLocalServiceUtil.dynamicQuery(dq1, 0,
+                		EventsLocalServiceUtil.getEventsesCount());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
-  String rowIndexes = request.getParameter("rowIndexes");
-      // String rowIndexes = ParamUtil.getString(request,"rowIndexes");
-       System.out.println("Total Value:"+rowIndexes);
-       try {
-       if (rowIndexes != null && !rowIndexes.isEmpty())
-       {
-    	 System.out.println("Inside IF Youtube");
-     	 String[] indexOfRows = rowIndexes.split(",");
-     	  for (int i = 0; i < indexOfRows.length; i++) {
-               String YoutubeLink = (request.getParameter("youtube"+ indexOfRows[i])).trim();
-          //    String YoutubeLink = (ParamUtil.getString(request,"youtube"+ indexOfRows[i])).trim();
+            int x = 1;
+            for (Events eventLink : eventLinks) {
+                /* if (x > 4) {
+                    break;
+                }  */
+                String color="";
+          	  if(x%4==0)
+          		  color="green";
+          	  else if(x%4==1)
+          		  color="red";
+          	  else if(x%4==2)
+          		  color="yellow";
+          	  else if(x%4==3)
+          		  color="blue";
+                String eventtype=eventLink.getEventtype();
+                System.out.println(eventtype);
+                long eventid = eventLink.getEventId();
+                List<YouTubeLinks> yl = YouTubeLinksLocalServiceUtil.findByeventId(eventid);
+                List<GalleryDocuments> galleryDocumentsList = GalleryDocumentsLocalServiceUtil.findByeventId(eventid);
+                String youtubelink="";
+                if (galleryDocumentsList.size()>0) {
+                    %>
+                    <div class="col-md-4 col-lg-3 col-sm-12 p-2">	
+                        <div class="card h-100 <%=color%>">
+                            <div class="owl-carousel owl-theme mediagallery_scroller" uk-lightbox>
+                                <% 
+                                String eventtype1=eventLink.getEventtype();
+                                String title = eventLink.getTitle();
+                                String description = eventLink.getDescription();
+                                String location = eventLink.getLocation();
+                                String startTime = eventLink.getStartTime();
+                                String endTime = eventLink.getEndTime();
+                                String startDate = "";
+                                String endDate = "";
+                                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-     		  System.out.println("YouTube Link=>"+YoutubeLink);
-     	  }
-       }
-       }
-       catch(Exception e)
-       {
-    	   
-       }
+                                try {	
+                                    Date dt = eventLink.getStartDate();
+                                    startDate = sdf.format(dt);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                                try {	
+                                    Date dt = eventLink.getEndDate();
+                                    endDate = sdf.format(dt);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                                for (GalleryDocuments galleryDoc : galleryDocumentsList) {  
+                                    String fileUrl = ""; 
+                                    long fileEntryId = galleryDoc.getFileEntryId();
+                                    if (fileEntryId != 0L) {
+                                        try {
+                                            fileUrl =EventsPortlet.getFile(fileEntryId, themeDisplay.getScopeGroupId());	  
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    %> 
+                                    <div class="item">	
+                                        <a class="uk-inline" href="<%=fileUrl %>">
+                                            <img class="img-fluid img-thumbnail" src="<%=fileUrl %>" alt="">
+                                        </a>
+                                    </div>					    
+                                <% } %>  
+                                <%if(yl.size()>0){
+	                                	    for (YouTubeLinks youtube : yl) {  
+	    	                                    String fileUrl1 = ""; 
+	    	                                   youtubelink=youtube.getYoutubelink();
+	    	                                   String[] keys= youtubelink.split("=");
+	    	   					            if(keys.length>1){
+	    	   					    			 System.out.println("keys>>>"+keys[0]);
+	    	   					    			 System.out.println("keys>>>"+keys[1]);
+	    	   					    	    	 fileUrl1 =" https://img.youtube.com/vi/"+keys[1]+"/0.jpg";
+	    	   					    	     }
+	    	   					    	     else{
+	    	   					    	    	  keys= youtubelink.split("/");
+	    	   					    	    	  String key=keys[keys.length-1];
+	    	   					    	    	  System.out.println("keys>>>"+key);
+	    	   					    	    	  fileUrl1 =" https://img.youtube.com/vi/"+key+"/0.jpg";
+	    	   					    	     }
+	    	                                    %> 
+	    	                                    <div class="item">	
+	    	                                        <a class="uk-inline" href="<%=youtubelink %>">
+	    	                                            <img class="img-fluid img-thumbnail" src="<%=fileUrl1 %>" alt="">
+	    	                                        </a>
+	    	                                    </div>					    
+	    	                                <% } }%>  		
+                            </div>		
+                            <div class="card-body">
+                                <h5 class="card-title"><%=title %></h5>
+                                <ul class="event_detailslist">
+                                    <li class="time"><%=startDate %> - <%=endDate %></li>
+                                    <li class="location"><%=location %></li>
+                                </ul>
+                            </div>
+                             <p class="card-link"><a href="/eventlist?eventId=<%=eventid%>&eventtype=<%=eventtype1%>">Read More</a></p>
+                        </div>	
+                    </div>
+                    <% x++; %>
+                <% }
+            } %>
+            <div class="col-lg-12 text-center"> <a href="/eventlist?eventtype1=<%="CapacityBuilding"%>" class="black_btn text-center" target="_blank">VIEW ALL</a></div>
+        </div>
+    </div>
+</section>
+	
+</main>
