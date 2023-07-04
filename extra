@@ -1,36 +1,28 @@
-import java.text.DateFormat;
-import java.text.DateFormatSymbols;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.format.TextStyle;
 import java.util.Locale;
 
 public class DateConversion {
     public static void main(String[] args) {
         String dateStr = "23rd Sep'23";
-        DateFormat inputFormat = new SimpleDateFormat("d'st' MMM''yy", Locale.ENGLISH);
-        DateFormat outputFormat = new SimpleDateFormat("d MMMM yyyy", Locale.ENGLISH);
-        DateFormatSymbols symbols = new DateFormatSymbols(Locale.ENGLISH);
 
-        String[] suffixes = {"th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th",
-                            "th", "th", "th", "th", "th", "th", "th", "th", "th", "th",
-                            "th", "st", "nd", "rd", "th", "th", "th", "th", "th", "th",
-                            "th", "st"};
-        symbols.setShortMonths(new String[]{"", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                                             "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"});
-        symbols.setAmPmStrings(new String[]{"AM", "PM"});
-        symbols.setShortWeekdays(new String[]{"", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"});
-        symbols.setWeekdays(new String[]{"", "Sunday", "Monday", "Tuesday", "Wednesday",
-                                          "Thursday", "Friday", "Saturday"});
-        symbols.setDaySuffixes(suffixes);
-        outputFormat.setDateFormatSymbols(symbols);
+        DateTimeFormatter inputFormatter = new DateTimeFormatterBuilder()
+                .appendPattern("d['st']['nd']['rd']['th'] MMM''yy")
+                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                .toFormatter(Locale.ENGLISH);
 
-        try {
-            Date date = inputFormat.parse(dateStr);
-            String formattedDate = outputFormat.format(date);
-            System.out.println(formattedDate);  // Output: 23rd September 2023
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        DateTimeFormatter outputFormatter = new DateTimeFormatterBuilder()
+                .appendPattern("d")
+                .appendText(ChronoField.DAY_OF_MONTH, TextStyle.SHORT_STANDALONE)
+                .appendPattern(" MMMM yyyy")
+                .toFormatter(Locale.ENGLISH);
+
+        LocalDate date = LocalDate.parse(dateStr, inputFormatter);
+        String formattedDate = date.format(outputFormatter);
+        System.out.println(formattedDate);  // Output: 23rd September 2023
     }
 }
