@@ -1,28 +1,35 @@
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.format.TextStyle;
-import java.util.Locale;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class DateConversion {
+public class Main {
     public static void main(String[] args) {
-        String dateStr = "23rd Sep'23";
+        String inputDate = "2023-06-24";
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("d '"
+                + getOrdinalSuffix(Integer.parseInt(inputDate.substring(8, 10))) + "' MMM ''yy");
 
-        DateTimeFormatter inputFormatter = new DateTimeFormatterBuilder()
-                .appendPattern("d['st']['nd']['rd']['th'] MMM''yy")
-                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-                .toFormatter(Locale.ENGLISH);
+        try {
+            Date date = inputFormat.parse(inputDate);
+            String formattedDate = outputFormat.format(date);
+            System.out.println(formattedDate);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        DateTimeFormatter outputFormatter = new DateTimeFormatterBuilder()
-                .appendPattern("d")
-                .appendText(ChronoField.DAY_OF_MONTH, TextStyle.SHORT_STANDALONE)
-                .appendPattern(" MMMM yyyy")
-                .toFormatter(Locale.ENGLISH);
-
-        LocalDate date = LocalDate.parse(dateStr, inputFormatter);
-        String formattedDate = date.format(outputFormatter);
-        System.out.println(formattedDate);  // Output: 23rd September 2023
+    private static String getOrdinalSuffix(int day) {
+        if (day >= 11 && day <= 13) {
+            return "th";
+        }
+        switch (day % 10) {
+            case 1:
+                return "st";
+            case 2:
+                return "nd";
+            case 3:
+                return "rd";
+            default:
+                return "th";
+        }
     }
 }
