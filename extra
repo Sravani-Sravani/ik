@@ -1,35 +1,223 @@
-import java.text.SimpleDateFormat;
-import java.util.Date;
+<section class="light_bg">
+		<div class="container">
+			<div class="main_heading"><h1>Timeline</h1></div>
+			<p>Below is the timeline of evolution of the Harmonized Master List of Infrastructure sub-sectors since 2012.</p>
+				 <div class="main-timeline">
+							<div class="timeline" data-aos="fade-down" data-aos-duration="500">
+								<a href="#" class="timeline-content">
+									<div class="timeline-year">2022</div>
+									<h3 class="title">October</h3>
+									<p class="description">
+										2 sub-sectors i.e. “Data Centre” and “Energy Storage System” have been included in Harmonised Master List of Infrastructure Sub-Sector. 
+									</p>
+									<p><a href="pdf/1.pdf" class="view_pdf" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a></p>
+								</a>
+							</div>
+							<div class="timeline" data-aos="fade-down" data-aos-duration="1000">
+								<div class="timeline-content">
+								<div class="timeline-year">2021</div>
+									<h3 class="title">April</h3>
+									<p class="description">
+										 “Exhibition-cum-Convention Centre” is included in the Harmonized Master List of Infrastructure Sub-sectors by insertion of a new item in the category of „Social and Commercial Infrastructure‟.
+									</p>
+									<p><a href="pdf/May_2021.pdf" class="view_pdf" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a></p>
+								</div>
+							</div>
+							<div class="timeline">
+								<div href="#" class="timeline-content" data-aos="fade-down" data-aos-duration="1500">
+									<div class="timeline-year">2020</div>
+									<h3 class="title">August</h3>
+									<p class="description">
+										“Affordable Rental Housing Complex” is included in the Harmonized Master List of Infrastructure Sub-sectors by insertion of a new item in the category of „Social and Commercial Infrastructure‟.
+									</p>
+									<p><a href="pdf/1.pdf" class="view_pdf" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a></p>
+								</div>
+							</div>
+							<div class="timeline">
+								<div href="#" class="timeline-content" data-aos="fade-down" data-aos-duration="2000">
+									<div class="timeline-year">2018</div>
 
-public class Main {
-    public static void main(String[] args) {
-        String inputDate = "2023-06-24";
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
-        SimpleDateFormat outputFormat = new SimpleDateFormat("d '"
-                + getOrdinalSuffix(Integer.parseInt(inputDate.substring(8, 10))) + "' MMM ''yy");
+									<div class="accordion accordion-flush" id="accordionFlushExample">
+									  <div class="accordion-item">
+										<h2 class="accordion-header" id="headingOne">
+										  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+											<h3 class="title">April</h3>
+										  </button>
+										</h2>
+										<div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionFlushExample">
+										  <div class="accordion-body">
+											<p class="description">
+										Under the category of “Transport & Logistics” the sub-category “Railway track, tunnels, viaducts, bridges, terminal infrastructure including stations and adjoining commercial infrastructure” was amended as follows:
+									</p>
+									<ol>
+										<li>Railway track including electrical & signalling system, tunnels, viaducts, bridges</li>
+										<li>Railway rolling stock along with workshop and associated maintenance facilities<li>
+										<li>Railway terminal infrastructure including stations and adjoining commercial infrastructure. </li>
+									</ol><p><a href="pdf/1.pdf" class="view_pdf" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a></p>
+											</div>
+											
+										</div>
+									  </div>
+									  <div class="accordion-item">
+										<h2 class="accordion-header" id="headingTwo">
+										  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+											<h3 class="title">August</h3>
+										  </button>
+										</h2>
+										<div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionFlushExample">
+										  <div class="accordion-body"><p>“Bulk Material Transportation Pipelines” was included in the Harmonized Master List of Infrastructure Sub-sectors by insertion of a new item in the category of ‘Transport and Logistics’. This “Bulk Material Transportation Pipelines” includes Oil, Gas, Slurry, Water supply and Iron Ore Pipelines’.</p><p><a href="pdf/1.pdf" class="view_pdf" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a></p></div>
+										</div>
+										  
+									  </div>
+									</div> <!--ACCORDION-->
+								</div>
+							</div>
 
-        try {
-            Date date = inputFormat.parse(inputDate);
-            String formattedDate = outputFormat.format(date);
-            System.out.println(formattedDate);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+					 <div class="timeline">
+								<div href="#" class="timeline-content" data-aos="fade-down" data-aos-duration="2000">
+									<div class="timeline-year">2017</div>
 
-    private static String getOrdinalSuffix(int day) {
-        if (day >= 11 && day <= 13) {
-            return "th";
-        }
-        switch (day % 10) {
-            case 1:
-                return "st";
-            case 2:
-                return "nd";
-            case 3:
-                return "rd";
-            default:
-                return "th";
-        }
-    }
-}
+									<div class="accordion accordion-flush" id="accordionFlushExample2017">
+									  <div class="accordion-item">
+										<h2 class="accordion-header" id="headingOne2017">
+										  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne2017" aria-expanded="false" aria-controls="collapseOne">
+											 <h3 class="title">November</h3>
+										  </button>
+										</h2>
+										<div id="collapseOne2017" class="accordion-collapse collapse" aria-labelledby="headingOne2017" data-bs-parent="#accordionFlushExample2017">
+										  <div class="accordion-body">
+											 <p class="description">
+									   “Transport” category was widened to “Transport and Logistics” category. “Logistics Infrastructure” was included by insertion of a new item in the renamed category of “Transport and Logistics”. “Logistics Infrastructure” includes Multimodal Logistics Park comprising Inland Container Depot (ICD) with minimum investment of Rs.50 crore and minimum area of 10-acre, Cold Chain facility with minimum investment of Rs.15 crore and minimum area of 20000 sq. ft. and/or Warehousing Facility with investment of minimum Rs.25 crore and minimum area of 1 lakh sq. ft.
+									</p>
+											  <p><a href="pdf/1.pdf" class="view_pdf" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a></p>
+											</div>
+										</div>
+									  </div>
+									  <div class="accordion-item">
+										<h2 class="accordion-header" id="headingTwo2017">
+										  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo2017" aria-expanded="false" aria-controls="collapseTwo2017">
+											<h3 class="title">October</h3>
+										  </button>
+										</h2>
+										<div id="collapseTwo2017" class="accordion-collapse collapse" aria-labelledby="headingTwo2017" data-bs-parent="#accordionFlushExample2017">
+										  <div class="accordion-body"><p class="description">
+									   Under the Category of “Social and Commercial Infrastructure” the sub-category ‘Three-star or higher category hotels located outside cities with population of more than 1 million” was amended as “Tourism infrastructure viz. (i) three-star or higher category classified hotels located outside cities with population of more than 1 million, (ii) rope-ways and cable cars”. 
+									</p>
+											<p><a href="pdf/1.pdf" class="view_pdf" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a></p>
+											</div>
+										</div>
+									  </div>
+									  <div class="accordion-item">
+										<h2 class="accordion-header" id="headingThree2017">
+										  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree2017" aria-expanded="false" aria-controls="collapseThree2017">
+											<h3 class="title">March</h3>
+										  </button>
+										</h2>
+										<div id="collapseThree2017" class="accordion-collapse collapse" aria-labelledby="headingThree2017" data-bs-parent="#accordionFlushExample2017">
+										  <div class="accordion-body"> <p class="description">
+									   Under the category of “Social and Commercial Infrastructure” a new sub-sector – “Affordable Housing” is added.</p> <p><a href="pdf/1.pdf" class="view_pdf" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a></p></div>
+										</div>
+										 
+									  </div>
+									</div> <!--ACCORDION-->
+								</div>
+							</div>
+
+					  <div class="timeline">
+								<div href="#" class="timeline-content" data-aos="fade-down" data-aos-duration="2000">
+									<div class="timeline-year">2016</div>
+
+
+									<div class="accordion accordion-flush" id="accordionFlushExample2016">
+									  <div class="accordion-item">
+										<h2 class="accordion-header" id="headingOne2016">
+										  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne2016" aria-expanded="false" aria-controls="collapseOne">
+											 <h3 class="title">August</h3>
+										  </button>
+										</h2>
+										<div id="collapseOne2016" class="accordion-collapse collapse" aria-labelledby="headingOne2016" data-bs-parent="#accordionFlushExample2016">
+										  <div class="accordion-body">
+											 <p class="description">
+									   Under the category of “Social and Commercial Infrastructure” a new sub-sector “Sports Infrastructure” was added. 
+									</p> <p><a href="pdf/1.pdf" class="view_pdf" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a></p>
+											</div>
+										</div>
+										 
+									  </div>
+									  <div class="accordion-item">
+										<h2 class="accordion-header" id="headingTwo2016">
+										  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo2016" aria-expanded="false" aria-controls="collapseTwo2016">
+											<h3 class="title">April</h3>
+										  </button>
+										</h2>
+										<div id="collapseTwo2016" class="accordion-collapse collapse" aria-labelledby="headingTwo2016" data-bs-parent="#accordionFlushExample2016">
+										  <div class="accordion-body"><p class="description">
+									  Under the category of “Transport”, a new sub-sector “Shipyards” was added.
+									</p> <p><a href="pdf/1.pdf" class="view_pdf" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a></p></div>
+										</div>
+										 
+									  </div>
+									</div> <!--ACCORDION-->
+								</div>
+							</div>
+
+					 		<div class="timeline">
+								<div href="#" class="timeline-content" data-aos="fade-down" data-aos-duration="2000">
+									 <div class="timeline-year">2014</div>
+									<p class="description">
+									 In October 2014, under the category of “Social and Commercial Infrastructure” the sub-category “Common infrastructure for industrial parks, Special Economic Zones, tourism facilities and agricultural markets” is amended as “Common infrastructure for Industrial Parks and other parks with industrial activity such as food parks, textile parks, Special Economic Zones, tourism facilities and agricultural markets”.
+									</p>
+									<p><a href="pdf/1.pdf" class="view_pdf" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a></p>
+								</div>
+							</div>
+					 
+					 <div class="timeline">
+								<div href="#" class="timeline-content" data-aos="fade-down" data-aos-duration="2000">
+									 <div class="timeline-year">2013</div>
+									
+									
+									<div class="accordion accordion-flush" id="accordionFlushExample2013">
+									  <div class="accordion-item">
+										<h2 class="accordion-header" id="headingOne2013">
+										  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne2013" aria-expanded="false" aria-controls="collapseOne">
+											 <h3 class="title">April</h3>
+										  </button>
+										</h2>
+										<div id="collapseOne2013" class="accordion-collapse collapse" aria-labelledby="headingOne2013" data-bs-parent="#accordionFlushExample2013">
+										  <div class="accordion-body">
+											 <p class="description">
+									  Capital Dredging added under the sub-sector ‘Ports’, ‘Slurry Pipelines’ under ‘Water and Sanitation’ category and Telecommunication & Telecom Services under ‘Communication’ category
+									</p> <p><a href="pdf/1.pdf" class="view_pdf" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a></p>
+											</div>
+										</div>
+										 
+									  </div>
+									  <div class="accordion-item">
+										<h2 class="accordion-header" id="headingTwo2013">
+										  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo2013" aria-expanded="false" aria-controls="collapseTwo2013">
+											<h3 class="title">October</h3>
+										  </button>
+										</h2>
+										<div id="collapseTwo2013" class="accordion-collapse collapse" aria-labelledby="headingTwo2013" data-bs-parent="#accordionFlushExample2012013">
+										  <div class="accordion-body"><p class="description">
+									  New sub-sector ‘Hotels’ and ‘Convention Centers’ added in the category ‘Social and Commercial Infrastructure’
+									</p> <p><a href="pdf/1.pdf" class="view_pdf" target="_blank"><i class="fa-solid fa-file-pdf"></i> View PDF</a></p></div></div>
+										
+										 
+									  </div>
+									</div> <!--ACCORDION-->
+								</div>
+							</div>
+					 
+					  <div class="timeline">
+								<div href="#" class="timeline-content" data-aos="fade-down" data-aos-duration="2000">
+									 <div class="timeline-year">2012</div>
+									<p class="description">In March 2012, Institutional Mechanism (IM) at Department of Economic Affairs was constituted for regular review of Harmonized Master List of Infrastructure sub-sectors</p>
+								</div>
+							</div>
+
+
+						</div> <!--maintimeline-->
+		</div>
+	</section>
+	
