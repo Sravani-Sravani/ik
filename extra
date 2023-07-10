@@ -1,35 +1,39 @@
-function generatePagination() {
-  var totalItems = $(".card-container .col-lg-4.col-sm-12.p-2").length; // Total number of items
-  var totalPages = Math.ceil(totalItems / remainingItemsPerPage); // Calculate total number of pages
-  var pagination = $("#pagination");
-  pagination.empty();
+    <%
+List<YouTubeLinks> yl=null;
+try{
+	     DynamicQuery dynamicQuery = null;
+		 dynamicQuery = YouTubeLinksLocalServiceUtil.dynamicQuery(); 
+		 dynamicQuery.add(RestrictionsFactoryUtil.eq("eventId", eventId));
+		 dynamicQuery.addOrder(OrderFactoryUtil.desc("linkId"));
+		 
+      yl=YouTubeLinksLocalServiceUtil.dynamicQuery(dynamicQuery);
+      docsListSize=yl.size();
+      int k=1;
+for(YouTubeLinks youtube:yl){
+String youtubeurl=""; 
+ 	
+   if(yl.size()>0){
+		try{
+			youtubeurl =youtube.getYoutubelink();	  	  
+		}
+		catch(Exception e){
+			
+		} 
 
-  // Check if pagination should be displayed
-  if (currentPage > 1 || totalItems > remainingItemsPerPage) {
-    // Previous page link
-    if (currentPage > 1) {
-      pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage - 1) + '"><i class="fa-regular fa-chevrons-left"></i></a></li>');
-    } else {
-      pagination.append('<li class="page-item disabled"><a class="page-link" href="#"><i class="fa-regular fa-chevrons-left"></i></a></li>');
-    }
+%>
+    <div id="member-fields">
+ 
+<div class="lfr-form-row lfr-form-row-inline">
+ 
+<div class="form-group">
 
-    // Page links
-    for (var i = 1; i <= totalPages; i++) {
-      var activeClass = (i === currentPage) ? "active" : "";
-      pagination.append('<li class="page-item ' + activeClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
-    }
-
-    // Next page link
-    if (currentPage < totalPages) {
-      pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage + 1) + '"><i class="fa-regular fa-chevrons-right"></i></a></li>');
-    } else {
-      pagination.append('<li class="page-item disabled"><a class="page-link" href="#"><i class="fa-regular fa-chevrons-right"></i></a></li>');
-    }
-  }
-}
-
-// Initial page setup
-var currentPage = 1;
-var remainingItemsPerPage = 12; // Set the number of items per page
-showItems(currentPage);
-generatePagination();
+                <aui:input fieldParam='firstName0' id='firstName0' name="firstName0" label="YouTube Link" value="<%=youtubeurl %>" />
+               
+            </div>
+ 
+        </div>
+ 
+    </div>
+     <% } 
+        	       } }catch(Exception e){
+            	  } %>
