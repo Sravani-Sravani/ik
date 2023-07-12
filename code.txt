@@ -1,605 +1,582 @@
-<%@page import="com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil"%>
-<%@page import="com.liferay.portal.kernel.dao.orm.DynamicQuery"%>
-<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>   
-<%@page import="com.liferay.portal.kernel.util.ListUtil"%>
-<%@page import="javax.portlet.PortletURL"%>
-<%@page import ="com.liferay.portal.kernel.dao.orm.OrderFactoryUtil"%>;
-<%@page import="com.kpmg.citizenTables.model.Ministry"%>
-<%@page import="com.kpmg.citizenTables.service.MinistryLocalServiceUtil"%>
-<%@page import="com.kpmg.citizenTables.service.InfraKnowledgeSubCategoryLocalServiceUtil"%>
-<%@page import="com.kpmg.citizenTables.service.InfraKnowledgeCategoryLocalServiceUtil"%>
-<%@page import="java.util.List"%>
-<%@page import="com.kpmg.infraknowledge.portlet.InfraKnowledgePortlet"%>
-<%@page import="com.kpmg.infraknowledge.constants.InfraKnowledgePortletKeys"%>
-<%@page import="com.kpmg.citizenTables.service.InfraKnowledgeLocalServiceUtil"%>
-<%@page import="com.kpmg.citizenTables.model.InfraKnowledge"%>
-<%@page import="com.kpmg.citizenTables.model.InfraKnowledgeCategory"%>
-<%@page import="com.kpmg.citizenTables.model.InfraKnowledgeSubCategory"%>
- <%@page import="java.text.SimpleDateFormat"%>
+<%@page import="com.kpmg.events.portlet.EventsPortlet"%>
+<%@page import="com.kpmg.citizenTables.service.EventsLocalServiceUtil"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="com.kpmg.citizenTables.model.Events"%>
+<%@page import="com.kpmg.citizenTables.model.GalleryDocuments"%>
+<%@page import="com.kpmg.citizenTables.service.GalleryDocumentsLocalServiceUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
- <%@page import="com.kpmg.citizenTables.service.constants.CustomTablePortletKeys"%>
- <%@page import="com.liferay.portal.kernel.util.PortalUtil;import javax.*"%>
-  <portlet:resourceURL var="getMinistryOption1"></portlet:resourceURL>
-    <portlet:resourceURL var="getMinistryOption2"></portlet:resourceURL>
+<%@page import="com.kpmg.events.constants.EventsPortletKeys"%>
+<%@page import="java.util.List"%>
+<%@page import="com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.dao.orm.OrderFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.dao.orm.DynamicQuery"%>
+<%@page import="com.kpmg.citizenTables.model.YouTubeLinks" %>
+<%@page import="com.kpmg.citizenTables.service.YouTubeLinksLocalServiceUtil"%>
+
+<%@ include file="/init.jsp" %>
+<%@page import="com.liferay.portal.kernel.util.UnicodeFormatter"%>
+  <style>
+/*****************************Events In JhansiForm CSS Start**************************************/
+
+.tenderspage-main .tendersdata-table h1, .tenderspage-main h1.tendertext-main {
+  color: #001A46;
+  text-align: center;
+  margin-bottom: 30px;
+}
+.tenderspage-main .tendersdata-table h1 span, .tenderspage-main h1.tendertext-main span {
+  border-bottom: 10px solid #FF6F0C;
+} 
+
+
+/*.tenderspage-main .tender-form {
+  width: 500px;
+  margin: 0px auto;
+}*/
+
+.tenderspage-main .tender-form  .btn-submit{
+  background-color: #83C127;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  width: 32%;
+}
+
+.tenderspage-main .tender-form .form-group label {
+    color: #04537A;
+    font-weight: bold;
+}
+.btn-complaint {
+  border: 1px solid #707070;
+  text-align: left;
+}
+
+/*****************************Events In JhansiForm CSS End**************************************/
+  </style>
+  <portlet:defineObjects />
+<portlet:actionURL var="eventCreateURL" name="manageEvents">
+ </portlet:actionURL>
+ 
+ 
+ 
  <%
- String currURL="";
- String type="";
- String stitle="";
- long tab=0l;
- try{
-     currURL = PortalUtil.getCurrentURL(request); 
-   System.out.println("currURL="+currURL);
-   String[] strArray = null;  
-   strArray = currURL.split("\\?");
-   if(strArray.length>1){
-      String[] mainArray = null;   
-      mainArray = strArray[1].split("\\&");  
-      for (int i = 0; i< mainArray.length; i++){
- 	 	 String[] subArray = null; 
- 	 	 subArray =mainArray[i].split("\\=");
- 	 	  if(subArray.length>0){
- 	 		System.out.println("subArray[0]="+subArray[0]);
- 	 		 if(subArray[0].equalsIgnoreCase("tab")){
- 	 		       if(subArray[1]!=""){	  
- 	 		    	  System.out.println("subArray[1]="+subArray[1]);
- 	 			      tab=Long.valueOf(subArray[1]);
- 	 			     
- 	 			    }
- 	 	 	  }
- 	 		 else if(subArray[0].equalsIgnoreCase("type"))
- 	 		 {
- 	 			type=String.valueOf(subArray[1]);
- 	 			 System.out.println("Type:"+type);
- 	 		 }
- 	 		
- 	 		  
- 	 	    }
-         } 
-         }
- 	 }
- 	 catch(Exception e){ }
- if(type.equals("PAG"))
- {
-	 type="CENTRAL POLICIES";
-	 stitle="POLICIES AND GUIDELINES";
- }  
- if(type.equals("IFS"))
- {
- type="PPP DOCUMENT REPOSITORY";
- stitle="IFS Document Repository";
- }
- System.out.println(type);
- InfraKnowledgeCategory infraknowledge=null;
- infraknowledge= InfraKnowledgeCategoryLocalServiceUtil.fetchInfraKnowledgeCategory(tab);
- List<InfraKnowledge> infraknowledge1=null;
- DynamicQuery id1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
- id1.add(RestrictionsFactoryUtil.eq("type", type));
- if(tab!=1)
- id1.add(RestrictionsFactoryUtil.eq("cateId", tab));
- try {
-	 infraknowledge1= InfraKnowledgeLocalServiceUtil.dynamicQuery(id1, 0,
-             InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
- } catch (Exception e) {
-     e.getMessage();
- }
- %>
-<section class="top_innerBanner" style="margin-top: -84px !important;">
-<div class="container top_bannerImg d-flex align-items-center flex-wrap">
-			<div class="me-auto"><h1><%=infraknowledge.getCategoryName() %></h1></div>
-			<nav style="--bs-breadcrumb-divider: '>';">
-			  <ol class="breadcrumb">
-				<li class="breadcrumb-item"><a href="/home">Home</a></li>
-				<li class="breadcrumb-item active">Resources</li>
-			  </ol>
-			</nav>
-		</div>	
-</section> <!--Top Inner Banner-->
-<%if(infraknowledge1.size()==0){ %>
-<div class="container resources_scroller">
-	<div class="main_heading"><h1><%=stitle %></h1></div>
-	<p style="text-align: center;">No items available</p>
-	</div>
-	<%}else{ %>
-<main class="main_innerlayout">
-<%if(tab==1){ %>
-<section>
-	<div class="container resources_scroller">
-	<div class="main_heading"><h1><%=stitle %></h1></div>
-		<div class="accordion accordion-flush filterbar" id="accordionFlushExample">
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="flush-headingOne">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                          Filter
-                        </button>
-                      </h2>
-                      <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body">
-                        <div class="row">
-						<form class="row row-cols-lg-auto align-items-center">
-						<div class="col-auto">
-						  <label  class="form-label"><span class="text-danger">*</span> Select Sector</label>
-							 
-                                          <% 
-                                          String cat="catId-"+tab;
-                                          String min1="getsubsectors(this.value);";
-                                          long catid=0l;
-                                        %>
-                                        <aui:select  name="<%=cat %>" label="" onChange="<%=min1 %>" value="<%=catid%>" class="form-select form-select-sm">
-                                        <aui:option selected="true" value="">All</aui:option>
-                                            <% String options = "";
-                                            DynamicQuery dynamicQuery1 = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery();
-                                            long ne=1;
-                                            dynamicQuery1.add(RestrictionsFactoryUtil.ne("catId",ne));
-                                            List<InfraKnowledgeCategory> ikc = null;
-                                            try {
-                                                ikc = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery(dynamicQuery1, 0,
-                                                        InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
-                                            } catch (Exception e) {
-                                                e.getMessage();
-                                            }
-                                            for (InfraKnowledgeCategory c1 : ikc) {
-                                                options = c1.getCategoryName();
-                                                catid=c1.getCatId();
-                                            %>
-                                            <option value="<%=catid%>"><%=options %></option>
-                                            <% } %>
-                                        </aui:select>
-						  </div> 
-						<div class="col-auto">
-						  <label  class="form-label"><span class="text-danger">*</span> Select Subsector</label>
-							 
-                                          <%// String subcat="subCatId-"+tab;
-                                          String min="getMinistry1(this.value,"+tab+",'Subsector');";
-                                          long subcatid=0l;
-                                          System.out.println(catid);
-                                        %>
-                                        <aui:select  name="subsector" label="" onChange="<%=min %>" value="<%=subcatid%>" class="form-select form-select-sm">
-                                         <aui:option selected="true" value="">All</aui:option>
-                                           <%--  <% String options = "";
-                                            DynamicQuery dynamicQuery1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
-                                            List<InfraKnowledgeSubCategory> ikc = null;
-                                            try {
-                                                ikc = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dynamicQuery1, 0,
-                                                        InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
-                                            } catch (Exception e) {
-                                                e.getMessage();
-                                            }
-                                            for (InfraKnowledgeSubCategory c1 : ikc) {
-                                                options = c1.getSubCategoryName();
-                                                subcatid=c1.getSubcatId();
-                                            %>
-                                            <option value="<%=subcatid%>"><%=options %></opton>
-                                            <% } %> --%>
-                                        </aui:select>
-						  </div>
-						   <div class="col-auto">
-                                        <label class="form-label"><span class="text-danger">*</span>Select Ministry</label>
-                                        <%String ministryname="ministry";
-                                        String method="getMinistry1(this.value,"+tab+",'Ministry');";
-                                        
-                                        %>
-                                        <aui:select name="<%=ministryname %>" label="" onChange="<%=method %>" class="form-select form-select-sm">
-                                        <aui:option selected="true" value="">All</aui:option>
-                                        </aui:select>
-                                    </div>
-							  </form>		  
-						  </div>							
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <%
-                  String idname="";
-                  if(type.equals("CENTRAL POLICIES"))
-                	  idname="policiesAndGuidelines-"+tab;
-                  if(type.equals("PPP DOCUMENT REPOSITORY"))
-                	  idname="IFSDocuments-"+tab; 
-                  System.out.println("ID Name:"+idname);
-                  %>
-		<div class="row card-container" id="<%=idname%>">
-		<%
-                                                String title = "";
-                                                String fileUrl = "";
-                                                String fileUrl1 = "";
-                                                DynamicQuery dq1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
-                                                dq1.add(RestrictionsFactoryUtil.eq("type", type));
-                                               // dq1.add(RestrictionsFactoryUtil.eq("cateId", tab));
-                                                List<InfraKnowledge> ikd = null;
-                                                try {
-                                                    ikd = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq1, 0,
-                                                            InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
-                                                } catch (Exception e) {
-                                                    e.getMessage();
-                                                }
-                                                System.out.println(tab+"Size:-----"+ikd.size());
-                                                for (InfraKnowledge newik : ikd) {
-                                                    try {
-                                                        title = newik.getHeadingText();
-                                                    } catch (Exception e) {
-                                                    }
-                                                    long fileEntryId = newik.getThumbnailfileEntryId();
-                                                    if (fileEntryId != 0L) {
-                                                        try {
-                                                            fileUrl = InfraKnowledgePortlet.getFile(fileEntryId, themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                        }
-                                                    }
-                                                    long fileEntryId1 = newik.getFileEntryId();
-                                                    if (fileEntryId1 != 0L) {
-                                                        try {
-                                                            fileUrl1 = InfraKnowledgePortlet.getFile(fileEntryId1, themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                        }
-                                                    }
-                                                %>
-		<div class="col-lg-4 col-sm-12 p-2" id="itemContainer">	
-			<div class="card h-100 yellow_gradient">
-			<img src="<%=fileUrl %>" class="card-img-top" alt="...">
-			<div class="card-body">
-			  <p class="card-title"><%=title %></p>
-			<p class="card-link"><a href="<%=fileUrl1%>?download=true">Download</a></p></div>
-		  </div><!--card-->
-		</div>
-		 <% } %>
-	</div>
-	<div class="row">
-			<ul id="pagination" class="pagination justify-content-center mt-2">
-			  </ul>
-	</div>	
-  </div>
-</section>
-<%}else{ %>
-	<section>
-	<div class="container resources_scroller">
-	<div class="main_heading"><h1><%=stitle %></h1></div>
-		<div class="accordion accordion-flush filterbar" id="accordionFlushExample">
-                    <div class="accordion-item">
-                      <h2 class="accordion-header" id="flush-headingOne">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                          Filter
-                        </button>
-                      </h2>
-                      <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
-                        <div class="accordion-body">
-                        <div class="row">
-						<form class="row row-cols-lg-auto align-items-center"> 
-						<div class="col-auto">
-						  <label  class="form-label"><span class="text-danger">*</span> Select Subsector</label>
-							 
-                                          <% //String subcat="subCatId";
-                                          String min="getMinistry1(this.value,"+tab+",'Subsector');";
-                                          long subcatid=0l;
-                                        %>
-                                        <aui:select  name="subsector" label="" onChange="<%=min %>" value="<%=subcatid%>" class="form-select form-select-sm">
-                                         <aui:option selected="true" value="">All</aui:option>
-                                            <% String options = "";
-                                            DynamicQuery dynamicQuery1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
-                                            dynamicQuery1.add(RestrictionsFactoryUtil.eq("catId",tab));
-                                            List<InfraKnowledgeSubCategory> ikc = null;
-                                            try {
-                                                ikc = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dynamicQuery1, 0,
-                                                        InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
-                                            } catch (Exception e) {
-                                                e.getMessage();
-                                            }
-                                            for (InfraKnowledgeSubCategory c1 : ikc) {
-                                                options = c1.getSubCategoryName();
-                                                subcatid=c1.getSubcatId();
-                                            %>
-                                            <option value="<%=subcatid%>"><%=options %></option>
-                                            <% } %>
-                                        </aui:select>
-						  </div>
-						   <div class="col-auto">
-                                        <label class="form-label"><span class="text-danger">*</span>Select Ministry</label>
-                                        <%String ministryname="ministry";
-                                        String method="getMinistry1(this.value,"+tab+",'Ministry');";
-                                        
-                                        %>
-                                        <aui:select name="<%=ministryname %>" label="" onChange="<%=method %>" class="form-select form-select-sm">
-                                        <aui:option selected="true" value="">All</aui:option>
-                                        </aui:select>
-                                    </div>
-							  </form>		  
-						  </div>							
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <%
-                  String idname="";
-                  if(type.equals("CENTRAL POLICIES"))
-                	  idname="policiesAndGuidelines-"+tab;
-                  if(type.equals("PPP DOCUMENT REPOSITORY"))
-                	  idname="IFSDocuments-"+tab; 
-                  System.out.println("ID Name:"+idname);
-                  %>
-		<div class="row card-container" id="<%=idname%>">
-		<%
-                                                String title = "";
-                                                String fileUrl = "";
-                                                String fileUrl1 = "";
-                                                DynamicQuery dq1 = InfraKnowledgeLocalServiceUtil.dynamicQuery();
-                                                dq1.add(RestrictionsFactoryUtil.eq("type", type));
-                                                dq1.add(RestrictionsFactoryUtil.eq("cateId", tab));
-                                                List<InfraKnowledge> ikd = null;
-                                                try {
-                                                    ikd = InfraKnowledgeLocalServiceUtil.dynamicQuery(dq1, 0,
-                                                            InfraKnowledgeLocalServiceUtil.getInfraKnowledgesCount());
-                                                } catch (Exception e) {
-                                                    e.getMessage();
-                                                }
-                                                System.out.println(tab+"Size:-----"+ikd.size());
-                                                for (InfraKnowledge newik : ikd) {
-                                                    try {
-                                                        title = newik.getHeadingText();
-                                                    } catch (Exception e) {
-                                                    }
-                                                    long fileEntryId = newik.getThumbnailfileEntryId();
-                                                    if (fileEntryId != 0L) {
-                                                        try {
-                                                            fileUrl = InfraKnowledgePortlet.getFile(fileEntryId, themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                        }
-                                                    }
-                                                    long fileEntryId1 = newik.getFileEntryId();
-                                                    if (fileEntryId1 != 0L) {
-                                                        try {
-                                                            fileUrl1 = InfraKnowledgePortlet.getFile(fileEntryId1, themeDisplay.getScopeGroupId());
-                                                        } catch (Exception e) {
-                                                        }
-                                                    }
-                                                %>
-		<div class="col-lg-4 col-sm-12 p-2" id="itemContainer">	
-			<div class="card h-100 yellow_gradient">
-			<img src="<%=fileUrl %>" class="card-img-top" alt="...">
-			<div class="card-body">
-			  <p class="card-title"><%=title %></p>
-			<p class="card-link"><a href="<%=fileUrl1%>?download=true">Download</a></p></div>
-		  </div><!--card-->
-		</div>
-		 <% } %>
-	</div>
-	<div class="row">
-			<ul id="pagination" class="pagination justify-content-center mt-2">
-			  </ul>
-	</div>	
-  </div>
-</section>
-	<%} %>
-</main>
-<%} %>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    long eventId = ParamUtil.getLong(request, "eventId");
+    System.out.println("eventId >>>"+eventId );
+    Events events=null;
+    String description="";
+    String title="";
+    String hi_description="";
+    String hi_title="";
+    String startDate="";
+    String endDate="";
+    String startTime="";
+    String eventtype="";
+    String endTime="";
+    long fileEntryId=0L;
+    String fileUrl="";
+    String location="";
+    String venue="";
+    String trainingpname="";
+    String trainingtype="";
+    String email="";
+    SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+    if(eventId!=0){
+    	try{
+    		events=EventsLocalServiceUtil.fetchEvents(eventId);
+    		 if(events!=null){
+    			 description=events.getDescription();
+    			 title=events.getTitle();
+    			 hi_title=events.getHi_title();
+    			 hi_description=events.getHi_description();
+    			 startTime=events.getStartTime();
+    			 eventtype=events.getEventtype();
+    			  fileEntryId=events.getFileEntryId();
+    			 endTime=events.getEndTime();
+    			 location=events.getLocation();
+    			 venue=events.getVenue();
+    			 trainingpname=events.getTrainingname();
+    			 trainingtype=events.getTrainingpartner();
+    			 email=events.getEmail();
+    			 if(fileEntryId!=0L){
+						try{
+							fileUrl =EventsPortlet.getFile(fileEntryId, themeDisplay.getScopeGroupId());	  
+						}
+						catch(Exception e){
+							
+						}
+		      	  }
+    			 if(events.getStartDate()!=null){
+    				 startDate = dateformat.format(events.getStartDate());
+    			 }
+    			 if(events.getEndDate()!=null){
+    				 endDate = dateformat.format(events.getEndDate());
+    			 }
+    			 fileEntryId=events.getFileEntryId();
+    		 }
+    	}
+    	catch(Exception e){
+    		
+    	}
+    }
+    %>
   
+  
+  <div class="jhansiall-pages">
+  <div class="tenderspage-main">
+    <div class="container">
+    
+    <liferay-ui:error key="title.errorMsg.missing" message="title.errorMsg.missing" />
+ <liferay-ui:error key="hi_title.errorMsg.missing" message="hi_title.errorMsg.missing"/>
+ <liferay-ui:error key="description.errorMsg.missing" message="description.errorMsg.missing"/>
+ <liferay-ui:error key="hi_description.errorMsg.missing" message="hi_description.errorMsg.missing"/>
+ <liferay-ui:error key="startDate.errorMsg.missing" message="startDate.errorMsg.missing"/>
+<liferay-ui:error key="startTime.errorMsg.missing" message="startTime.errorMsg.missing"/>
+<liferay-ui:error key="endDate.errorMsg.missing" message="endDate.errorMsg.missing"/>
+<liferay-ui:error key="endTime.errorMsg.missing" message="endTime.errorMsg.missing"/>
+<liferay-ui:error key="document.errorMsg.missing" message="document.errorMsg.missing"/>
+<liferay-ui:error key="document.errorMsg.sizeIssue" message="document.errorMsg.sizeIssue"/>
+<liferay-ui:error key="endDate.errorMsg.notlessThan" message="endDate.errorMsg.notlessThan"/>
+    
+          <div class="col-md-12">
+                <h1 class="tendertext-main"><span><% if(eventId==0){ %>Create<% }else{ %>Update<% } %> Event</span></h1>
+          </div>
+
+      <div class="tender-form">
+        <aui:form  action="<%=eventCreateURL%>" method="post" name="fm">
+	       <aui:input type="hidden" label="" name="eventId" value="<%=eventId %>"></aui:input>
+	       <div class="row">
+	       <div class="col-md-4">
+	       <div class="form-group"> 
+	           <aui:input type="text" label="Event Name" onkeypress="return ((event.charCode > 64 && 
+event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode > 43 && event.charCode < 58) || event.charCode == 0 || event.charCode == 32)"  name="title" value="<%=title %>" cssClass="form-control">
+	           <aui:validator name="required"></aui:validator>
+	          <aui:validator name="custom" errorMessage="Please remove special characters.">
+			 	function (val, fieldNode, ruleValue) {
+			     	var returnValue = true;
+			  		var iChars = "{}'\":;=<>$";
+			           for (var i = 0; i < val.length; i++) {
+			                if (iChars.indexOf(val.charAt(i)) != -1) {    
+			                 returnValue = false;
+			                }
+			            }
+			            if(val.includes("&lt;") || val.includes("&gt;") || val.includes("&apos;") || val.includes("&quot;") ||val.includes("&QUOT;") ||val.includes("&equals;")){
+			               returnValue = false;
+			            }
+			   		return returnValue;
+			    }
+			 </aui:validator>
+	          </aui:input>
+	        </div>
+	        
+	        <!-- Description -->
+	         <div class="col-md-12">
+	        <div class="form-group"> 
+             <label>Description</label>
+	         <liferay-ui:input-editor name="description"  initMethod="initEditor" width="50" height="20" resizable="true">
+             </liferay-ui:input-editor>   
+        </div>
+        </div>
+	          <%-- <div class="form-group">
+	          <aui:input type="textarea" onkeypress="return ((event.charCode > 64 && 
+event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode > 43 && event.charCode < 58) || event.charCode == 0 || event.charCode == 32)" value="<%=description %>" name="description" label="Description"  rows="4" cssClass="form-control">
+	         	          <aui:validator name="custom" errorMessage="Please remove special characters.">
+			 	function (val, fieldNode, ruleValue) {
+			     	var returnValue = true;
+			  		var iChars = "{}'\":;=<>$";
+			           for (var i = 0; i < val.length; i++) {
+			                if (iChars.indexOf(val.charAt(i)) != -1) {    
+			                 returnValue = false;
+			                }
+			            }
+			            if(val.includes("&lt;") || val.includes("&gt;") || val.includes("&apos;") || val.includes("&quot;") ||val.includes("&QUOT;") ||val.includes("&equals;")){
+			               returnValue = false;
+			            }
+			   		return returnValue;
+			    }
+			 </aui:validator>
+	          </aui:input> 
+	        </div> --%>
+	        
+	          <div class="form-group">
+	 	          <aui:input type="date" value="<%=endDate %>" name="endDate" label="End Date" cssClass="form-control">
+	           <aui:validator name="eventEndDate_Validation" errorMessage="Event End Date not less than Event Start date." />
+	      <aui:validator name="required"></aui:validator>
+	          </aui:input>
+	          </div>
+	          
+	               <div class="form-group">
+	           <aui:input type="text" value="<%=location %>" name="location" label="Location" cssClass="form-control">
+	  <aui:validator name="required"></aui:validator>
+	          </aui:input>
+	           </div>
+	        
+	           
+	
+	       </div>
+	       <div class="col-md-4">
+	       <div class="form-group"> 
+	           <aui:input type="text" label="Event Name in Hindi" onkeypress="return ((event.charCode > 64 && 
+event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode > 43 && event.charCode < 58) || event.charCode == 0 || event.charCode == 32)"  name="hi_title" value="<%=hi_title %>" cssClass="form-control">
+	        <aui:validator name="required"></aui:validator>
+	          <aui:validator name="custom" errorMessage="Please remove special characters.">
+			 	function (val, fieldNode, ruleValue) {
+			     	var returnValue = true;
+			  		var iChars = "{}'\":;=<>$";
+			           for (var i = 0; i < val.length; i++) {
+			                if (iChars.indexOf(val.charAt(i)) != -1) {    
+			                 returnValue = false;
+			                }
+			            }
+			            if(val.includes("&lt;") || val.includes("&gt;") || val.includes("&apos;") || val.includes("&quot;") ||val.includes("&QUOT;") ||val.includes("&equals;")){
+			               returnValue = false;
+			            }
+			   		return returnValue;
+			    }
+			 </aui:validator>
+	          </aui:input>
+	        </div>
+	              
+	         <div class="col-md-12">
+	        <div class="form-group"> 
+             <label>Description in Hindi</label>
+	         <liferay-ui:input-editor name="hi_description"  initMethod="initEditor" width="50" height="20" resizable="true">
+             </liferay-ui:input-editor>   
+        </div>
+        </div>
+	             <%--    <div class="form-group">
+	          <aui:input type="textarea" onkeypress="return ((event.charCode > 64 && 
+event.charCode < 91) || (event.charCode > 96 && event.charCode < 123) || (event.charCode > 43 && event.charCode < 58) || event.charCode == 0 || event.charCode == 32)" value="<%=hi_description %>" name="hi_description" label="Description in Hindi"  rows="4" cssClass="form-control">
+	          <aui:validator name="custom" errorMessage="Please remove special characters.">
+			 	function (val, fieldNode, ruleValue) {
+			     	var returnValue = true;
+			  		var iChars = "{}'\":;=<>$";
+			           for (var i = 0; i < val.length; i++) {
+			                if (iChars.indexOf(val.charAt(i)) != -1) {    
+			                 returnValue = false;
+			                }
+			            }
+			            if(val.includes("&lt;") || val.includes("&gt;") || val.includes("&apos;") || val.includes("&quot;") ||val.includes("&QUOT;") ||val.includes("&equals;")){
+			               returnValue = false;
+			            }
+			   		return returnValue;
+			    }
+			 </aui:validator>
+	          </aui:input> 
+	        </div> --%>
+	         <div class="form-group">
+	           <aui:input type="time" value="<%=endTime %>" name="endTime" label="End Time" cssClass="form-control">
+	  <aui:validator name="required"></aui:validator>
+	          </aui:input>
+	         
+	           </div>
+	            <div class="form-group">
+	           <aui:input type="text" value="<%=venue %>" name="venue" label="Venue" cssClass="form-control">
+	  <aui:validator name="required"></aui:validator>
+	          </aui:input>
+	           </div>
+	      </div>  
+	          <div class="col-md-4">
+	       <div class="form-group"> 
+	          <aui:input type="date" value="<%=startDate %>" name="startDate" label="Start Date" cssClass="form-control">
+	       <aui:validator name="required"></aui:validator>
+	          </aui:input>
+	          </div>
+	           
+	       					<div class="form-group">
+	       						<aui:select name="eventtype" value="<%=eventtype %>" label="Select Event Type">
+	       						<option selected="true" value="-1">Select</option>
+									<aui:option value="Events">All Events</aui:option>
+									<aui:option value="Training">Capacity Building</aui:option>
+									<aui:option value="Gallery">Infra Financing</aui:option>
+								</aui:select>
+					        </div>
+					  
+					        	<div class="form-group">
+	       						<aui:select name="trainingtype" value="<%=trainingtype %>" label="Select Training Type(Capacity Building)">
+	       						<option selected="true" value="-1">Select</option>
+									<aui:option value="Online Training">Online Training</aui:option>
+									<aui:option value="Offline Training">Offline Training</aui:option>
+								</aui:select>
+					        </div>
+					         <div class="form-group">
+	           <aui:input type="text" value="<%=trainingpname %>" name="trainingpname" label="Training Partner Name(Capacity Building)" cssClass="form-control">
+	          </aui:input>
+	           </div>
+	       				
+	        <div class="form-group">
+	            <aui:input type="time" value="<%=startTime %>" name="startTime" label="Start Time" cssClass="form-control">
+	          <aui:validator name="required"></aui:validator>
+	          </aui:input>
+	          </div>
+	        <div class="form-group">
+	          <div class="row">
+	          <div class="col-md-12" style="float:left">
+	            <aui:input type="file" name="document" onChange="getUploadImageURL(this);" label="Image Upload (Note: Upload image accept only .jpg,.png,.gif format.)" accept="<%=EventsPortletKeys.EVENT_FILE_CHOOSE_TYPE %>" cssClass="form-control">
+	          <aui:validator name="acceptFiles">'<%=EventsPortletKeys.EVENT_FILE_UPLOAD_TYPES %>'</aui:validator>					
+	           <aui:validator name="custom" errorMessage="File too Big, please select a file less than 2mb.">
+					 function (val, fieldNode, ruleValue) {
+							 const fi = document.getElementById('<portlet:namespace />document');
+							 var returnValue = true;
+						        if (fi.files.length > 0) { 
+						                const fsize = fi.files.item(0).size; 
+						                const fileSize = Math.round((fsize / 1024)); 
+											if (fileSize > 2048) { 
+							                 returnValue = false;
+							                }
+									}        
+				                      return returnValue;
+						 }
+				 </aui:validator>
+	          </aui:input>
+	          </div>
+	          <div class="col-md-9" style="float:right">
+	             <img src="<%= fileUrl %>" <% if(fileUrl==""){ %> style="display:none;" <% } %> id="uploadImage" width="100px;" height="100px;" class="">
+	          </div>
+	          </div>
+	          <p><b>Max file upload size 2MB</b></p>
+	          </div>
+	          	               <div class="form-group">
+	           <aui:input type="email" value="<%=email %>" name="email" label="Email(Not for Capacity Building)" cssClass="form-control">
+	          </aui:input>
+	           </div>
+	          
+	        </div>
+	        </div>
+	          <div class="row">
+	          <div class="col-md-12">
+	              <div class="col-md-9">
+	        <!-- <p><b>Images Upload (Note: Upload image accept only .jpg,.png,.gif format.)</b></p> -->
+	        <div class="form-group row"> 
+				<div class="col-lg-8" style="padding:0px;padding-left: 27px;">
+					<aui:input name="documents" multiple="true" type="file" onChange="getUploadImageURL1(this);" label="Images Upload (Note: Upload image accept only .jpg,.png,.gif format.)" accept="<%=EventsPortletKeys.EVENT_FILE_CHOOSE_TYPE %>" cssClass="form-control">
+					<aui:validator name="acceptFiles">'<%=EventsPortletKeys.EVENT_FILE_UPLOAD_TYPES %>'</aui:validator>
+          					</aui:input>
+				</div>
+				
+			</div>            
+	          <div class="row"> 
+              <%
+              List<GalleryDocuments> galleryDocumentsList=null;
+              int docsListSize=0;
+              try{
+            	     DynamicQuery dynamicQuery = null;
+            		 dynamicQuery = GalleryDocumentsLocalServiceUtil.dynamicQuery(); 
+            		 dynamicQuery.add(RestrictionsFactoryUtil.eq("eventId", eventId));
+            		 dynamicQuery.addOrder(OrderFactoryUtil.desc("documentId"));
+            		 
+       	         galleryDocumentsList=GalleryDocumentsLocalServiceUtil.dynamicQuery(dynamicQuery);
+       	         docsListSize=galleryDocumentsList.size();
+       	         int k=1;
+         for(GalleryDocuments galleryDocuments:galleryDocumentsList){
+              String galleryDepartmentFileUrl=""; 
+       	    	
+  	    	   if(galleryDocuments.getFileEntryId()!=0L){
+  					try{
+  						galleryDepartmentFileUrl =EventsPortlet.getFile(galleryDocuments.getFileEntryId(), themeDisplay.getScopeGroupId());	  	  
+  					}
+  					catch(Exception e){
+  						
+  					} 
+              %>
+               
+             <div class="col-lg-3" style="padding-right: 10px;"> 
+				<img id="<%=k++ %>" src="<%=galleryDepartmentFileUrl %>" width="100px;" height="70px;" style="padding: 1px 2px 1px 1px;" class="img1">					           
+			 <a class="btn btn-primary m-0 hotooltip" onClick="return deleteRecord1('<%=galleryDocuments.getDocumentId() %>');"><i class="fas fa-trash-alt deleteicon"><span class="hotooltiptext">Delete</span></i></a>
+			
+			 </div>
+		 
+                           
+              <% } 
+        	       } }catch(Exception e){
+            	  } %>
+ 	       
+                            </div>
+                            
+	<div class="col-md-12" id="galleryFileImageDiv">
+	    
+</div> 
+	       </div> 
+	        <!--    <div id="member-fields">
+ 
+ <div class="form-group">
+           <aui:input label="Youtube URL"  fieldParam='youtube' id='youtube' name="youtube" required="true"/>
+            </div>
+ 
+    </div> -->
+    <%
+List<YouTubeLinks> yl=null;
+	     DynamicQuery dynamicQuery = null;
+		 dynamicQuery = YouTubeLinksLocalServiceUtil.dynamicQuery(); 
+		 dynamicQuery.add(RestrictionsFactoryUtil.eq("eventId", eventId));
+		 dynamicQuery.addOrder(OrderFactoryUtil.desc("linkId"));
+		 
+      yl=YouTubeLinksLocalServiceUtil.dynamicQuery(dynamicQuery);
+
+     /*  docsListSize=yl.size();
+      int k=1;
+for(YouTubeLinks youtube:yl){
+String youtubeurl=""; 
+ 	int i=0;
+   if(yl.size()>0){
+		try{
+			youtubeurl =youtube.getYoutubelink();	  	  
+		}
+		catch(Exception e){
+			
+		} 
+   }
+} */
+%>
+   
+            	   <div id="member-fields">
+ <c:forEach var="youtubelink" items="${yl}">
+<div class="lfr-form-row lfr-form-row-inline">
+ 
+<div class="form-group">
+
+                <aui:input fieldParam='firstName0' id='firstName0' name="firstName0" label="YouTube Link" value="${youtubeurl}" />
+               
+            </div>
+ 
+        </div>
+</c:forEach>
+</div>
+
+            	  
+	          <div class="col-md-6">
+	              <aui:button type="submit" name="createEventsForm" value="Submit" cssClass="btn btn-submit" />
+	              </div>
+	              </div>
+	                
+	              </div>
+	      </aui:form>
+	          </div>
+	          </div>
+	          </div>
+          
+      </div>
+  </div>
+  </div>
+ </div>
 <script>
-$(document).ready(function() {
-    var initialItemsPerPage = 9; // Number of items to display on the first page
-    var remainingItemsPerPage = 9; // Number of items to display on the remaining pages
-
-    // Show the items for the given page
-    function showItems(page) {
-      var itemsPerPage = (page === 1) ? initialItemsPerPage : remainingItemsPerPage;
-      var startIndex = (page - 1) * itemsPerPage;
-      var endIndex = startIndex + itemsPerPage;
-
-      // Hide all items
-      $(".card-container .col-lg-4.col-sm-12.p-2").hide();
-
-      // Show items for the current page
-      $(".card-container .col-lg-4.col-sm-12.p-2").slice(startIndex, endIndex).show();
+function getUploadImageURL(uploader){
+	if ( uploader.files && uploader.files[0] ){
+	 
+        $('#uploadImage').attr('src',  window.URL.createObjectURL(uploader.files[0]) );	
+         $('#uploadImage').show();
     }
+	else{
+		$('#uploadImage').attr('src',"");
+		 $('#uploadImage').hide();
+	}
 
-    // Generate pagination links
-    function generatePagination() {
-      var totalItems = $(".card-container .col-lg-4.col-sm-12.p-2").length; // Total number of items
-      var totalPages = Math.ceil(totalItems / remainingItemsPerPage); // Calculate total number of pages
-      var pagination = $("#pagination");
-      pagination.empty();
-
-      // Previous page link
-      if (currentPage > 1) {
-        pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage - 1) + '"><i class="fa-regular fa-chevrons-left"></i></a></li>');
-      }
-      else
-	  {
-	  pagination.append('<li class="page-item disabled"><a class="page-link" href="#"><i class="fa-regular fa-chevrons-left"></i></a></li>');
-	  }
-      // Page links
-      for (var i = 1; i <= totalPages; i++) {
-        var activeClass = (i === currentPage) ? "active" : "";
-        pagination.append('<li class="page-item ' + activeClass + '"><a class="page-link" href="#" data-page="' + i + '">' + i + '</a></li>');
-      }
-
-      // Next page link
-      if (currentPage < totalPages) {
-        pagination.append('<li class="page-item"><a class="page-link" href="#" data-page="' + (currentPage + 1) + '"><i class="fa-regular fa-chevrons-right"></i></a></li>');
-      }
-      else
-    	  {
-    	  pagination.append('<li class="page-item disabled"><a class="page-link" href="#"><i class="fa-regular fa-chevrons-right"></i></a></li>');
-    	  }
-    }
-
-    // Handle page click event
-    $("#pagination").on("click", ".page-link", function(e) {
-      e.preventDefault();
-      var page = parseInt($(this).data("page"));
-      currentPage = page;
-      showItems(currentPage);
-      generatePagination();
-    });
-
-    // Initial page setup
-    var currentPage = 1;
-    showItems(currentPage);
-    generatePagination();
-  });
-
-function getMinistry1(reordId,cid,seletion){
-	//alert(subcategoryId);
-	var subcategoryId="";
-	var ministryId="";
-	var flag="";
-	if(seletion=="Subsector"){
-		subcategoryId=reordId;
+}
+function getUploadImageURL1(uploader){
+    
+	  if (uploader.files.length > 0){
+		  $('#galleryFileImageDiv').empty();
+	  for (var i = 0; i < uploader.files.length; ++i) { 
+		 
+			  var e =$('<img id="galleryFileImage'+i+'" src="'+window.URL.createObjectURL(uploader.files[i])+'" width="100px;" height="70px;" style="padding: 1px 2px 1px 1px;" class="">');
+			   $('#galleryFileImageDiv').append(e);    
+			    
+			   e.attr('id', 'myid'+i);
+		 }
+	         $('#galleryFileImageDiv').show();
+	    }
+		else{
+			 $('#galleryFileImageDiv').empty();
+			 $('#galleryFileImageDiv').hide();
+		}
+	 } 
+function deleteRecord1(galleryImageId){
+	if(confirm('Are you sure you want to delete?')){
+		$('#<portlet:namespace />delete').find('input[name=<portlet:namespace />galleryImageId]').val(galleryImageId);
+		$('#<portlet:namespace />delete').submit();
 	}
 	else{
-		subcategoryId=$("#<portlet:namespace />subCatId-"+cid).val();
-		ministryId=reordId;
+		return false;
 	}
-	if(cid==1)
-	{
-		cid=$("#<portlet:namespace />catId-1").val();
-		flag=1;
-	}
-	console.log("cid:"+cid);
-AUI().use('aui-base','aui-io-request-deprecated', 'aui-node', function(A){
- A.io.request('<%=getMinistryOption1.toString() %>',{
- dataType : 'json',
- method : 'POST',
- data : {
-<portlet:namespace />subcategoryId :subcategoryId,
-<portlet:namespace />ministryId :ministryId,
-<portlet:namespace />cid :cid,
-<portlet:namespace />scopeGroupId :"<%=themeDisplay.getScopeGroupId()%>",
-	<portlet:namespace />cmd:'getministries2'
- },
- on : {
- success : function() {
-	                       var data=this.get('responseData');
-                            console.log(data); 
-                            var length=data['centralPoliciesData'].length;
-                            var ifslength=data['ifsDocumentData'].length;
-                            console.log(length);
-                            console.log(ifslength);
-                            
-if(seletion=="Subsector"){
-                            var textElement="";
-                            textElement="<option value=''>All</option>"; 
-                            $('#<portlet:namespace />ministry').html("");
-                            jQuery.each(data['ministryData'], function(i, val) {
-                            textElement=textElement+"<option value='" + val.id + "'>"+ val.name + "</option>";
-                           });
-                            $('#<portlet:namespace />ministry').append(textElement);
-}
-if(flag==1)
-	cid=1;
- 	         $('#policiesAndGuidelines-'+cid).html("");
-	         var j=0;
-	         var centralPoliciesText="";
-			jQuery.each(data['centralPoliciesData'], function(i, val) { 
-				j++;
-				    centralPoliciesText=centralPoliciesText+"<div class='col-lg-4 col-sm-12 p-2' id='itemContainer'><div class='card h-100 yellow_gradient'><img src='"+val.fileUrl2+"' class='card-img-top' alt='...'><div class='card-body'><p class='card-title'>"+val.title1+"</p><p class='card-link'><a href='"+val.fileUrl3+"?download=true'>Download</a></p></div></div></div>";
-			
-					});
-			
-			if(j==0)
-			 $('#policiesAndGuidelines-'+cid).append("<p style='text-align: center;'>No Record Found.</p>");
-			else{ 
-				var centralPolicies="";
-			
-				centralPolicies="<div class='row card-container'>"+centralPoliciesText+"</div>";
-			 
-			  $('#policiesAndGuidelines-'+cid).append(centralPolicies);
-			
-			
-			}
- $('#IFSDocuments-'+cid).html("");
-  var IFSDocsText="";
-jQuery.each(data['ifsDocumentData'], function(i, val) { 
- 
-
-	    IFSDocsText=IFSDocsText+"<div class='col-lg-4 col-sm-12 p-2' id='temContainer'><div class='card h-100 yellow_gradient'><img src='"+val.fileUrl2+"' class='card-img-top' alt='...'><div class='card-body'><p class='card-title'>"+val.title1+"</p><p class='card-link'><a href='"+val.fileUrl3+"?download=true'>Download</a></p></div></div></div>";
-
-		});
-
-if(ifslength==0)
- $('#IFSDocuments-'+cid).append("<p style='text-align: center;'>No Record Found.</p>");
-else{ 
-	var ifsPolicies="";
-
-	ifsPolicies="<div class='row card-container'>"+IFSDocsText+"</div>";
-  $('#IFSDocuments-'+cid).append(ifsPolicies);
-}
-                              }  
- }
- });
- });
- //$("select").select2();
 }
 
-function getsubsectors(recordId){
-
-	
-	
-AUI().use('aui-base','aui-io-request-deprecated', 'aui-node', function(A){
- A.io.request('<%=getMinistryOption2.toString() %>',{
- dataType : 'json',
- method : 'POST',
- data : {
-<portlet:namespace />catId :recordId,
-<portlet:namespace />scopeGroupId :"<%=themeDisplay.getScopeGroupId()%>",
-	<portlet:namespace />cmd:'getsubsectorsall'
- },
- on : {
- success : function() {
-	                       var data=this.get('responseData');
-                            console.log(data); 
-                            var length=data['centralPoliciesData'].length;
-                            var ifslength=data['ifsDocumentData'].length;
-                            console.log(length);
-                            console.log(ifslength);
-                            
-
-                            var textElement="";
-                            textElement="<option value=''>All</option>"; 
-                            $('#<portlet:namespace />subsector').html("");
-                            jQuery.each(data['subsectorData'], function(i, val) {
-                            textElement=textElement+"<option value='" + val.id + "'>"+ val.name + "</option>";
-                           });
-                            $('#<portlet:namespace />subsector').append(textElement);
-
- 	         $('#policiesAndGuidelines-1').html("");
-	         var j=0;
-	         var centralPoliciesText="";
-			jQuery.each(data['centralPoliciesData'], function(i, val) { 
-				j++;
-				    centralPoliciesText=centralPoliciesText+"<div class='col-lg-4 col-sm-12 p-2' id='itemContainer'><div class='card h-100 yellow_gradient'><img src='"+val.fileUrl2+"' class='card-img-top' alt='...'><div class='card-body'><p class='card-title'>"+val.title1+"</p><p class='card-link'><a href='"+val.fileUrl3+"?download=true'>Download</a></p></div></div></div>";
-			
-					});
-			
-			if(j==0)
-			 $('#policiesAndGuidelines-1').append("<p style='text-align: center;'>No Record Found.</p>");
-			else{ 
-				var centralPolicies="";
-			
-				centralPolicies="<div class='row card-container'>"+centralPoliciesText+"</div>";
-			 
-			  $('#policiesAndGuidelines-1').append(centralPolicies);
-			
-			
-			}
- $('#IFSDocuments-1').html("");
-  var IFSDocsText="";
-jQuery.each(data['ifsDocumentData'], function(i, val) { 
- 
-
-	    IFSDocsText=IFSDocsText+"<div class='col-lg-4 col-sm-12 p-2' id='temContainer'><div class='card h-100 yellow_gradient'><img src='"+val.fileUrl2+"' class='card-img-top' alt='...'><div class='card-body'><p class='card-title'>"+val.title1+"</p><p class='card-link'><a href='"+val.fileUrl3+"?download=true'>Download</a></p></div></div></div>";
-
-		});
-
-if(ifslength==0)
- $('#IFSDocuments-1').append("<p style='text-align: center;'>No Record Found.</p>");
-else{ 
-	var ifsPolicies="";
-
-	ifsPolicies="<div class='row card-container'>"+IFSDocsText+"</div>";
-  $('#IFSDocuments-1').append(ifsPolicies);
-}
-                              }  
- }
- });
- });
- //$("select").select2();
-}
 </script>
+<portlet:actionURL var="deleteRecordURL1" name="deleteEvents1"> 
+         </portlet:actionURL>
+<aui:form name="delete" method="post" action="<%=deleteRecordURL1 %>" style="display:none;">
+   <aui:input type="text" name="galleryImageId" value=""></aui:input>
+   </aui:form>
+<aui:script use="liferay-auto-fields">
+	var form = Liferay.Form.get('<portlet:namespace />fm');
+	var oldFieldRules = form.get('fieldRules');
+	var bookingPage = [ 
+	       {
+            body: function (val, fieldNode, ruleValue) {
+		                if(val!=""){
+		                
+		                 var eventStartDate=document.getElementById("<portlet:namespace />startDate").value;
+		                   console.log("eventStartDate>>>>"+eventStartDate);
+		                	var checkInDateArray=val.split("-");
+		                    var departureYear= checkInDateArray[0];
+	                        var departureMonth = checkInDateArray[1];
+	                        var departureDay = checkInDateArray[2];
+		                    if(departureYear.length!=4){
+		                         return false;
+		                    }
+	                        var eventEndDate = new Date(departureYear, departureMonth - 1, departureDay); 
+	                        
+	                          console.log("eventEndDate>>>>"+eventEndDate);
+		                
+	                        var todayDate = new Date();	 
+	                        
+	                        if(eventStartDate!=""){ 
+		                    var eventStartDateArray=eventStartDate.split("-");
+		                    var dateOftenderYear= eventStartDateArray[0];
+	                        var dateOftenderMonth = eventStartDateArray[1];
+	                        var dateOftenderDay = eventStartDateArray[2];
+	                        
+	                         var eventStDate = new Date(dateOftenderYear, dateOftenderMonth - 1, dateOftenderDay);
+			                  console.log("eventStDate>>>>"+eventStDate);
+			                      if (eventStDate > eventEndDate) {
+			                    	  return false;
+			                      }
+			                      else {
+			                      return true;
+			                      }
+		                   }          
+		                   else {
+		                    	  return true;
+		                    }
+		                }
+		                else{
+		                	return true;
+		                }
+            },
+            custom: true,
+            errorMessage: 'Event End Date not less than Event Start date.',
+            fieldName: "<portlet:namespace />endDate",
+            validatorName: 'eventEndDate_Validation'
+       }
+							
+	];
+	var durationPageRules = oldFieldRules.concat(bookingPage);
+	form.set('fieldRules', durationPageRules);
+	 </aui:script>
+	 
+	  <aui:script>
+ function <portlet:namespace/>initEditor(){
+ return  "<%= UnicodeFormatter.toString(description) %>";
+ }
+function <portlet:namespace/>initEditor(){
+ return  "<%= UnicodeFormatter.toString(hi_description) %>";
+ }
+</aui:script>
+<aui:script use="liferay-auto-fields">
+ 
+AUI().use('liferay-auto-fields',function(A) {
+ new Liferay.AutoFields(
+       {
+           contentBox: '#member-fields',
+           fieldIndexes: '<portlet:namespace />rowIndexes'
+       }
+   ).render();
+   });
+</aui:script>
