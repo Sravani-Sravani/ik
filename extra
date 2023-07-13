@@ -1,190 +1,37 @@
-public void manageEvents(ActionRequest request, ActionResponse response) throws Exception {
-		
-         ThemeDisplay themeDisplay = (ThemeDisplay) request.getAttribute(WebKeys.THEME_DISPLAY);
-		 long userId = themeDisplay.getUserId();
-		// _log.info("userId "+userId);
-		  
-		 String title = ParamUtil.getString(request, "title"); 
-		 String description = ParamUtil.getString(request, "description"); 
-		 String hi_description = ParamUtil.getString(request, "hi_description");  
-		 String hi_title = ParamUtil.getString(request, "hi_title"); 
-		 String endTime=ParamUtil.getString(request, "endTime"); 
-		 String startTime=ParamUtil.getString(request, "startTime");  
-		 //_log.info("endTime "+endTime);
-		// _log.info("startTime "+startTime);
-		 long eventId = ParamUtil.getLong(request, "eventId");
-		 String startDate = ParamUtil.getString(request, "startDate"); 
-		 String endDate = ParamUtil.getString(request, "endDate"); 
-		 SimpleDateFormat DbDataFormate=new SimpleDateFormat("yyyy-MM-dd");
-		 String location=ParamUtil.getString(request,"location");
-		 String venue=ParamUtil.getString(request,"venue");
-		 String eventtype=ParamUtil.getString(request,"eventtype");
-		 String trainingtype=ParamUtil.getString(request,"trainingtype");
-		 String trainingpname=ParamUtil.getString(request,"trainingpname");
-		 boolean flag = true;
-		 String email=ParamUtil.getString(request,"email");
-		 String[] specialChars= new String[] {":",";","=","<",">","{","}"};
+<div id="member-fields">
+    <% if (eventId == 0) { %>
+        <div class="lfr-form-row lfr-form-row-inline">
+            <div class="form-group">
+                <aui:input fieldParam="firstName0" id="firstName0" name="firstName0" label="YouTube Link" />
+            </div>
+        </div>
+    <% } else { %>
+        <%
+            List<YouTubeLinks> yl = YouTubeLinksLocalServiceUtil.findByeventId(eventId);
+            int index = 0;
+            for (YouTubeLinks youtubeLink : yl) {
+            	System.out.println("Index:"+index);
+                System.out.println("Update Form Youtube Link:" + youtubeLink.getYoutubelink());
+        %>
+            <div class="lfr-form-row lfr-form-row-inline">
+                <div class="form-group">
+                    <aui:input fieldParam="firstName0" id="firstName0" name="firstName0" label="YouTube Link" value="<%= youtubeLink.getYoutubelink() %>" />
+                </div>
+            </div>
+        <% 
+                index++;
+            }
+        %>
+    <% } %>
+</div>
 
-		 if(Validator.isNull(title)){
-				SessionErrors.add(request, "title.errorMsg.missing");
-				flag =false;
-			}
-		 if(Validator.isNull(hi_title)){
-			SessionErrors.add(request, "hi_title.errorMsg.missing");
-			flag =false;
-		 }
-		 for (String item : specialChars) {
-		        if (title.contains(item)) {
-		        	SessionErrors.add(request, "title.errorMsg.missing");
-					flag =false;
-		        }
-		        if (hi_title.contains(item)) {
-		        	SessionErrors.add(request, "hi_title.errorMsg.missing");
-					flag =false;
-		        }
-		        if(!item.equals(";")&& !item.equals("<") &&!item.equals(">"))
-		        {
-		        if (Validator.isNotNull(description) && description.contains(item)) {
-		        	SessionErrors.add(request, "description.errorMsg.missing");
-					flag =false;
-		        }
-                if (Validator.isNotNull(hi_description) && hi_description.contains(item)) {
-                	SessionErrors.add(request, "hi_description.errorMsg.missing");
-    				flag =false;
-		        }
-		        }
-                if(!item.equals(":")) {
-                    if (Validator.isNull(startTime) || startTime.contains(item)) {
-			        	SessionErrors.add(request, "startTime.errorMsg.missing");
-						flag =false;
-			        }
-                    if (Validator.isNull(endTime) || endTime.contains(item)) {
-                    	SessionErrors.add(request, "endTime.errorMsg.missing");
-        				flag =false;
-			        }
-                }
-		    }
-			UploadPortletRequest uploadPortletRequest = PortalUtil.getUploadPortletRequest(request);
-			String uploadFileName = null;
-			String uploadType="document";
-			boolean fileuploadstatus=false;
-			uploadFileName = uploadPortletRequest.getFileName(uploadType);
-			long uploadSize =  uploadPortletRequest.getSize(uploadType);
-			int fileSize= Math.round((uploadSize / 1024));
-             if (fileSize > 2048) {
-            	    SessionErrors.add(request, "document.errorMsg.sizeIssue");
-					flag =false;
-             } 
-			 String nameArray[]=uploadFileName.split("\\.");
-			 if (uploadFileName != null && !uploadFileName.isEmpty()) {
-				 String[] extensionsList= new String[]  {"jpeg","jpg","png","gif"};
-			 if(nameArray.length>2 || !(Arrays.asList(extensionsList).contains(nameArray[nameArray.length-1]))){
-					SessionErrors.add(request, "document.errorMsg.missing");
-					flag =false;
-				}
-			 }
-			 Date startDate1 = null;
-			 Date endDate1 = null;
-		     if(Validator.isNotNull(startDate)){
-					try {
-						startDate1=DbDataFormate.parse(startDate);
-					} catch (java.text.ParseException e) {
-						 SessionErrors.add(request, "startDate.errorMsg.missing");
-							flag =false;
-						e.printStackTrace();
-					}
-			}
-		     else {
-		    	 SessionErrors.add(request, "startDate.errorMsg.missing");
-					flag =false;
-		     }
-		     if(Validator.isNotNull(endDate)){
-					try {
-						endDate1=DbDataFormate.parse(endDate);
-					 
-					} catch (java.text.ParseException e) {
-						 SessionErrors.add(request, "endDate.errorMsg.missing");
-							flag =false;
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-			}
-		     else {
-		    	 SessionErrors.add(request, "endDate.errorMsg.missing");
-					flag =false;
-		     }
-		     if(endDate1.before(startDate1)) {
-		    	 SessionErrors.add(request, "endDate.errorMsg.notlessThan");
-					flag =false;
-		     }
-		     
-	if(flag) {
-		 boolean isnewRecord=true;
-	
-	      
-		Events events=null;
-	  if(eventId==0) {
-		  events=new EventsImpl();
-		   eventId=CounterLocalServiceUtil.increment(Events.class.getName());
-		   events.setEventId(eventId);
-		   events.setCreatedBy(userId);
-		   events.setCreatedDate(new Date());
-	  }
-	  else {
-		  isnewRecord=false;
-		  events=EventsLocalServiceUtil.fetchEvents(eventId);
-		  events.setModifiedBy(userId);
-		  events.setModifiedDate(new Date());
-	  }
-	  events.setTitle(title);
-	  events.setDescription(description);
-	  events.setStartTime(startTime);
-	  events.setEndTime(endTime);
-	  events.setStartDate(startDate1);
-	  events.setEndDate(endDate1);
-	  events.setHi_description(hi_description);
-	  events.setHi_title(hi_title);
-	  events.setLocation(location);
-	  events.setVenue(venue);
-	  events.setEventtype(eventtype);
-	  events.setTrainingpartner(trainingtype);
-	  events.setTrainingname(trainingpname);
-	  events.setEmail(email);
-	  long folderId = getUserFolderId(themeDisplay, request);
-		 long userFolderId = getUserFolderId(themeDisplay, request);
-		  long folderId1 = getUserFolderId1(themeDisplay, request);
-			 long userFolderId1 = getUserFolderId1(themeDisplay, request);
-       try {
- 		 	FileEntry entry = fileUpload(themeDisplay, request, "document","", themeDisplay.getUserId(),userFolderId, eventId);
-			if(entry!=null){
-				events.setFileEntryId(entry.getFileEntryId());
-				fileuploadstatus=true;
-			} 
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-			/*
-			 * String rowIndexes = request.getParameter("rowIndexes"); // String rowIndexes
-			 * = ParamUtil.getString(request,"rowIndexes");
-			 * System.out.println("Total Value:"+rowIndexes); try { if (rowIndexes != null
-			 * && !rowIndexes.isEmpty()) { System.out.println("Inside IF Youtube"); String[]
-			 * indexOfRows = rowIndexes.split(","); for (int i = 0; i < indexOfRows.length;
-			 * i++) { String YoutubeLink = (request.getParameter("youtube"+
-			 * indexOfRows[i])).trim(); // String YoutubeLink =
-			 * (ParamUtil.getString(request,"youtube"+ indexOfRows[i])).trim();
-			 * 
-			 * System.out.println("YouTube Link=>"+YoutubeLink); } } } catch(Exception e) {
-			 * 
-			 * }
-			 */
-      // System.out.println("isnewRecord>>>"+isnewRecord); 
-       if(eventId>0)
+if(eventId>0)
        {
     	   YouTubeLinksLocalServiceUtil.deleteByEventId(eventId);
     	   String rowIndexes = request.getParameter("rowIndexes");
-           System.out.println("Total String:"+rowIndexes);
+           System.out.println("Updated Total String:"+rowIndexes);
            String[] indexOfRows = rowIndexes.split(",");
-           System.out.println("Total Length:"+indexOfRows.length);
+           System.out.println(" Updated Total Length:"+indexOfRows.length);
            String YoutubeLink="";
            for (int i = 0; i < indexOfRows.length; i++) {
                YoutubeLink = request.getParameter("firstName"+ indexOfRows[i]);
@@ -221,105 +68,3 @@ public void manageEvents(ActionRequest request, ActionResponse response) throws 
               yt=YouTubeLinksLocalServiceUtil.addYouTubeLinks(yt);
        }
        }
-  	 try {
-		 UploadPortletRequest uploadPortletRequest1 = PortalUtil.getUploadPortletRequest(request);
-			
-			Map<String, FileItem[]> files= uploadPortletRequest1.getMultipartParameterMap();
-			Folder folder = getFolder1(themeDisplay);
-			//InputStream is;
-			//File file;
-			Date currentDate = new Date();
- 			//long repositoryId;
-			//int i=0;
-			for (Entry<String, FileItem[]> file2 : files.entrySet()) {
-				
-					/*
-					 * i++; if(fileuploadstatus && i==1) continue;
-					 */				
-				FileItem item[] =file2.getValue();
-				try {
-					for (FileItem fileItem : item) {
-						long repositoryId = themeDisplay.getScopeGroupId();
-						_log.info("repositoryId=" + repositoryId);
-						 _log.info("File Name Outside if =" + fileItem.getFileName());
-						 if (fileItem.getFileName() != null && !fileItem.getFileName().isEmpty()) 
-						 {
-							 _log.info("File Name inside if=" + fileItem.getFileName());
-						String uploadFileName1 = currentDate.getTime() + "_-_" +fileItem.getFileName().replaceAll(" ", "_");
-						uploadFileName1=uploadFileName1;
-						String uploadFiledescription = "This file is added via programatically";
-						String uploadMimeType = fileItem.getContentType();	
-						long uploadSize1 =fileItem.getSize();
-						File uploadFile = fileItem.getStoreLocation();
-						InputStream is =fileItem.getInputStream();
-						//_log.info("userFolderId 11>>"+userFolderId);
-						_log.info("title 11>>"+uploadFileName1);
-				    	try {
-				    		 
-				    		try {
-				    			boolean folderExist = isFolderExist(themeDisplay.getScopeGroupId(), PARENT_FOLDER_ID, ROOT_FOLDER_NAME);
-				    			if (!folderExist) {
-				    				Folder userFolder =  folder=createFolder(request, themeDisplay, PARENT_FOLDER_ID, ROOT_FOLDER_NAME, ROOT_FOLDER_DESCRIPTION);
-									
-				    				folderId1 = userFolder.getFolderId();
-				    			} else {
-				    				Folder userFolder = getFolder(themeDisplay.getScopeGroupId(), PARENT_FOLDER_ID, ROOT_FOLDER_NAME);
-				    				folderId1 = userFolder.getFolderId();
-				    			}
-				    			
-				    		    }
-				    		catch(Exception e) {
-				    			_log.info("userFolderId Exception>>"+folderId1);	
-				    		} 
-				    		ServiceContext serviceContext = ServiceContextFactory.getInstance(DLFileEntry.class.getName(), request);
-							
-				    		FileEntry fileEntry1 = DLAppServiceUtil.addFileEntry(repositoryId, folderId1, uploadFileName1, uploadMimeType, uploadFileName1, description, "changeLog",uploadFile, serviceContext);
-							if(fileEntry1!=null){
-								  GalleryDocuments document1=new GalleryDocumentsImpl();
-								  long documentId= CounterLocalServiceUtil.increment( GalleryDocuments.class.getName());
-								  document1.setDocumentId(documentId);
-								  document1.setDocumentTypeId(1);
-								  document1.setEventId(eventId);
-								 _log.info("uploaded fileEntry Id="+fileEntry1.getFileEntryId());
-								  document1.setCreatedBy(userId); 
-								  document1.setCreatedDate(new Date());
-								  document1.setModifiedDate(new Date()); 
-								     document1.setFileEntryId(fileEntry1.getFileEntryId());
-					              	document1=GalleryDocumentsLocalServiceUtil.addGalleryDocuments(document1);
-								//galleryGroup.setFileEntryId(fileEntry.getFileEntryId());
-							} 
-				    	
-				    	} catch (PortalException e) {
-							e.printStackTrace();
-						} catch (SystemException e) {
-							e.printStackTrace();
-						}
-					}	}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				break;
-			}
-		
-	 }
-	 catch(Exception e) {
-		
-	 }
-       if(isnewRecord) {
-    	//   System.out.println("isnewRecord 123>>>"+isnewRecord);
-    	   EventsLocalServiceUtil.addEvents(events);
-    	   SessionMessages.add(request, "entryAdded");
-       }
-       else {
-    	   //System.out.println("isnewRecord 456>>>"+isnewRecord);
-    	   EventsLocalServiceUtil.updateEvents(events);
-    	   SessionMessages.add(request, "entryUpdated");
-       }
-	 }
-		 else {
-			// SessionMessages.add(request, "entryAdded");
-			// request.setAttribute("formValue", "3");
-		    String redirectpage="/addEvent.jsp";
-		     response.setRenderParameter("jspPage",redirectpage);
-		 }
- }
