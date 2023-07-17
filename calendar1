@@ -39,3 +39,53 @@ var venueElement = document.createElement('div');
                         venueElement.classList.add('fc-list-item-venue');
                         venueElement.textContent = venue;
                         eventElement.parentElement.insertBefore(venueElement, eventElement.nextSibling);
+
+
+
+
+
+
+  STYLES
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  var calendarEl = document.getElementById('calendar');
+  
+  // Generate a random color
+  function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+  
+  var calendar = new FullCalendar.Calendar(calendarEl, {
+    // calendar configuration...
+    eventDidMount: function(info) {
+      if (info.view.type === 'listWeek') {
+        var dotElement = info.el.querySelector('.fc-list-event-dot');
+        if (dotElement) {
+          var randomColor = getRandomColor();
+          document.documentElement.style.setProperty('--dot-color', randomColor);
+        }
+      }
+    },
+    // other calendar options...
+  });
+  
+  calendar.render();
+});
+
+/* Define the CSS variable */
+:root {
+  --dot-color: red;
+}
+
+/* Apply the CSS variable to the dot element */
+.fc-list-event-dot {
+  background-color: var(--dot-color);
+}
+
