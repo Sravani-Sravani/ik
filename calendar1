@@ -13,3 +13,14 @@ eventContent: function(arg) {
                 html += '<div class="fc-event-location">' + location + '</div>'; // Display the location
                 return { html: html };
             },
+
+   eventDidMount: function(info) {
+                if (info.view.type === 'listWeek') {
+                    var event = info.event;
+                    var location = event.extendedProps.location; // Access the "location" field from extendedProps
+                    var locationElement = document.createElement('div');
+                    locationElement.classList.add('fc-list-item-location');
+                    locationElement.textContent = location;
+                    info.el.appendChild(locationElement);
+                }
+            },
