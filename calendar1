@@ -5,3 +5,11 @@ eventDidMount: function(info) {
                 locationElement.innerHTML = location;
                 info.el.querySelector('.fc-list-item-title').after(locationElement);
             },
+
+eventContent: function(arg) {
+                var event = arg.event;
+                var location = event.extendedProps.location; // Access the "location" field from extendedProps
+                var html = '<div class="fc-event-title">' + event.title + '</div>';
+                html += '<div class="fc-event-location">' + location + '</div>'; // Display the location
+                return { html: html };
+            },
