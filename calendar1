@@ -33,3 +33,9 @@ eventContent: function(arg) {
                     }
                 }
             },
+
+
+var venueElement = document.createElement('div');
+                        venueElement.classList.add('fc-list-item-venue');
+                        venueElement.textContent = venue;
+                        eventElement.parentElement.insertBefore(venueElement, eventElement.nextSibling);
