@@ -24,3 +24,17 @@ eventContent: function(arg) {
                     info.el.appendChild(locationElement);
                 }
             },
+
+eventDidMount: function(info) {
+                if (info.view.type === 'listWeek') {
+                    var event = info.event;
+                    var location = event.extendedProps.location; // Access the "location" field from extendedProps
+                    var eventElement = info.el.querySelector('.fc-list-item-title');
+                    if (eventElement) {
+                        var locationElement = document.createElement('div');
+                        locationElement.classList.add('fc-list-item-location');
+                        locationElement.textContent = location;
+                        eventElement.parentElement.insertBefore(locationElement, eventElement.nextSibling);
+                    }
+                }
+            },
