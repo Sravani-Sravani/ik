@@ -1,0 +1,180 @@
+<%
+    JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+    Date todayDate1 = new Date();
+    todayDate1.setHours(0);
+    todayDate1.setMinutes(0);
+    todayDate1.setSeconds(0);
+    List<Events> eventLinksot1 = null;
+    DynamicQuery dqot = EventsLocalServiceUtil.dynamicQuery();
+    dqot.add(RestrictionsFactoryUtil.eq("eventtype", "Training"));
+    dqot.add(RestrictionsFactoryUtil.eq("trainingpartner", "Offline Training"));
+    eventLinksot1 = EventsLocalServiceUtil.dynamicQuery(dqot);
+    try {
+        eventLinksot1 = EventsLocalServiceUtil.dynamicQuery(dqot, 0, EventsLocalServiceUtil.getEventsesCount());
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    for (Events data : eventLinksot1) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+        JSONObject jsonOb = JSONFactoryUtil.createJSONObject();
+        jsonOb.put("groupId", data.getEventId());
+        long evid = data.getEventId();
+        String str = data.getTitle();
+        String languageId1 = themeDisplay.getLanguageId();
+        if (languageId1.equals("hi_IN")) {
+            str = data.getHi_title();
+            System.out.println(str);
+        }
+        String startDate = "";
+        String link = "/eventlist?eventId=" + evid + "&eventtype=Training";
+        String endDate = "";
+        String st = "";
+        String et = "";
+
+        try {
+            Date dt = data.getStartDate();
+            Date dt1 = data.getEndDate();
+            startDate = sdf.format(dt);
+            endDate = sdf.format(dt1);
+            String starttime = data.getStartTime();
+            String endtime = data.getEndTime();
+            st = startDate.substring(0, 10) + " " + starttime + ":00.0";
+            System.out.println(startDate);
+            System.out.println(st);
+            et = endDate.substring(0, 10) + " " + endtime + ":00.0";
+            System.out.println(et);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        jsonOb.put("title", str);
+        jsonOb.put("start", st);
+        jsonOb.put("end", et);
+        jsonOb.put("url", link);
+        jsonOb.put("location", data.getLocation()); // Add the "location" field to the event object
+        jsonOb.put("venue", data.getVenue()); // Add the "venue" field to the event object
+
+        jsonArray.put(jsonOb);
+    }
+
+    String newdate = new SimpleDateFormat("yyyy-MM-dd").format(todayDate1);
+%>
+
+<script src='/o/com.kpmg.events/js/index.global.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var events1 = <%=jsonArray.toString()%>;
+        var date1 = "<%=newdate%>";
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialDate: date1,
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            },
+            height: 'auto',
+            navLinks: true,
+            editable: true,
+            selectable: true,
+            selectMirror: true,
+            nowIndicator: true,
+            businessHours: true,
+            holidays: [
+                {
+                    start: '2023-08-15',
+                    end: '2023-01-08',
+                    overlap: false,
+                    display: 'background',
+                    color: '#ff9f89'
+                },
+                {
+                    start: '2023-01-26',
+                    end: '2023-01-28',
+                    overlap: false,
+                    display: 'background',
+                    color: '#ff9f89'
+                }
+            ],
+            eventDidMount: function(info) {
+                if (info.view.type === 'listWeek') {
+                    var eventElement = info.el.querySelector('.fc-list-item-title');
+                    if (eventElement) {
+                        var dayIndex = info.event.start.getDay(); // Get the day of the week index (0-6)
+                        eventElement.classList.add('fc-list-item-title-color-' + dayIndex);
+                    }
+                }
+            },
+            events: events1
+        });
+
+        calendar.render();
+    });
+</script>
+
+<style>
+    body {
+        margin: 40px 10px;
+        padding: 0;
+        font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
+        font-size: 14px;
+    }
+
+    #calendar {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .fc-list-item-location,
+    .fc-list-item-venue {
+        font-size: 12px;
+        color: #888;
+        margin-top: 5px;
+    }
+
+    .fc-list-item-title {
+        margin-bottom: 5px;
+        position: relative;
+    }
+
+    .fc-list-item-title::before {
+        content: "\2022";
+        display: inline-block;
+        margin-right: 5px;
+    }
+
+    /* Define colors based on the day of the week using pseudo-classes */
+    .fc-list-item-title-color-0 {
+        color: red;
+    }
+
+    .fc-list-item-title-color-1 {
+        color: green;
+    }
+
+    .fc-list-item-title-color-2 {
+        color: blue;
+    }
+
+    .fc-list-item-title-color-3 {
+        color: magenta;
+    }
+
+    .fc-list-item-title-color-4 {
+        color: yellow;
+    }
+
+    .fc-list-item-title-color-5 {
+        color: cyan;
+    }
+
+    .fc-list-item-title-color-6 {
+        color: orange;
+    }
+
+    .fc-list-item-venue {
+        font-weight: bold;
+    }
+</style>
