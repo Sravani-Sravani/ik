@@ -14,18 +14,7 @@ eventContent: function(arg) {
                 return { html: html };
             },
 
-   eventDidMount: function(info) {
-                if (info.view.type === 'listWeek') {
-                    var event = info.event;
-                    var location = event.extendedProps.location; // Access the "location" field from extendedProps
-                    var locationElement = document.createElement('div');
-                    locationElement.classList.add('fc-list-item-location');
-                    locationElement.textContent = location;
-                    info.el.appendChild(locationElement);
-                }
-            },
-
-eventDidMount: function(info) {
+      eventDidMount: function(info) {
                 if (info.view.type === 'listWeek') {
                     var event = info.event;
                     var location = event.extendedProps.location; // Access the "location" field from extendedProps
@@ -35,6 +24,12 @@ eventDidMount: function(info) {
                         locationElement.classList.add('fc-list-item-location');
                         locationElement.textContent = location;
                         eventElement.parentElement.insertBefore(locationElement, eventElement.nextSibling);
+
+                        var date = event.start.toISOString().split('T')[0];
+                        var thElement = document.querySelector(`[data-date="${date}"]`);
+                        if (thElement) {
+                            thElement.classList.add('fc-list-item-highlight');
+                        }
                     }
                 }
             },
