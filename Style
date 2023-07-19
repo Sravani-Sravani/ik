@@ -1,9 +1,19 @@
-eventRender: function(info) {
-            if (info.view.type === 'timeGridWeek') {
-                var eventElement = info.el;
-                var eventIndex = info.event._def.extendedProps.index; // Assuming you have an index property for each event
-                var colorIndex = eventIndex % 3; // Change the number '3' to the number of different colors you want to cycle through
-                var colors = ['red', 'green', 'blue']; // Define an array of colors to use
-                eventElement.style.backgroundColor = colors[colorIndex];
-            }
-        },
+<div class="calendar-wrapper">
+    <div id="calendar"></div>
+</div>
+
+<style>
+    .calendar-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
+
+    #calendar {
+        width: 70%;
+        max-width: 800px;
+        height: 70vh;
+        margin: 0 auto;
+    }
+</style>
