@@ -1,97 +1,98 @@
 <section>
-	<div class="container">
-		<div class="main_heading">
-			<h1>Category List</h1>
-		</div>
-		<table class="table table-bordered subsector_list">
-			<tbody>
-				<tr class="table-dark">
-					<th width="50%">Category</th>
-					<th>Infrastructure Sub Sectors</th>
-				</tr>
-				<% 
-				List<InfraKnowledgeCategory> hmlc = null;
-				DynamicQuery dyq1 = null;
-				try {
-					dyq1 = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery();
-					dyq1.addOrder(OrderFactoryUtil.asc("catId"));
-					hmlc = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery(dyq1, 0,
-							InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
-				} catch (Exception e) {
-					e.getMessage();
-				}
+    <div class="container">
+        <div class="main_heading">
+            <h1>Category List</h1>
+        </div>
+        <table class="table table-bordered subsector_list">
+            <div class="accordion accordion-flush" id="accordionsubsectorlist">
+                <tr class="table-dark">
+                    <th width="50%">Category</th>
+                    <th>Infrastructure Sub Sectors</th>
+                </tr>
+                <% 
+                List<InfraKnowledgeCategory> hmlc = null;
+                DynamicQuery dyq1 = null;
+                try {
+                    dyq1 = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery();
+                    dyq1.addOrder(OrderFactoryUtil.asc("catId"));
+                    hmlc = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery(dyq1, 0,
+                            InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
+                } catch (Exception e) {
+                    e.getMessage();
+                }
 
-				int z = 1;
+                int z = 1;
 
-				for (InfraKnowledgeCategory abt : hmlc) {
-					long catId = abt.getCatId();
-					String catname = abt.getCategoryName();
-				%>
+                for (InfraKnowledgeCategory abt : hmlc) {
+                    long catId = abt.getCatId();
+                    String catname = abt.getCategoryName();
 
-				<tr>
-					<td><%= catname %></td>
-					<td>
-						<div class="accordion accordion-flush" id="accordion<%= z %>">
-						<%
-						List<InfraKnowledgeSubCategory> hmlc1 = null;
-						DynamicQuery dyq2 = null;
-						try {
-							dyq2 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
-							dyq2.add(RestrictionsFactoryUtil.eq("catId", catId));
-							hmlc1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dyq2, 0,
-									InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
-						} catch (Exception e) {
-							e.getMessage();
-						}
-						for (InfraKnowledgeSubCategory su : hmlc1) {
-							long subCatId = su.getSubCatId();
-							String subcatname = su.getSubCategoryName();
-						%>
+                    %>
 
-						<div class="accordion-item">
-							<h2 class="accordion-header" id="heading<%= z %>_<%= subCatId %>">
-								<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%= z %>_<%= subCatId %>" aria-expanded="false" aria-controls="collapse<%= z %>_<%= subCatId %>">
-									<%= subcatname %>
-								</button>
-							</h2>
-							<div id="collapse<%= z %>_<%= subCatId %>" class="accordion-collapse collapse" aria-labelledby="heading<%= z %>_<%= subCatId %>" data-bs-parent="#accordion<%= z %>">
-								<div class="accordion-body">
-									<ul>
-										<%
-										List<HmlCategoryList> reports = null;
-										DynamicQuery dy = null;
-										try {
-											dy = HmlCategoryListLocalServiceUtil.dynamicQuery();
-											dy.add(RestrictionsFactoryUtil.eq("subCatId", subCatId));
-											reports = HmlCategoryListLocalServiceUtil.dynamicQuery(dy, 0,
-													HmlCategoryListLocalServiceUtil.getHmlCategoryListsCount());
-										} catch (Exception e) {
-											e.getMessage();
-										}
-										for (HmlCategoryList hm : reports) {
-											String des = hm.getHmlCategoryInfo();
-											if (des.length() > 0) {
-										%>
-										<li><i class="fa-solid fa-circle-exclamation"></i> <%= des %></li>
-										<%
-											}
-										}
-										%>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<%
-						}
-						%>
-						</div>
-					</td>
-				</tr>
-				<%
-				z++;
-				}
-				%>
-			</tbody>
-		</table>
-	</div>
+                <tr>
+                    <th><%=catname %></th>
+                    <td>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="flush-headingTransport">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTransport<%= z %>" aria-expanded="false" aria-controls="flush-collapseTransport<%= z %>">
+                                    Explore Sub Sector
+                                </button>
+                            </h2>
+                            <div id="flush-collapseTransport<%= z %>" class="accordion-collapse collapse" aria-labelledby="flush-headingTransport" data-bs-parent="#accordionsubsectorlist">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <%                                        
+                                        List<InfraKnowledgeSubCategory> hmlc1 = null;
+                                        DynamicQuery dyq2 = null;
+                                        try {
+                                            dyq2 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
+                                            dyq2.add(RestrictionsFactoryUtil.eq("catId", catId));
+                                            hmlc1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dyq2, 0,
+                                                    InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
+                                        } catch (Exception e) {
+                                            e.getMessage();
+                                        }
+                                        for (InfraKnowledgeSubCategory su : hmlc1) {
+                                            long subCatId = su.getCatId();
+                                            String subcatname = su.getSubCategoryName();
+
+                                            %>
+                                        <li><%= subcatname %>
+                                            <%                                          
+                                            List<HmlCategoryList> reports = null;
+                                            DynamicQuery dy = null;
+                                            try {
+                                                dy = HmlCategoryListLocalServiceUtil.dynamicQuery();
+                                                dy.add(RestrictionsFactoryUtil.eq("subcatId", subCatId));
+                                                reports = HmlCategoryListLocalServiceUtil.dynamicQuery(dy, 0,
+                                                        HmlCategoryListLocalServiceUtil.getHmlCategoryListsCount());
+                                            } catch (Exception e) {
+                                                e.getMessage();
+                                            }
+                                            for (HmlCategoryList hm : reports) {
+                                                String des = hm.getHmlCategoryInfo();
+                                                if (des.length() > 0) {
+                                            %>
+                                            <i class="fa-solid fa-circle-exclamation" data-bs-toggle="tooltip" data-bs-placement="top" title="<%= des %>"></i>
+                                            <%                                               
+                                                }
+                                            }
+                                            %>
+                                        </li>
+                                        <%                                        
+                                        }
+                                        %>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <%                    
+                z++;
+                }
+                %>
+            </div>
+        </table>
+    </div>
 </section>
