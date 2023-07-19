@@ -20,3 +20,25 @@ AUI().use('liferay-auto-fields',function(A) {
    ).render();
    });
 </aui:script>
+
+
+<aui:script use="liferay-auto-fields">
+    AUI().use('liferay-auto-fields', function(A) {
+        new Liferay.AutoFields(
+            {
+                contentBox: '#member-fields',
+                fieldIndexes: '<portlet:namespace />rowIndexes'
+            }
+        ).render();
+
+        // Add the delete functionality
+        A.all('#member-fields').delegate('click', function(event) {
+            var target = event.currentTarget;
+            var row = target.ancestor('.lfr-form-row');
+
+            if (row.siblings('.lfr-form-row').size() > 0) {
+                row.remove();
+            }
+        }, '.lfr-form-row .lfr-form-row-delete');
+    });
+</aui:script>
