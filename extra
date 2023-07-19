@@ -4,7 +4,7 @@
 			<h1>Category List</h1>
 		</div>
 		<table class="table table-bordered subsector_list">
-			<div class="accordion accordion-flush" id="accordionsubsectorlist">
+			<tbody>
 				<tr class="table-dark">
 					<th width="50%">Category</th>
 					<th>Infrastructure Sub Sectors</th>
@@ -26,78 +26,72 @@
 				for (InfraKnowledgeCategory abt : hmlc) {
 					long catId = abt.getCatId();
 					String catname = abt.getCategoryName();
-
-					%>
+				%>
 
 				<tr>
-					<th><%= catname %></th>
+					<td><%= catname %></td>
 					<td>
+						<div class="accordion accordion-flush" id="accordion<%= z %>">
+						<%
+						List<InfraKnowledgeSubCategory> hmlc1 = null;
+						DynamicQuery dyq2 = null;
+						try {
+							dyq2 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
+							dyq2.add(RestrictionsFactoryUtil.eq("catId", catId));
+							hmlc1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dyq2, 0,
+									InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
+						} catch (Exception e) {
+							e.getMessage();
+						}
+						for (InfraKnowledgeSubCategory su : hmlc1) {
+							long subCatId = su.getCatId();
+							String subcatname = su.getSubCategoryName();
+						%>
+
 						<div class="accordion-item">
-							<h2 class="accordion-header" id="flush-headingTransport">
-								<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTransport" aria-expanded="false" aria-controls="flush-collapseTransport">
-									Explore Sub Sector
+							<h2 class="accordion-header" id="heading<%= z %>_<%= subCatId %>">
+								<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<%= z %>_<%= subCatId %>" aria-expanded="false" aria-controls="collapse<%= z %>_<%= subCatId %>">
+									<%= subcatname %>
 								</button>
 							</h2>
-							<div id="flush-collapseTransport" class="accordion-collapse collapse" aria-labelledby="flush-headingTransport" data-bs-parent="#accordionsubsectorlist">
+							<div id="collapse<%= z %>_<%= subCatId %>" class="accordion-collapse collapse" aria-labelledby="heading<%= z %>_<%= subCatId %>" data-bs-parent="#accordion<%= z %>">
 								<div class="accordion-body">
 									<ul>
 										<%
-										List<InfraKnowledgeSubCategory> hmlc1 = null;
-										DynamicQuery dyq2 = null;
+										List<HmlCategoryList> reports = null;
+										DynamicQuery dy = null;
 										try {
-											dyq2 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
-											dyq2.add(RestrictionsFactoryUtil.eq("catId", catId));
-											hmlc1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dyq2, 0,
-													InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
+											dy = HmlCategoryListLocalServiceUtil.dynamicQuery();
+											dy.add(RestrictionsFactoryUtil.eq("subcatId", subCatId));
+											reports = HmlCategoryListLocalServiceUtil.dynamicQuery(dy, 0,
+													HmlCategoryListLocalServiceUtil.getHmlCategoryListsCount());
 										} catch (Exception e) {
 											e.getMessage();
 										}
-										for (InfraKnowledgeSubCategory su : hmlc1) {
-											long subCatId = su.getCatId();
-											String subcatname = su.getSubCategoryName();
-
-											%>
-
-										<li><%= subcatname %>
-											<%
-											List<HmlCategoryList> reports = null;
-											DynamicQuery dy = null;
-											try {
-												dy = HmlCategoryListLocalServiceUtil.dynamicQuery();
-												dy.add(RestrictionsFactoryUtil.eq("subcatId", subCatId));
-												reports = HmlCategoryListLocalServiceUtil.dynamicQuery(dy, 0,
-														HmlCategoryListLocalServiceUtil.getHmlCategoryListsCount());
-											} catch (Exception e) {
-												e.getMessage();
-											}
-											for (HmlCategoryList hm : reports) {
-												String des = hm.getHmlCategoryInfo();
-												if (des.length() > 0) {
-													%>
-
-											<i class="fa-solid fa-circle-exclamation" data-bs-toggle="tooltip" data-bs-placement="top" title="<%= hm.getHmlCategoryInfo() %>"></i> 	
-											<%
+										for (HmlCategoryList hm : reports) {
+											String des = hm.getHmlCategoryInfo();
+											if (des.length() > 0) {
+										%>
+										<li><i class="fa-solid fa-circle-exclamation"></i> <%= des %></li>
+										<%
 											}
 										}
 										%>
-										</li>
-										<%
-									}
-									%>
 									</ul>
 								</div>
 							</div>
 						</div>
+						<%
+						}
+						%>
+						</div>
 					</td>
 				</tr>
-
 				<%
 				z++;
-			}
-			%>
-
-			</div>
+				}
+				%>
+			</tbody>
 		</table>
-
 	</div>
 </section>
