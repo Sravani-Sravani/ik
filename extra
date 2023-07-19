@@ -28,9 +28,8 @@
                     String catname = abt.getCategoryName();
 
                     %>
-
                 <tr>
-                    <th><%=catname %></th>
+                    <th><%= catname %></th>
                     <td>
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="flush-headingTransport">
@@ -58,7 +57,8 @@
 
                                             %>
                                         <li><%= subcatname %>
-                                            <%                                          
+                                            <%
+                                            String description = "";
                                             List<HmlCategoryList> reports = null;
                                             DynamicQuery dy = null;
                                             try {
@@ -66,16 +66,17 @@
                                                 dy.add(RestrictionsFactoryUtil.eq("subcatId", subCatId));
                                                 reports = HmlCategoryListLocalServiceUtil.dynamicQuery(dy, 0,
                                                         HmlCategoryListLocalServiceUtil.getHmlCategoryListsCount());
+                                                if (reports != null && reports.size() > 0) {
+                                                    HmlCategoryList hm = reports.get(0);
+                                                    description = hm.getHmlCategoryInfo();
+                                                }
                                             } catch (Exception e) {
                                                 e.getMessage();
                                             }
-                                            for (HmlCategoryList hm : reports) {
-                                                String des = hm.getHmlCategoryInfo();
-                                                if (des.length() > 0) {
+                                            if (description.length() > 0) {
                                             %>
-                                            <i class="fa-solid fa-circle-exclamation" data-bs-toggle="tooltip" data-bs-placement="top" title="<%= des %>"></i>
-                                            <%                                               
-                                                }
+                                            <i class="fa-solid fa-circle-exclamation" data-bs-toggle="tooltip" data-bs-placement="top" title="<%= description %>"></i>
+                                            <%
                                             }
                                             %>
                                         </li>
