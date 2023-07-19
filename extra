@@ -58,7 +58,6 @@
                                             %>
                                         <li><%= subcatname %>
                                             <%
-                                            String description = "";
                                             List<HmlCategoryList> reports = null;
                                             DynamicQuery dy = null;
                                             try {
@@ -66,17 +65,15 @@
                                                 dy.add(RestrictionsFactoryUtil.eq("subcatId", subCatId));
                                                 reports = HmlCategoryListLocalServiceUtil.dynamicQuery(dy, 0,
                                                         HmlCategoryListLocalServiceUtil.getHmlCategoryListsCount());
-                                                if (reports != null && reports.size() > 0) {
-                                                    HmlCategoryList hm = reports.get(0);
-                                                    description = hm.getHmlCategoryInfo();
-                                                }
                                             } catch (Exception e) {
                                                 e.getMessage();
                                             }
-                                            if (description.length() > 0) {
+                                            for (HmlCategoryList hm : reports) {
+                                                String description = hm.getHmlCategoryInfo();
+                                                if (description.length() > 0) {
                                             %>
                                             <i class="fa-solid fa-circle-exclamation" data-bs-toggle="tooltip" data-bs-placement="top" title="<%= description %>"></i>
-                                            <%
+                                            <% }
                                             }
                                             %>
                                         </li>
