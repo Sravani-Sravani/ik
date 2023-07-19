@@ -1,0 +1,22 @@
+
+<div id="member-fields">
+ <div class="lfr-form-row lfr-form-row-inline">
+            <div class="form-group">
+                <aui:input fieldParam="firstName0" id="firstName0" name="firstName0" label="YouTube Link" />
+            </div>
+        </div>
+</div>
+
+
+<aui:script use="liferay-auto-fields">
+ 
+AUI().use('liferay-auto-fields',function(A) {
+ new Liferay.AutoFields(
+       {
+           contentBox: '#member-fields',
+           fieldIndexes: '<portlet:namespace />rowIndexes'
+           
+       }
+   ).render();
+   });
+</aui:script>
