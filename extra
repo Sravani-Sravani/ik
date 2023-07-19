@@ -1,70 +1,103 @@
-<div id="member-fields">
-    <% if (eventId == 0) { %>
-        <div class="lfr-form-row lfr-form-row-inline">
-            <div class="form-group">
-                <aui:input fieldParam="firstName0" id="firstName0" name="firstName0" label="YouTube Link" />
-            </div>
-        </div>
-    <% } else { %>
-        <%
-            List<YouTubeLinks> yl = YouTubeLinksLocalServiceUtil.findByeventId(eventId);
-            int index = 0;
-            for (YouTubeLinks youtubeLink : yl) {
-            	System.out.println("Index:"+index);
-                System.out.println("Update Form Youtube Link:" + youtubeLink.getYoutubelink());
-        %>
-            <div class="lfr-form-row lfr-form-row-inline">
-                <div class="form-group">
-                    <aui:input fieldParam="firstName0" id="firstName0" name="firstName0" label="YouTube Link" value="<%= youtubeLink.getYoutubelink() %>" />
-                </div>
-            </div>
-        <% 
-                index++;
-            }
-        %>
-    <% } %>
-</div>
+<section>
+		<div class="container">
+			<div class="main_heading"><h1>Category List</h1></div>
+			<table class="table table-bordered subsector_list">
+				<div class="accordion accordion-flush" id="accordionsubsectorlist">
+				<tr class="table-dark">
+					<th width="50%">Category</th>
+					<th>Infrastructure Sub Sectors</th>
+				</tr>
+				    <% 
+ 
+					List<InfraKnowledgeCategory> hmlc=null;
+  DynamicQuery dyq1 = null;
+  try {
+  	dyq1 = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery();
+      dyq1.addOrder(OrderFactoryUtil.asc("catId"));
+    //  dyq1.add(RestrictionsFactoryUtil.eq("year", Integer.toString(i)));
+      hmlc = InfraKnowledgeCategoryLocalServiceUtil.dynamicQuery(dyq1, 0,
+    		  InfraKnowledgeCategoryLocalServiceUtil.getInfraKnowledgeCategoriesCount());
+  } catch (Exception e) {
+      e.getMessage();
+  }
 
-if(eventId>0)
-       {
-    	   YouTubeLinksLocalServiceUtil.deleteByEventId(eventId);
-    	   String rowIndexes = request.getParameter("rowIndexes");
-           System.out.println("Updated Total String:"+rowIndexes);
-           String[] indexOfRows = rowIndexes.split(",");
-           System.out.println(" Updated Total Length:"+indexOfRows.length);
-           String YoutubeLink="";
-           for (int i = 0; i < indexOfRows.length; i++) {
-               YoutubeLink = request.getParameter("firstName"+ indexOfRows[i]);
-               _log.info("::::::::::::YouTube Links:::::::::::::: "+i +"th Link: "+ YoutubeLink);
-                  YouTubeLinks yt=new YouTubeLinksImpl();
-    			  long yid= CounterLocalServiceUtil.increment(YouTubeLinks.class.getName());
-    			  yt.setLinkId(yid);
-    			 yt.setYoutubelink(YoutubeLink);
-    			 yt.setEventId(eventId);
-    			  yt.setCreatedBy(userId); 
-    			  yt.setCreatedDate(new Date());
-    			 yt.setModifiedDate(new Date()); 
-                  yt=YouTubeLinksLocalServiceUtil.addYouTubeLinks(yt);
-           }
-           
-       }
-       else {
-       String rowIndexes = request.getParameter("rowIndexes");
-       System.out.println("Total String:"+rowIndexes);
-       String[] indexOfRows = rowIndexes.split(",");
-       System.out.println("Total Length:"+indexOfRows.length);
-       String YoutubeLink="";
-       for (int i = 0; i < indexOfRows.length; i++) {
-           YoutubeLink = request.getParameter("firstName"+ indexOfRows[i]);
-           _log.info("::::::::::::YouTube Links:::::::::::::: "+i +"th Link: "+ YoutubeLink);
-              YouTubeLinks yt=new YouTubeLinksImpl();
-			  long yid= CounterLocalServiceUtil.increment(YouTubeLinks.class.getName());
-			  yt.setLinkId(yid);
-			 yt.setYoutubelink(YoutubeLink);
-			 yt.setEventId(eventId);
-			  yt.setCreatedBy(userId); 
-			  yt.setCreatedDate(new Date());
-			 yt.setModifiedDate(new Date()); 
-              yt=YouTubeLinksLocalServiceUtil.addYouTubeLinks(yt);
-       }
-       }
+       int z=1;
+       
+  for(InfraKnowledgeCategory abt:hmlc){
+	 long catId=abt.getCatId();
+	 String catname=abt.getCategoryName();
+	
+       %>
+	
+				<tr>
+					<th><%=catname %></th>
+					<td>
+						<div class="accordion-item">
+							<h2 class="accordion-header" id="flush-headingTransport">
+							  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTransport" aria-expanded="false" aria-controls="flush-collapseTransport">
+							   Explore Sub Sector
+							  </button>
+							</h2>
+							<div id="flush-collapseTransport" class="accordion-collapse collapse" aria-labelledby="flush-headingTransport" data-bs-parent="#accordionsubsectorlist">
+							  <div class="accordion-body">
+								<ul>
+								<%
+								
+								List<InfraKnowledgeSubCategory> hmlc1=null;
+								  DynamicQuery dyq2 = null;
+								  try {
+								  	dyq2 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery();
+								     // dyq2.addOrder(OrderFactoryUtil.asc("catId"));
+								      dyq2.add(RestrictionsFactoryUtil.eq("catId", catId));
+								      hmlc1 = InfraKnowledgeSubCategoryLocalServiceUtil.dynamicQuery(dyq2, 0,
+								    		  InfraKnowledgeSubCategoryLocalServiceUtil.getInfraKnowledgeSubCategoriesCount());
+								  } catch (Exception e) {
+								      e.getMessage();
+								  }
+								  for(InfraKnowledgeSubCategory su:hmlc1){
+										 long subCatId=su.getCatId();
+										 String subcatname=su.getSubCategoryName();
+										
+								%>
+									
+									<li><%=subcatname %>
+									<%
+									List<HmlCategoryList> reports=null;
+									  DynamicQuery dy = null;
+									  try {
+									  	dy = HmlCategoryListLocalServiceUtil.dynamicQuery();
+									  	//dy.add(RestrictionsFactoryUtil.eq("catId", catId));
+									      dy.add(RestrictionsFactoryUtil.eq("subcatId", subCatId));
+									   //   System.out.println("CATID:"+catId);
+									      System.out.println("SubCatId"+subCatId);
+									      reports = HmlCategoryListLocalServiceUtil.dynamicQuery(dy, 0,
+									    		  HmlCategoryListLocalServiceUtil.getHmlCategoryListsCount());
+									  } catch (Exception e) {
+									      e.getMessage();
+									  }
+									  System.out.println("Size::::"+reports.size());
+									  for(HmlCategoryList hm:reports){
+											String des=hm.getHmlCategoryInfo();
+											System.out.print("description" + des);
+											System.out.println("SubCatId"+subCatId);
+											if(des.length()>0){
+									%>
+									
+									<i class="fa-solid fa-circle-exclamation" data-bs-toggle="tooltip" data-bs-placement="top" title="<%=des%>"></i> 	
+									<%} }%>
+									</li>
+									<%} %>
+									</ul>
+							  </div>
+							</div>
+						  </div>
+					</td>
+				</tr>
+					
+			<% z++; } %>
+					
+				</div>	
+			</table>
+
+		</div>		
+	</section>
