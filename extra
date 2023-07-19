@@ -52,7 +52,7 @@
                                             e.getMessage();
                                         }
                                         for (InfraKnowledgeSubCategory su : hmlc1) {
-                                            long subCatId = su.getCatId();
+                                            long subCatId = su.getSubCatId();
                                             String subcatname = su.getSubCategoryName();
 
                                             %>
@@ -62,7 +62,7 @@
                                             DynamicQuery dy = null;
                                             try {
                                                 dy = HmlCategoryListLocalServiceUtil.dynamicQuery();
-                                                dy.add(RestrictionsFactoryUtil.eq("subcatId", subCatId));
+                                                dy.add(RestrictionsFactoryUtil.eq("subCatId", subCatId));
                                                 reports = HmlCategoryListLocalServiceUtil.dynamicQuery(dy, 0,
                                                         HmlCategoryListLocalServiceUtil.getHmlCategoryListsCount());
                                             } catch (Exception e) {
