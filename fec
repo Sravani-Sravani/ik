@@ -40,3 +40,46 @@ function getMinistry1(reordId, cid, seletion) {
     // ... rest of the code ...
 }
 
+
+
+
+
+
+function getMinistry1(reordId, cid, seletion) {
+    var policiesAndGuidelinesLink = document.getElementById("policiesAndGuidelinesLink");
+    var IFSLink = document.getElementById("IFSLink");
+
+    var viewAllUrl = "/knowledgeresourcesdetails?tab=" + cid + "&type=" + type;
+
+    // Get the selected Subsector and Ministry values
+    var subcategoryId = "";
+    var ministryId = "";
+
+    if (seletion == "Subsector") {
+        subcategoryId = reordId;
+        ministryId = $("#<portlet:namespace />ministry-" + cid).val();
+    } else {
+        subcategoryId = $("#<portlet:namespace />subCatId-" + cid).val();
+        ministryId = reordId;
+    }
+
+    // Check if Subsector and Ministry are selected
+    if (subcategoryId !== null && subcategoryId !== "") {
+        viewAllUrl += "&subsector=" + subcategoryId;
+    }
+
+    if (ministryId !== null && ministryId !== "") {
+        viewAllUrl += "&ministry=" + ministryId;
+    }
+
+    // Set type=PAG for policiesAndGuidelinesLink and type=IFS for IFSLink
+    policiesAndGuidelinesLink.href = viewAllUrl + "&type=PAG";
+    IFSLink.href = viewAllUrl + "&type=IFS";
+
+    // ... rest of the code ...
+
+    // Your existing code below this line
+    AUI().use('aui-base', 'aui-io-request-deprecated', 'aui-node', function(A) {
+        // ... existing code ...
+    });
+}
