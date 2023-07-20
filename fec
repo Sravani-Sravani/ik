@@ -7,8 +7,6 @@
 </p>
 
 function getMinistry1(reordId, cid, seletion) {
-    // ... existing code ...
-
     var policiesAndGuidelinesLink = document.getElementById("policiesAndGuidelinesLink");
     var IFSLink = document.getElementById("IFSLink");
 
@@ -35,8 +33,10 @@ function getMinistry1(reordId, cid, seletion) {
         viewAllUrl += "&ministry=" + ministryId;
     }
 
-    policiesAndGuidelinesLink.href = viewAllUrl;
-    IFSLink.href = viewAllUrl;
+    // Set type=PAG for policiesAndGuidelinesLink and type=IFS for IFSLink
+    policiesAndGuidelinesLink.href = viewAllUrl + "&type=PAG";
+    IFSLink.href = viewAllUrl + "&type=IFS";
 
     // ... rest of the code ...
 }
+
