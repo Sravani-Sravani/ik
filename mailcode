@@ -1,0 +1,51 @@
+	@Override
+	public void serveResource(ResourceRequest request, ResourceResponse response) {
+       String cmd = ParamUtil.getString(request, "cmd");
+        _log.info("cmd----------->"+cmd);
+	if(cmd.equalsIgnoreCase("mailTrigger")) {
+		long categoryId = ParamUtil.getLong(request, "categoryId");
+		_log.info("categoryId>>"+categoryId);
+		try {
+			 String name=ParamUtil.getString(request, "name");
+			 String email=ParamUtil.getString(request,"email");
+			 String mobileno=ParamUtil.getString(request,"cno");
+			 String dcname=ParamUtil.getString(request,"dcname");
+			 String designation=ParamUtil.getString(request,"designation");
+			 String state=ParamUtil.getString(request,"state");
+			 String eid=ParamUtil.getString(request,"eventId");
+		     long eventId = Long.parseLong(eid);
+		     Events ev=EventsLocalServiceUtil.fetchEvents(eventId);
+		     String cemail=ev.getEmail();
+		     String eventname=ev.getTitle();
+		  //   String body = ContentUtil.get("/content/exam.tmpl", true);
+			//	body = StringUtil.replace(body, new String[] { "[$NAME$]","[$RESULT$]","[$PERCENTAGE$]","[$EXAM$]" }, new String[] { "Ravi", "CONGRATULATION" ,"80%" , "CCLP"});
+			 System.out.println("Event ID:::::::::::::"+eid);
+			 System.out.println(email);
+			 System.out.println("name:"+name);
+			 System.out.println("State:"+state);
+			 System.out.println(designation);
+			 InternetAddress fromAddress = null;
+			 InternetAddress toAddress = null;
+			 String subject="Event Registration";
+			// String body="Registered Successfully.";
+		    //String body = JspUtil.evaluateJspToString("path/to/your/emailTemplate.jsp");
+			 fromAddress = new InternetAddress("kadavakollusravani2001@gmail.com");
+			 toAddress = new InternetAddress(email);
+			 MailMessage mailMessage = new MailMessage();
+			 mailMessage.setTo(toAddress);
+			 mailMessage.setFrom(fromAddress);
+			 mailMessage.setSubject(subject);
+			// mailMessage.setBody(body);
+			 mailMessage.setHTMLFormat(true);
+			 MailServiceUtil.sendEmail(mailMessage);
+			 System.out.println(email);
+			 System.out.println("mail sent successfully");
+			JSONObject jsonOb = JSONFactoryUtil.createJSONObject();
+           	jsonOb.put("status","success");
+                    PrintWriter writer = response.getWriter();
+                    writer.print( jsonOb.toString());
+		} catch (Exception e) {
+			// TODO: handle exception
+		}  
+		}
+	}
