@@ -1,44 +1,60 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Email Template</title>
+    <title>My Email Template</title>
 </head>
 <body>
-    <h1>Hello {name},</h1>
-    <p>This is a sample email with dynamic data from Liferay Portlet.</p>
-    <p>Event Name: {event_name}</p>
-    <p>Event Location: {event_location}</p>
-    <img src="cid:logo_image" alt="Logo Image">
+    <h1>Hello [$NAME$],</h1>
+    <p>Thank you for registering for the event. Here are the event details:</p>
+    <p><strong>Event Name:</strong> [$EVENT_NAME$]</p>
+    <p><strong>Venue:</strong> [$VENUE$]</p>
+    <!-- You can include more dynamic data here as needed -->
+    <img src="cid:logo_image" alt="Event Logo"/>
 </body>
 </html>
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.commons.io.IOUtils;
 
-// ...
+import javax.mail.internet.InternetAddress;
+import javax.portlet.PortletRequest;
+import com.liferay.mail.kernel.model.MailMessage;
+import com.liferay.mail.kernel.service.MailServiceUtil;
+import com.liferay.portal.kernel.util.FileUtil;
 
-// Load the HTML template from the file
-String templatePath = "/path/to/email_template.html"; // Adjust the path as per your project structure
-String htmlTemplate = null;
-try (InputStream inputStream = getClass().getResourceAsStream(templatePath)) {
-    htmlTemplate = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-} catch (IOException e) {
-    // Handle IOException
-}
+public class MyPortletUtil {
 
-// Replace placeholders with actual data (assuming you have the required data in variables)
-String name = "John Doe";
-String eventName = "Sample Event";
-String eventLocation = "Sample Location";
+    public static void sendEmailWithHTMLContent(PortletRequest request, String recipientEmail) {
+        try {
+            // Get the data from the Portlet, you may have your own logic here
+            String name = "John Doe";
+            String eventName = "My Event";
+            String venue = "Event Venue";
+            // Retrieve the image content from the resources folder
+            byte[] logoImageData = FileUtil.getBytes(request.getPortletSession().getPortletContext(), "/resources/logo.png");
+            
+            // Read the email template HTML content
+            String htmlContent = FileUtil.read(MyPortletUtil.class.getResourceAsStream("/resources/email_template.html"));
+            
+            // Replace the placeholders in the HTML content with the dynamic data
+            htmlContent = htmlContent.replace("[$NAME$]", name);
+            htmlContent = htmlContent.replace("[$EVENT_NAME$]", eventName);
+            htmlContent = htmlContent.replace("[$VENUE$]", venue);
+            
+            // Set up the email details
+            InternetAddress fromAddress = new InternetAddress("your_sender_email@example.com");
+            InternetAddress toAddress = new InternetAddress(recipientEmail);
+            String subject = "Event Registration Confirmation";
 
-Map<String, String> replacements = new HashMap<>();
-replacements.put("{name}", name);
-replacements.put("{event_name}", eventName);
-replacements.put("{event_location}", eventLocation);
+            MailMessage mailMessage = new MailMessage();
+            mailMessage.setTo(toAddress);
+            mailMessage.setFrom(fromAddress);
+            mailMessage.setSubject(subject);
+            mailMessage.setHTMLFormat(true);
+            mailMessage.setBody(htmlContent);
+            mailMessage.addFileAttachment("logo_image", logoImageData, "image/png"); // Attach the image
 
-for (Map.Entry<String, String> entry : replacements.entrySet()) {
-    htmlTemplate = htmlTemplate.replace(entry.getKey(), entry.getValue());
+            MailServiceUtil.sendEmail(mailMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
