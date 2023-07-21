@@ -1,60 +1,94 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Email Template</title>
+    <title>Email Template</title>
 </head>
 <body>
-    <h1>Hello [$NAME$],</h1>
-    <p>Thank you for registering for the event. Here are the event details:</p>
-    <p><strong>Event Name:</strong> [$EVENT_NAME$]</p>
-    <p><strong>Venue:</strong> [$VENUE$]</p>
-    <!-- You can include more dynamic data here as needed -->
-    <img src="cid:logo_image" alt="Event Logo"/>
+    <h1>Hello [$NAME$]</h1>
+    <p>Thank you for registering for the event.</p>
+    <img src="cid:event_logo" alt="Event Logo" />
+    <p>Event Details:</p>
+    <ul>
+        <li>Event Name: [$EVENT_NAME$]</li>
+        <li>Date: [$EVENT_DATE$]</li>
+        <!-- Add more dynamic data here -->
+    </ul>
 </body>
 </html>
 
 
 import javax.mail.internet.InternetAddress;
-import javax.portlet.PortletRequest;
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.ProcessAction;
+
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailServiceUtil;
-import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.template.Template;
+import com.liferay.portal.kernel.template.TemplateConstants;
+import com.liferay.portal.kernel.template.TemplateResource;
+import com.liferay.portal.kernel.template.TemplateResourceLoaderUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
-public class MyPortletUtil {
+import java.io.Writer;
 
-    public static void sendEmailWithHTMLContent(PortletRequest request, String recipientEmail) {
+public class MailSenderPortlet extends MVCActionCommand {
+
+    @ProcessAction(name="sendMail")
+    public void sendMail(ActionRequest actionRequest, ActionResponse actionResponse) {
         try {
-            // Get the data from the Portlet, you may have your own logic here
-            String name = "John Doe";
-            String eventName = "My Event";
-            String venue = "Event Venue";
-            // Retrieve the image content from the resources folder
-            byte[] logoImageData = FileUtil.getBytes(request.getPortletSession().getPortletContext(), "/resources/logo.png");
-            
-            // Read the email template HTML content
-            String htmlContent = FileUtil.read(MyPortletUtil.class.getResourceAsStream("/resources/email_template.html"));
-            
-            // Replace the placeholders in the HTML content with the dynamic data
-            htmlContent = htmlContent.replace("[$NAME$]", name);
-            htmlContent = htmlContent.replace("[$EVENT_NAME$]", eventName);
-            htmlContent = htmlContent.replace("[$VENUE$]", venue);
-            
-            // Set up the email details
-            InternetAddress fromAddress = new InternetAddress("your_sender_email@example.com");
+            ThemeDisplay themeDisplay = (ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+            String recipientEmail = ParamUtil.getString(actionRequest, "recipientEmail");
+            String subject = ParamUtil.getString(actionRequest, "subject");
+
+            // Load the HTML template
+            TemplateResource templateResource = TemplateResourceLoaderUtil.getTemplateResource("/templates/email_template.html");
+            Template template = TemplateResourceLoaderUtil.getTemplate(templateResource, true);
+
+            // Replace placeholders with dynamic data
+            String name = "John Doe"; // Retrieve the name from your portlet's data source
+            String eventName = "Sample Event"; // Retrieve the event name from your portlet's data source
+            String eventDate = "2023-07-31"; // Retrieve the event date from your portlet's data source
+
+            template.put("NAME", name);
+            template.put("EVENT_NAME", eventName);
+            template.put("EVENT_DATE", eventDate);
+
+            // Get the HTML content after merging data
+            String htmlContent = mergeTemplate(themeDisplay, template);
+
+            InternetAddress fromAddress = new InternetAddress(themeDisplay.getCompany().getEmailAddress(), "Your Company");
             InternetAddress toAddress = new InternetAddress(recipientEmail);
-            String subject = "Event Registration Confirmation";
 
             MailMessage mailMessage = new MailMessage();
             mailMessage.setTo(toAddress);
             mailMessage.setFrom(fromAddress);
             mailMessage.setSubject(subject);
-            mailMessage.setHTMLFormat(true);
             mailMessage.setBody(htmlContent);
-            mailMessage.addFileAttachment("logo_image", logoImageData, "image/png"); // Attach the image
+            mailMessage.setHTMLFormat(true);
+
+            // You can also attach inline images to the email
+            // Add images to your resources folder and reference them in the HTML template using 'cid'
+            mailMessage.addFile("event_logo", getEventLogoBytes());
 
             MailServiceUtil.sendEmail(mailMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
+    // Helper method to get the event logo bytes (replace with your implementation)
+    private byte[] getEventLogoBytes() {
+        // Load and return the bytes of the image
+        // Replace this with your code to load the image from a file or other sources
+        return new byte[0];
+    }
+
+    // The mergeTemplate method is the same as shown in the previous response
+
+    // The UnsyncStringWriter class is the same as shown in the previous response
 }
