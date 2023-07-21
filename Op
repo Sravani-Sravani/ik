@@ -16,21 +16,23 @@
 </body>
 </html>
 
-import javax.mail.internet.InternetAddress;
-import javax.portlet.ActionRequest;
-import javax.portlet.ActionResponse;
-import javax.portlet.ProcessAction;
-
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailServiceUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.template.Template;
 import com.liferay.portal.kernel.template.TemplateConstants;
+import com.liferay.portal.kernel.template.TemplateManager;
 import com.liferay.portal.kernel.template.TemplateResource;
+import com.liferay.portal.kernel.template.TemplateResourceLoader;
 import com.liferay.portal.kernel.template.TemplateResourceLoaderUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+
+import javax.mail.internet.InternetAddress;
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.ProcessAction;
 
 import java.io.Writer;
 
@@ -47,8 +49,10 @@ public class MailSenderPortlet extends MVCActionCommand {
             // Load the HTML template
             String templatePath = "/templates/email_template.html";
             String langType = TemplateConstants.LANG_TYPE_FTL; // Replace with the appropriate template language if necessary
-            TemplateResource templateResource = TemplateResourceLoaderUtil.getTemplateResource(templatePath, langType);
-            Template template = TemplateResourceLoaderUtil.getTemplate(templateResource);
+            TemplateResourceLoader templateResourceLoader = TemplateResourceLoaderUtil.getTemplateResourceLoader(langType);
+            TemplateResource templateResource = templateResourceLoader.getTemplateResource(templatePath);
+            TemplateManager templateManager = TemplateManager.getInstance(langType);
+            Template template = templateManager.getTemplate(templateResource, false);
 
             // Replace placeholders with dynamic data
             String name = "John Doe"; // Retrieve the name from your portlet's data source
@@ -93,4 +97,3 @@ public class MailSenderPortlet extends MVCActionCommand {
 
     // The UnsyncStringWriter class is the same as shown in the previous response
 }
-
