@@ -16,7 +16,6 @@
 </body>
 </html>
 
-
 import javax.mail.internet.InternetAddress;
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
@@ -46,11 +45,10 @@ public class MailSenderPortlet extends MVCActionCommand {
             String subject = ParamUtil.getString(actionRequest, "subject");
 
             // Load the HTML template
-            TemplateResource templateResource = TemplateResourceLoaderUtil.getTemplateResource("classpath:/templates/email_template.html", true);
-            Template template = TemplateConstants.LANG_TYPE_FTL.equals(templateResource.getTemplateLanguage()) ?
-                    TemplateResourceLoaderUtil.getTemplate(templateResource, true) :
-                    TemplateResourceLoaderUtil.getTemplate(
-                            TemplateConstants.LANG_TYPE_VM, templateResource.getTemplateId(), true);
+            String templatePath = "/templates/email_template.html";
+            String langType = TemplateConstants.LANG_TYPE_FTL; // Replace with the appropriate template language if necessary
+            TemplateResource templateResource = TemplateResourceLoaderUtil.getTemplateResource(templatePath, langType);
+            Template template = TemplateResourceLoaderUtil.getTemplate(templateResource);
 
             // Replace placeholders with dynamic data
             String name = "John Doe"; // Retrieve the name from your portlet's data source
@@ -95,3 +93,4 @@ public class MailSenderPortlet extends MVCActionCommand {
 
     // The UnsyncStringWriter class is the same as shown in the previous response
 }
+
