@@ -12,52 +12,33 @@
 </body>
 </html>
 
-import com.liferay.mail.kernel.model.MailMessage;
-import com.liferay.mail.kernel.service.MailServiceUtil;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.commons.io.IOUtils;
 
 // ...
 
-@Override
-public void serveResource(ResourceRequest request, ResourceResponse response) {
-    String cmd = ParamUtil.getString(request, "cmd");
+// Load the HTML template from the file
+String templatePath = "/path/to/email_template.html"; // Adjust the path as per your project structure
+String htmlTemplate = null;
+try (InputStream inputStream = getClass().getResourceAsStream(templatePath)) {
+    htmlTemplate = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+} catch (IOException e) {
+    // Handle IOException
+}
 
-    if (cmd.equalsIgnoreCase("mailTrigger")) {
-        try {
-            // Get dynamic data from your Portlet
-            String name = "John Doe";
-            String eventName = "Sample Event";
-            String eventLocation = "Event Venue";
+// Replace placeholders with actual data (assuming you have the required data in variables)
+String name = "John Doe";
+String eventName = "Sample Event";
+String eventLocation = "Sample Location";
 
-            // Read the HTML template file
-            InputStream inputStream = getClass().getResourceAsStream("/path/to/email_template.html");
-            String htmlTemplate = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-            inputStream.close();
+Map<String, String> replacements = new HashMap<>();
+replacements.put("{name}", name);
+replacements.put("{event_name}", eventName);
+replacements.put("{event_location}", eventLocation);
 
-            // Replace placeholders with actual data
-            htmlTemplate = htmlTemplate.replace("{name}", name);
-            htmlTemplate = htmlTemplate.replace("{event_name}", eventName);
-            htmlTemplate = htmlTemplate.replace("{event_location}", eventLocation);
-
-            // Create and send the email
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.setTo(new InternetAddress("recipient@example.com"));
-            mailMessage.setFrom(new InternetAddress("sender@example.com"));
-            mailMessage.setSubject("Sample Email with Dynamic Data");
-            mailMessage.setHTMLFormat(true);
-            mailMessage.setBody(htmlTemplate);
-
-            // Optionally, attach an image to the email (embedded image)
-            mailMessage.addFile("path/to/image.jpg", "logo_image");
-
-            MailServiceUtil.sendEmail(mailMessage);
-
-            // Send success response to the frontend
-            JSONObject jsonResponse = JSONFactoryUtil.createJSONObject();
-            jsonResponse.put("status", "success");
-            PrintWriter writer = response.getWriter();
-            writer.print(jsonResponse.toString());
-        } catch (Exception e) {
-            // Handle exception
-        }
-    }
+for (Map.Entry<String, String> entry : replacements.entrySet()) {
+    htmlTemplate = htmlTemplate.replace(entry.getKey(), entry.getValue());
 }
