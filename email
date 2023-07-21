@@ -224,7 +224,7 @@
 <div style="font-family: sans-serif">
 <div class="" style="font-size: 14px; font-family: Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif; mso-line-height-alt: 25.2px; color: #555555; line-height: 1.8;">
 <ul style="line-height: 1.8; mso-line-height-alt: 25.2px; font-size: 14px;">
-<li style="text-align: left;"><strong>Event Name : </strong>test</li>
+<li style="text-align: left;"><strong>Event Name : </strong>[$NAME$]</li>
 <li style="text-align: left;"><strong><strong>Venue : </strong></strong>test<strong><strong>  </strong></strong></li>
 <li style="text-align: left;"><strong>Date/Time : </strong>test</li>
 <li style="text-align: left;"><strong>Location : </strong>test</li>
