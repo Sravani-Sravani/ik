@@ -1,5 +1,4 @@
 <div id="member-fields">
-    <!-- No default button here -->
     <div class="lfr-form-row lfr-form-row-inline">
         <div class="form-group">
             <aui:input fieldParam="firstName0" id="firstName0" name="firstName0" label="YouTube Link" />
@@ -14,35 +13,33 @@
     <button type="button" class="btn btn-default" id="add-row-button">Add</button>
 </div>
 
-<script>
+<aui:script use="aui-base">
     AUI().use('aui-base', function(A) {
-        var counter = 1;
-        var memberFieldsContainer = A.one('#member-fields');
-
-        // Custom function to handle row deletion
+        // Function to handle row deletion
         function deleteRow(event) {
             var target = event.currentTarget;
             var row = target.ancestor('.lfr-form-row');
-            if (memberFieldsContainer.all('.lfr-form-row').size() > 1) {
+
+            if (row.siblings('.lfr-form-row').size() > 0) {
                 row.remove();
             }
         }
 
         // Add the custom delete button event
-        memberFieldsContainer.delegate('click', deleteRow, '.custom-delete-button');
+        A.all('.custom-delete-button').on('click', deleteRow);
 
         // Add the custom add button event
         A.one('#add-row-button').on('click', function() {
-            var newRow = memberFieldsContainer.one('.lfr-form-row').cloneNode(true);
+            var newRow = A.one('.lfr-form-row').cloneNode(true);
             newRow.all('input').each(function(input) {
                 var name = input.get('name');
-                input.set('name', name.replace(/firstName\d+/, 'firstName' + counter));
-                input.set('id', name.replace(/firstName\d+/, 'firstName' + counter));
+                var newName = name.replace(/\d+$/, A.all('.lfr-form-row').size());
+                input.set('name', newName);
+                input.set('id', newName);
                 input.val('');
             });
             newRow.one('.custom-delete-button').on('click', deleteRow);
-            memberFieldsContainer.append(newRow);
-            counter++;
+            A.one('#member-fields').append(newRow);
         });
     });
-</script>
+</aui:script>
