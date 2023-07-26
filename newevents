@@ -4,28 +4,40 @@
             <aui:input fieldParam="firstName0" id="firstName0" name="firstName0" label="YouTube Link" />
         </div>
         <div class="form-group">
-            <button type="button" class="btn btn-default lfr-form-row-delete">Delete</button>
+            <button type="button" class="btn btn-default custom-delete-button">Delete</button>
         </div>
     </div>
 </div>
 
-<aui:script use="liferay-auto-fields">
-    AUI().use('liferay-auto-fields', function(A) {
-        new Liferay.AutoFields({
-            contentBox: '#member-fields',
-            fieldIndexes: '<portlet:namespace />rowIndexes',
-            on: {
-                'liferay-auto-fields:rowAdded': function(event) {
-                    var newRow = event.newRow;
-                    var deleteButton = newRow.one('.lfr-form-row-delete');
+<div class="form-group">
+    <button type="button" class="btn btn-default" id="add-row-button">Add</button>
+</div>
 
-                    deleteButton.on('click', function() {
-                        if (newRow.siblings('.lfr-form-row').size() > 0) {
-                            newRow.remove();
-                        }
-                    });
-                }
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var counter = 1;
+
+        function deleteRow() {
+            if ($('#member-fields .lfr-form-row').length > 1) {
+                $(this).closest('.lfr-form-row').remove();
             }
-        }).render();
+        }
+
+        $('.custom-delete-button').on('click', deleteRow);
+
+        $('#add-row-button').on('click', function() {
+            var newRow = $('#member-fields .lfr-form-row:last').clone();
+            newRow.find('input').each(function() {
+                var name = $(this).attr('name');
+                var newName = name.replace(/\d+$/, counter);
+                $(this).attr('name', newName);
+                $(this).attr('id', newName);
+                $(this).val('');
+            });
+            newRow.find('.custom-delete-button').on('click', deleteRow);
+            $('#member-fields').append(newRow);
+            counter++;
+        });
     });
-</aui:script>
+</script>
