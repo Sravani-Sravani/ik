@@ -1,0 +1,48 @@
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: ['dayGrid'],
+        eventDidMount: function(info) {
+            if (info.view.type === 'listWeek') {
+                var event = info.event;
+                var location = event.extendedProps.location;
+                var venue = event.extendedProps.venue;
+                var dayOfWeek = event.extendedProps.day;
+                var eventElement = info.el.querySelector('.fc-list-event-title');
+                if (eventElement) {
+                    // Combine the event date and index to get a unique identifier for color
+                    var eventIdentifier = event.start.toISOString() + '_' + info.event._def.defId;
+                    var hashCode = getHashCode(eventIdentifier);
+                    var colorIndex = Math.abs(hashCode) % 6;
+                    var colorClass = 'fc-list-event-title-color-' + (colorIndex + 1);
+
+                    eventElement.classList.add(colorClass);
+
+                    var locationElement = document.createElement('td');
+                    locationElement.classList.add('fc-list-event-location');
+                    locationElement.textContent = location;
+                    eventElement.parentElement.insertBefore(locationElement, eventElement.nextSibling);
+
+                    var venueElement = document.createElement('td');
+                    venueElement.classList.add('fc-list-event-venue');
+                    venueElement.textContent = venue;
+                    eventElement.parentElement.insertBefore(venueElement, eventElement.nextSibling);
+                }
+            }
+        },
+        events: allevents
+    });
+
+    calendar.render();
+});
+
+function getHashCode(str) {
+    var hash = 0;
+    if (str.length === 0) return hash;
+    for (var i = 0; i < str.length; i++) {
+        var char = str.charCodeAt(i);
+        hash = (hash << 5) - hash + char;
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
+}
