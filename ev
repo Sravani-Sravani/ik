@@ -8,36 +8,41 @@
 </div>
 
 
-<aui:script use="liferay-auto-fields">
- 
-AUI().use('liferay-auto-fields',function(A) {
- new Liferay.AutoFields(
-       {
-           contentBox: '#member-fields',
-           fieldIndexes: '<portlet:namespace />rowIndexes'
-           
-       }
-   ).render();
-   });
-</aui:script>
+<aui:script use="liferay-a<div id="member-fields">
+    <div class="lfr-form-row lfr-form-row-inline">
+        <div class="form-group">
+            <aui:input fieldParam="firstName0" id="firstName0" name="firstName0" label="YouTube Link" />
+        </div>
+        <div class="form-group">
+            <button type="button" class="btn btn-default lfr-form-row-delete">Delete</button>
+        </div>
+    </div>
+</div>
 
+<div class="form-group">
+    <button type="button" class="btn btn-default" id="add-row-button">Add</button>
+</div>
 
 <aui:script use="liferay-auto-fields">
     AUI().use('liferay-auto-fields', function(A) {
-        new Liferay.AutoFields({
+        var autoFields = new Liferay.AutoFields({
             contentBox: '#member-fields',
             fieldIndexes: '<portlet:namespace />rowIndexes'
         }).render();
 
-        // Add the delete functionality
+        A.one('#add-row-button').on('click', function() {
+            autoFields.add();
+        });
+
         A.all('#member-fields').delegate('click', function(event) {
             var target = event.currentTarget;
             var row = target.ancestor('.lfr-form-row');
 
             if (row.siblings('.lfr-form-row').size() > 0) {
                 row.remove();
+                autoFields.syncIndex();
             }
-        }, '.lfr-form-row .lfr-form-row-delete');
+        }, '.lfr-form-row-delete');
     });
 </aui:script>
 
