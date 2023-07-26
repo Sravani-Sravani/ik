@@ -15,12 +15,12 @@
 
 <aui:script use="aui-base">
     AUI().use('aui-base', function(A) {
-        // Function to handle row deletion
+        // Custom function to handle row deletion
         function deleteRow(event) {
             var target = event.currentTarget;
             var row = target.ancestor('.lfr-form-row');
 
-            if (row.siblings('.lfr-form-row').size() > 0) {
+            if (A.all('.lfr-form-row').size() > 1) {
                 row.remove();
             }
         }
