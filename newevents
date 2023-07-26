@@ -5,7 +5,7 @@
             <aui:input fieldParam="firstName0" id="firstName0" name="firstName0" label="YouTube Link" />
         </div>
         <div class="form-group">
-            <button type="button" class="btn btn-default lfr-form-row-delete">Delete</button>
+            <button type="button" class="btn btn-default custom-delete-button">Delete</button>
         </div>
     </div>
 </div>
@@ -14,25 +14,35 @@
     <button type="button" class="btn btn-default" id="add-row-button">Add</button>
 </div>
 
-<aui:script use="liferay-auto-fields">
-    AUI().use('liferay-auto-fields', function(A) {
-        var autoFields = new Liferay.AutoFields({
-            contentBox: '#member-fields',
-            fieldIndexes: '<portlet:namespace />rowIndexes'
-        }).render();
+<script>
+    AUI().use('aui-base', function(A) {
+        var counter = 1;
+        var memberFieldsContainer = A.one('#member-fields');
 
-        A.one('#add-row-button').on('click', function() {
-            autoFields.add();
-        });
-
-        A.all('#member-fields').delegate('click', function(event) {
+        // Custom function to handle row deletion
+        function deleteRow(event) {
             var target = event.currentTarget;
             var row = target.ancestor('.lfr-form-row');
-
-            if (row.siblings('.lfr-form-row').size() > 0) {
+            if (memberFieldsContainer.all('.lfr-form-row').size() > 1) {
                 row.remove();
-                autoFields.syncIndex();
             }
-        }, '.lfr-form-row-delete');
+        }
+
+        // Add the custom delete button event
+        memberFieldsContainer.delegate('click', deleteRow, '.custom-delete-button');
+
+        // Add the custom add button event
+        A.one('#add-row-button').on('click', function() {
+            var newRow = memberFieldsContainer.one('.lfr-form-row').cloneNode(true);
+            newRow.all('input').each(function(input) {
+                var name = input.get('name');
+                input.set('name', name.replace(/firstName\d+/, 'firstName' + counter));
+                input.set('id', name.replace(/firstName\d+/, 'firstName' + counter));
+                input.val('');
+            });
+            newRow.one('.custom-delete-button').on('click', deleteRow);
+            memberFieldsContainer.append(newRow);
+            counter++;
+        });
     });
-</aui:script>
+</script>
