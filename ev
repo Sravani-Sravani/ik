@@ -24,12 +24,10 @@ AUI().use('liferay-auto-fields',function(A) {
 
 <aui:script use="liferay-auto-fields">
     AUI().use('liferay-auto-fields', function(A) {
-        new Liferay.AutoFields(
-            {
-                contentBox: '#member-fields',
-                fieldIndexes: '<portlet:namespace />rowIndexes'
-            }
-        ).render();
+        new Liferay.AutoFields({
+            contentBox: '#member-fields',
+            fieldIndexes: '<portlet:namespace />rowIndexes'
+        }).render();
 
         // Add the delete functionality
         A.all('#member-fields').delegate('click', function(event) {
@@ -42,3 +40,4 @@ AUI().use('liferay-auto-fields',function(A) {
         }, '.lfr-form-row .lfr-form-row-delete');
     });
 </aui:script>
+
