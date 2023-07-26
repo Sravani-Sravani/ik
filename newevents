@@ -4,42 +4,28 @@
             <aui:input fieldParam="firstName0" id="firstName0" name="firstName0" label="YouTube Link" />
         </div>
         <div class="form-group">
-            <button type="button" class="btn btn-default custom-delete-button">Delete</button>
+            <button type="button" class="btn btn-default lfr-form-row-delete">Delete</button>
         </div>
     </div>
 </div>
 
-<div class="form-group">
-    <button type="button" class="btn btn-default" id="add-row-button">Add</button>
-</div>
+<aui:script use="liferay-auto-fields">
+    AUI().use('liferay-auto-fields', function(A) {
+        new Liferay.AutoFields({
+            contentBox: '#member-fields',
+            fieldIndexes: '<portlet:namespace />rowIndexes',
+            on: {
+                'liferay-auto-fields:rowAdded': function(event) {
+                    var newRow = event.newRow;
+                    var deleteButton = newRow.one('.lfr-form-row-delete');
 
-<aui:script use="aui-base">
-    AUI().use('aui-base', function(A) {
-        // Custom function to handle row deletion
-        function deleteRow(event) {
-            var target = event.currentTarget;
-            var row = target.ancestor('.lfr-form-row');
-
-            if (A.all('.lfr-form-row').size() > 1) {
-                row.remove();
+                    deleteButton.on('click', function() {
+                        if (newRow.siblings('.lfr-form-row').size() > 0) {
+                            newRow.remove();
+                        }
+                    });
+                }
             }
-        }
-
-        // Add the custom delete button event
-        A.all('.custom-delete-button').on('click', deleteRow);
-
-        // Add the custom add button event
-        A.one('#add-row-button').on('click', function() {
-            var newRow = A.one('.lfr-form-row').cloneNode(true);
-            newRow.all('input').each(function(input) {
-                var name = input.get('name');
-                var newName = name.replace(/\d+$/, A.all('.lfr-form-row').size());
-                input.set('name', newName);
-                input.set('id', newName);
-                input.val('');
-            });
-            newRow.one('.custom-delete-button').on('click', deleteRow);
-            A.one('#member-fields').append(newRow);
-        });
+        }).render();
     });
 </aui:script>
