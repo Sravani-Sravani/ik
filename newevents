@@ -22,6 +22,7 @@
             if ($('#member-fields .lfr-form-row').length > 1) {
                 $(this).closest('.lfr-form-row').remove();
             }
+            updateDeleteButtonVisibility();
         }
 
         $('.custom-delete-button').on('click', deleteRow);
@@ -38,6 +39,18 @@
             newRow.find('.custom-delete-button').on('click', deleteRow);
             $('#member-fields').append(newRow);
             counter++;
+            updateDeleteButtonVisibility();
         });
+
+        function updateDeleteButtonVisibility() {
+            var rows = $('#member-fields .lfr-form-row');
+            if (rows.length === 1) {
+                rows.find('.custom-delete-button').hide();
+            } else {
+                rows.find('.custom-delete-button').show();
+            }
+        }
+
+        updateDeleteButtonVisibility();
     });
 </script>
