@@ -51,6 +51,45 @@
             }
         }
 
+<div id="member-fields">
+    <%
+    List<YouTubeLinks> yl = YouTubeLinksLocalServiceUtil.findByeventId(eventId);
+    if (eventId == 0 || (eventId>0 && yl.size()==0)) { %>
+        <div class="lfr-form-row lfr-form-row-inline">
+            <div class="form-group">
+                <aui:input fieldParam="firstName0" id="firstName0" name="firstName0" label="YouTube Link" />
+            </div>
+            <div class="form-group">
+            <button type="button" class="btn btn-default custom-delete-button btn-custom-delete">Delete</button>
+        </div>
+        </div>
+    <% } else { %>
+        <%
+            int index = 0;
+            for (YouTubeLinks youtubeLink : yl) {
+            	System.out.println("Index:"+index);
+            	String n="firstName"+index;
+            	System.out.println("Name:"+n);
+                System.out.println("Update Form Youtube Link:" + youtubeLink.getYoutubelink());
+        %>
+            <div class="lfr-form-row lfr-form-row-inline">
+                <div class="form-group">
+                    <aui:input fieldParam="<%=n %>" id="<%=n %>" name="<%=n %>" label="YouTube Link" value="<%= youtubeLink.getYoutubelink() %>" />
+                </div>
+                 <div class="form-group">
+            <button type="button" class="btn btn-default btn-custom-delete">Delete</button>
+        </div>
+            </div>
+        <% 
+                index++;
+            }
+        %>
+    <% } %>
+</div>
+	  <div class="form-group">
+    <button type="button" class="btn btn-default btn-custom-add" id="add-row-button">Add</button>
+</div>
+
         updateDeleteButtonVisibility();
     });
 </script>
