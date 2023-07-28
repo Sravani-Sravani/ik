@@ -51,6 +51,9 @@
             }
         }
 
+        updateDeleteButtonVisibility();
+    });
+</script>
 <div id="member-fields">
     <%
     List<YouTubeLinks> yl = YouTubeLinksLocalServiceUtil.findByeventId(eventId);
@@ -89,7 +92,3 @@
 	  <div class="form-group">
     <button type="button" class="btn btn-default btn-custom-add" id="add-row-button">Add</button>
 </div>
-
-        updateDeleteButtonVisibility();
-    });
-</script>
