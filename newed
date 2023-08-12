@@ -1,0 +1,14 @@
+<a href="/home" id="refreshLink">Go to Home</a>
+
+<script>
+document.getElementById('refreshLink').addEventListener('click', function(event) {
+    // Prevent the default link behavior (navigation)
+    event.preventDefault();
+    
+    // Navigate to the desired URL
+    window.location.href = "/home"; // Replace with your desired URL
+    
+    // Reload the page after navigating
+    location.reload();
+});
+</script>
