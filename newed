@@ -7,8 +7,11 @@ document.getElementById('refreshLink').addEventListener('click', function(event)
     
     // Navigate to the desired URL
     window.location.href = "/home"; // Replace with your desired URL
-    
-    // Reload the page after navigating
+});
+
+// Add an event listener to the 'load' event to trigger page reload after navigation
+window.addEventListener('load', function() {
+    // Reload the page
     location.reload();
 });
 </script>
