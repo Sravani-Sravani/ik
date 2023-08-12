@@ -1,0 +1,512 @@
+<%@page import="java.util.Locale"%>
+<%@page import="com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.dao.orm.Criterion"%>
+<%@page import="com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil"%>
+<%@page import="com.liferay.portal.kernel.dao.orm.DynamicQuery"%>
+<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@page import="com.liferay.portal.kernel.util.PortalUtil"%>
+<%@page import="java.text.DateFormat"%>
+<%@page import="com.kpmg.citizenTables.model.GalleryDocuments"%>
+<%@page import="com.kpmg.citizenTables.service.GalleryDocumentsLocalServiceUtil"%>
+<%@page import="com.kpmg.events.portlet.EventsPortlet"%>
+<%@page import="com.kpmg.citizenTables.service.EventsLocalServiceUtil"%>
+<%@page import="com.kpmg.citizenTables.model.Events"%>
+<%@page import="com.liferay.portal.kernel.util.ListUtil"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.util.Date"%>
+<%@page import="javax.portlet.PortletURL"%>
+<%@page import="java.util.List"%>
+<%@page import="com.kpmg.events.portlet.DateFor" %>
+<%@ page import="javax.servlet.http.HttpServletRequest" %>
+<%@ page import="java.lang.Long" %>
+<%@ page import="java.lang.NumberFormatException" %>
+<%@page import="com.kpmg.events.constants.EventsPortletKeys"%>
+<%@page import="com.kpmg.events.portlet.EventsPortlet"%>
+<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
+<%@page import="com.kpmg.citizenTables.model.YouTubeLinks" %>
+<%@page import="com.kpmg.citizenTables.service.YouTubeLinksLocalServiceUtil"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
+<%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet" %>
+
+<%@ taglib uri="http://liferay.com/tld/aui" prefix="aui" %><%@
+taglib uri="http://liferay.com/tld/portlet" prefix="liferay-portlet" %><%@
+taglib uri="http://liferay.com/tld/theme" prefix="liferay-theme" %><%@
+taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
+
+<liferay-theme:defineObjects />
+
+<portlet:defineObjects />
+<liferay-ui:success key="entryAdded" message="Event added successfully." />
+<liferay-ui:success key="entryUpdated" message="Event updated successfully."  />
+<liferay-ui:success key="entryDeleted" message="Event deleted successfully." />
+<portlet:actionURL var="SentMail" name="EmailSent"></portlet:actionURL>
+ <style>
+  aui-validator[name="required"]::after {
+    color: red !important;
+  }
+  .owl-theme .owl-nav {
+    margin-top: 0;
+    display: block;
+}
+</style>
+<portlet:resourceURL var="Sendmail"></portlet:resourceURL>
+ <% 
+
+ String fileUrl=""; 
+ String title="";
+ String description="";
+ String startDate="";
+	String endDate="";
+	String startTime="";
+	String endTime="";
+	String venue="";
+	String st="";
+	String et="";
+	String sd="";
+ 	String ed="";
+ 	String eventtype="";
+	Date dt1=new Date();
+	Date dt2=new Date();
+	Date todayDate=new Date();
+    todayDate.setHours(0);
+    todayDate.setMinutes(0);
+    todayDate.setSeconds(0); 
+    String currURL="";
+    long eventId=0L;
+    try{
+        currURL = PortalUtil.getCurrentURL(request); 
+      System.out.println("currURL="+currURL);
+      String[] strArray = null;  
+      strArray = currURL.split("\\?");
+      if(strArray.length>1){
+         String[] mainArray = null;   
+         mainArray = strArray[1].split("\\&");  
+         for (int i = 0; i< mainArray.length; i++){
+    	 	 String[] subArray = null; 
+    	 	 subArray =mainArray[i].split("\\=");
+    	 	  if(subArray.length>0){
+    	 		System.out.println("subArray[0]="+subArray[0]);
+    	 		 if(subArray[0].equalsIgnoreCase("eventId")){
+    	 		       if(subArray[1]!=""){	  
+    	 		    	  System.out.println("subArray[1]="+subArray[1]);
+    	 			      eventId=Long.valueOf(subArray[1]);
+    	 			     
+    	 			    }
+    	 	 	  }
+    	 	}  
+    	 	    }
+            } 
+            }
+    	 catch(Exception e){ }
+ //long eventId = ParamUtil.getLong(request, "eventId");
+ String url="";
+ Events ev=EventsLocalServiceUtil.fetchEvents(eventId);
+ if(ev.getEventtype().equals("Events"))
+	 url="/home";
+if(ev.getEventtype().equals("Gallery"))
+	url="/infra-financing";
+ System.out.println(eventId);
+%>
+
+<% if(!role.equalsIgnoreCase("Departmentuser")){ %>
+
+ 
+<section class="top_innerBanner" style="margin-top: -60px !important;">
+<div class="container top_bannerImg d-flex align-items-center flex-wrap">
+			<div class="me-auto"><h1><liferay-ui:message key="ev"/></h1></div>
+			<nav style="--bs-breadcrumb-divider: '>';">
+			  <ol class="breadcrumb">
+				<li class="breadcrumb-item"><a href="/home" onclick="location.reload();" ><liferay-ui:message key="home"/></a></li>
+				<li class="breadcrumb-item active">Event Details</li>
+			  </ol>
+			</nav>
+		</div>	
+</section>
+         	<% 
+ 
+Events eventLink=null;
+   try{
+	   eventLink =EventsLocalServiceUtil.fetchEvents(eventId);
+		    
+ 
+	   fileUrl=""; 
+	   title=eventLink.getTitle();
+	   description=eventLink.getDescription();
+     	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+     	startTime= eventLink.getStartTime();
+      	endTime= eventLink.getEndTime(); 
+      	eventtype=eventLink.getEventtype();
+      	DateFormat ipf=new SimpleDateFormat("HH:mm");
+      	DateFormat opf=new SimpleDateFormat("hh:mma");
+      	try{
+      		Date time1=ipf.parse(startTime);
+      		st=opf.format(time1);
+      		Date time2=ipf.parse(endTime);
+      	    et=opf.format(time2);
+      	}
+      	catch(Exception e)
+      	{
+      		
+      	}
+      	venue=eventLink.getVenue();
+	  long fileEntryId=eventLink.getFileEntryId();
+	  if(fileEntryId!=0L){
+			try{
+				fileUrl =EventsPortlet.getFile(fileEntryId, themeDisplay.getScopeGroupId());	  
+			}
+			catch(Exception e){
+				
+			}
+	  }
+	  try{	
+		 dt1 = eventLink.getStartDate();
+			startDate = sdf.format(dt1);
+			Date date = sdf.parse(startDate);
+     		SimpleDateFormat outputFormat = new SimpleDateFormat("d'"
+     		                + DateFor.getOrdinalSuffix(Integer.parseInt(startDate.substring(8, 10))) + "' MMM''yy",Locale.ENGLISH);
+     		sd=outputFormat.format(date);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	 
+	 try{	
+			 dt2 = eventLink.getEndDate();
+			endDate = sdf.format(dt2);
+			Date date1 = sdf.parse(endDate);
+     		SimpleDateFormat outputFormat1 = new SimpleDateFormat("d'"
+     		                + DateFor.getOrdinalSuffix(Integer.parseInt(endDate.substring(8, 10))) + "' MMM''yy",Locale.ENGLISH);
+     		ed=outputFormat1.format(date1);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+  }
+  catch(Exception e){}%>
+
+ <main class="main_innerlayout">
+
+	<div class="container">
+	<p class="back_button"><i class="fa-solid fa-angles-left"></i> <a id="backlink" href="#" onclick="goBack();">Back</a></p>
+		<h6 class="event_name">
+				<%= title%>
+			</h6>
+		<div class="d-flex justify-content-center" style="position: relative;">
+			<img width="1140px;" src="<%=fileUrl %>" class="img-fluid event_top_img" alt="image name to be displayed">
+		</div>
+		<section>
+		<div class="row shadow_box eventdetail_box">
+		<div class="col-lg-8 venue_description">
+				<h2>Event Overview</h2>
+				<p class="text-large"><%=description %></p>
+			</div>
+			<div class="col-lg-4">
+			<div class="venue_location">
+				<h5>VENUE</h5>
+				<p><span class="icon_venue"><i class="fa-regular fa-location-dot"></i></span><%=venue %></p>
+				<hr class="seperator">
+				<h5>DATE</h5>
+				<p><span class="icon_date"><i class="fa-light fa-calendar-days"></i></span><%=sd %>- <%=ed %></p>	
+				<hr class="seperator">
+				<h5>TIME</h5>
+				<p><span class="icon_time"><i class="fa-regular fa-clock"></i></span><%=st %> - <%=et %></p>	
+				</div>
+			<h4>Photos</h4>
+						<%
+						long eventid = eventLink.getEventId();
+						List<GalleryDocuments> galleryDocumentsList = GalleryDocumentsLocalServiceUtil.findByeventId(eventid);
+		                List<YouTubeLinks> yl = YouTubeLinksLocalServiceUtil.findByeventId(eventid);
+		                if (galleryDocumentsList.size()>0) {
+						
+						%>
+						 <div class="owl-carousel owl-theme mediagallery_scroller" uk-lightbox>
+	                                <% 
+	                  
+	                                String youtubelink="";
+	                                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	                                String heventtype=eventLink.getEventtype();
+	                                try {	
+	                                    Date dt = eventLink.getStartDate();
+	                                    startDate = sdf.format(dt);
+	                                } catch (Exception e) {
+	                                    e.printStackTrace();
+	                                }
+
+	                                try {	
+	                                    Date dt = eventLink.getEndDate();
+	                                    endDate = sdf.format(dt);
+	                                } catch (Exception e) {
+	                                    e.printStackTrace();
+	                                }
+
+	                                for (GalleryDocuments galleryDoc : galleryDocumentsList) {  
+	                                    String fileUrl2 = ""; 
+	                                    long fileEntryId = galleryDoc.getFileEntryId();
+	                                    if (fileEntryId != 0L) {
+	                                        try {
+	                                            fileUrl2 =EventsPortlet.getFile(fileEntryId, themeDisplay.getScopeGroupId());	  
+	                                        } catch (Exception e) {
+	                                            e.printStackTrace();
+	                                        }
+	                                    }
+	                                    %> 
+	                                    <div class="item">	
+	                                        <a class="uk-inline" href="<%=fileUrl2 %>">
+	                                            <img class="img-fluid img-thumbnail" src="<%=fileUrl2 %>" alt="">
+	                                        </a>
+	                                    </div>					    
+	                                <% } %> 
+	                                  <%if(yl.size()>0){
+	                                	    for (YouTubeLinks youtube : yl) {  
+	    	                                    String fileUrl1 = ""; 
+	    	                                   youtubelink=youtube.getYoutubelink();
+	    	                                   String[] keys= youtubelink.split("=");
+	    	   					            if(keys.length>1){
+	    	   					    			 System.out.println("keys>>>"+keys[0]);
+	    	   					    			 System.out.println("keys>>>"+keys[1]);
+	    	   					    	    	 fileUrl1 =" https://img.youtube.com/vi/"+keys[1]+"/0.jpg";
+	    	   					    	     }
+	    	   					    	     else{
+	    	   					    	    	  keys= youtubelink.split("/");
+	    	   					    	    	  String key=keys[keys.length-1];
+	    	   					    	    	  System.out.println("keys>>>"+key);
+	    	   					    	    	  fileUrl1 =" https://img.youtube.com/vi/"+key+"/0.jpg";
+	    	   					    	     }
+	    	                                    %> 
+	    	                                    <div class="item">	
+	    	                                        <a class="uk-inline" href="<%=youtubelink %>">
+	    	                                            <img class="img-fluid img-thumbnail" src="<%=fileUrl1 %>" alt="">
+	    	                                        </a>
+	    	                                    </div>					    
+	    	                                <% } }%> 
+	                                	  
+	                                	
+	                            </div>		
+	                            <%} %>
+			</div>
+			
+		</div>
+		<div class="row d-flex justify-content-center">
+			<div class="col-lg-8">
+			</div>
+		</div>
+		</section>
+	</div>
+	<% 
+	if(!todayDate.after(dt1))
+			{
+		if(eventtype.equals("Training"))
+		{
+			%>
+				<div class="container shadow_box d-flex align-items-center flex-wrap event_register_box">
+		<div class="me-auto">
+		<p class="large_text">To register for the training please click on the "DEA LMS" link. 
+Kindly login through existing account or register as new user.</p>
+		</div>
+		<a href="https://dea.lms.gov.in/" target="_blank" class="btn register_btn">REGISTER NOW</a>
+		</div>
+			<% 
+		}else{
+			System.out.println(dt1);
+			System.out.println(dt2);
+			System.out.println(todayDate);
+			%>
+	<div class="container shadow_box d-flex align-items-center flex-wrap event_register_box">
+    <div class="me-auto">
+    <p class="large_text">In order to attend this event please click on Register now button, a response will be provided within 48 hours of time.</p>
+    </div>
+    <a class="btn register_btn" data-bs-toggle="modal" data-bs-target="#registereventModal">REGISTER NOW</a>
+    
+    <div class="modal fade" id="registereventModal" tabindex="-1" aria-labelledby="registereventModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="registereventModalLabel">Registration Form</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+          <div id="form_section1">
+            <aui:form name="mailsentform" cssClass="row form_section" action="<%=SentMail %>" method="post">
+                <div class="col-md-6">
+                   <aui:input type="text" cssClass="form-control" name="name" label="Name">
+                   <aui:validator name="required"></aui:validator>
+                    <aui:validator name="custom" errorMessage="Please remove special characters.">
+			 	function (val, fieldNode, ruleValue) {
+			     	var returnValue = true;
+			  		var iChars = "{}'\":;=<>$";
+			           for (var i = 0; i < val.length; i++) {
+			                if (iChars.indexOf(val.charAt(i)) != -1) {    
+			                 returnValue = false;
+			                }
+			            }
+			            if(val.includes("&lt;") || val.includes("&gt;") || val.includes("&apos;") || val.includes("&quot;") ||val.includes("&QUOT;") ||val.includes("&equals;")){
+			               returnValue = false;
+			            }
+			   		return returnValue;
+			    }
+			 </aui:validator>
+                   </aui:input>
+                  </div>
+                <div class="col-md-6">
+                  <aui:input type="email" cssClass="form-control" name="email" label="Email">
+                  <aui:validator name="required"></aui:validator>
+                  <aui:validator name="email" />
+
+        <aui:validator errorMessage="Only emails from @gmail.com or kpmg.com or outlook.com are allowed." 
+        name="custom">
+                function(val, fieldNode, ruleValue) {
+                        var regex = new RegExp(/@gmail|kpmg|outlook\.com$/i);
+
+                        return regex.test(val);
+                }
+        </aui:validator> 
+                  </aui:input>
+                </div>
+                <div class="col-md-6">
+                  <aui:input type="text" cssClass="form-control" name="cno" label="Contact No">
+                  <aui:validator name="required"></aui:validator>
+                  <aui:validator name="maxLength"  errorMessage="Please enter valid 10 digits mobile number">10</aui:validator>
+					<aui:validator name="minLength"  errorMessage="Please enter valid 10 digits mobile number">10</aui:validator>
+					<aui:validator name="number"/>
+					<aui:validator name="required" />
+                  </aui:input>
+                </div>
+                 <div class="col-md-6">
+                  <aui:input type="text" cssClass="form-control" name="dcname" label="Department/Company Name">
+                  <aui:validator name="required"></aui:validator>
+                  </aui:input>
+                </div>
+                <div class="col-md-6">
+                  <aui:input type="text" cssClass="form-control" name="designation" label="Designation">
+                  <aui:validator name="required"></aui:validator>
+                  </aui:input>
+                </div>
+                <div class="col-md-6">
+								
+                  <aui:select cssClass="form-select" name="state" label="State">
+                  <aui:validator name="required"></aui:validator>
+                    <aui:option selected="true" value="-1">Select State</aui:option>
+                    <aui:option value="Andhra Pradesh">Andhra Pradesh</aui:option>
+                    <aui:option value="Arunachal Pradesh">Arunachal Pradesh</aui:option>
+                    <aui:option value="Assam">Assam</aui:option>
+                    <aui:option value="Bihar">Bihar</aui:option>
+                    <aui:option value="Chhattisgarh">Chhattisgarh</aui:option>
+                    <aui:option value="Goa">Goa</aui:option>
+                    <aui:option value="Gujarat">Gujarat</aui:option>
+                    <aui:option value="Haryana">Haryana</aui:option>
+                    <aui:option value="Himachal Pradesh">Himachal Pradesh</aui:option>
+                    <aui:option value="Jharkhand">Jharkhand</aui:option>
+                    <aui:option value="Karnataka">Karnataka</aui:option>
+                    <aui:option value="Kerala">Kerala</aui:option>
+                    <aui:option value="Madhya Pradesh">Madhya Pradesh</aui:option>
+                    <aui:option value="Maharashtra">Maharashtra</aui:option>
+                    <aui:option value="Manipur">Manipur</aui:option>
+                    <aui:option value="Meghalaya">Meghalaya</aui:option>
+                    <aui:option value="Mizoram">Mizoram</aui:option>
+                    <aui:option value="Nagaland">Nagaland</aui:option>
+                    <aui:option value="Odisha">Odisha</aui:option>
+                    <aui:option value="Punjab">Punjab</aui:option>
+                    <aui:option value="Rajasthan">Rajasthan</aui:option>
+                    <aui:option value="Sikkim">Sikkim</aui:option>
+                    <aui:option value="Tamil Nadu">Tamil Nadu</aui:option>
+                    <aui:option value="Telangana">Telangana</aui:option>
+                    <aui:option value="Tripura">Tripura</aui:option>
+                    <aui:option value="Uttar Pradesh">Uttar Pradesh</aui:option>
+                    <aui:option value="Uttarakhand">Uttarakhand</aui:option>
+                    <aui:option value="West Bengal">West Bengal</aui:option>
+                  </aui:select>
+                </div>
+                                    <div class="d-flex justify-content-center">
+                      <button type="button" class="btn submit" onclick="newShowOrHideDiv();">Submit</button>
+                      
+                    </div>
+                      </aui:form>	
+                    </div>
+                    <div class="d-flex justify-content-center">
+						 
+						<div class="alert alert-success" role="alert"  style="display: none;" id="TableBlock">
+						  Thank You for your interest in the event. We will contact you in next 48hrs.
+						</div>
+			  </div>
+              
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+    <%}} } %>
+</main>
+
+<script>
+  
+    function newShowOrHideDiv() {
+    //	alert("step1");
+    	 var x = document.getElementById("TableBlock");
+         var y = document.getElementById("form_section1");
+       //  var name = document.getElementById("name");
+         var name=$("#<portlet:namespace />name").val();
+         var email=$('#<portlet:namespace />email').val();
+         var cno=$('#<portlet:namespace />cno').val();
+         var dcname=$('#<portlet:namespace />dcname').val();
+         var designation=$('#<portlet:namespace />designation').val();
+         var state=$('#<portlet:namespace />state').val();
+         var eventId=<%=eventId%>;
+         console.log(eventId);
+         console.log(state);
+       //  alert(name);
+         var auiForm = Liferay.Form.get('<portlet:namespace />mailsentform');
+                 var auiValidator = auiForm.formValidator;
+                 auiValidator.validate();
+                 if (!auiValidator.hasErrors()) {
+        	 $("#form_section1").hide();
+             $("#registereventModal").modal('hide');
+    	AUI().use('aui-base','aui-io-request-deprecated', 'aui-node', function(A){
+    		        A.io.request('<%=Sendmail.toString() %>',{
+    		            dataType : 'json',
+    		            method : 'POST',
+    		            data : {
+    			<portlet:namespace />message :'success',
+    			<portlet:namespace />name :name,
+    			<portlet:namespace />email :email,
+    			<portlet:namespace />cno :cno,
+    			<portlet:namespace />dcname :dcname,
+    			<portlet:namespace />designation:designation,
+    			<portlet:namespace />state:state,
+    			<portlet:namespace />eventId:eventId,
+    		<portlet:namespace />cmd:'mailTrigger'
+    		            },
+    		            on : {
+    		            success : function() {
+    		   var data = this.get('responseData');
+    		                      var status=data.status;
+    		                      if(status=='success'){
+    			
+    		                          $("#TableBlock").show();
+    		 $("#registereventModal").modal('show');
+    		                            }  
+    		               }
+    		           }
+    		    }); 
+    	});
+  }
+    }
+    function getpreviousPageUrl(){
+   	 var pu=document.referrer;
+   	 console.log("Back Page URL:::::::"+pu);
+   	// window.location.replace(pu);
+   //	 window.location.href(pu);
+   	 var backlink=document.getElementById('backlink');
+   	backlink.location.href=pu;
+    }
+    function goBack()
+    {
+    	window.history.back();
+    	//window.location.replace(pu);
+    	
+    }
+    window.onload=function(){
+    	getpreviousPageUrl();
+    	location.reload();
+    };
+
+ </script>
+ 
