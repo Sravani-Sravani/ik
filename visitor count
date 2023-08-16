@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+<service-builder package-path="com.example.visitorcount">
+    <namespace>VisitorCount</namespace>
+    <entity name="Visitor" local-service="true" remote-service="false">
+        <column name="visitorId" type="long" primary="true" />
+        <column name="visitorCount" type="int" />
+    </entity>
+</service-builder>
+
+
+<#assign visitorCount = request.getAttribute("visitorCount")>
+
+<div class="visitor-count">
+    Total Visitors: <span id="total-visitor-count">${visitorCount}</span>
+</div>
+
+
+package com.example.visitorcount.portlet;
+
+import com.example.visitorcount.model.Visitor;
+import com.example.visitorcount.service.VisitorLocalService;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+
+import javax.portlet.Portlet;
+import javax.portlet.ProcessAction;
+import javax.portlet.PortletException;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+import javax.portlet.ResourceRequest;
+import javax.portlet.ResourceResponse;
+import java.io.IOException;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
+@Component(
+    immediate = true,
+    property = {
+        "com.liferay.portlet.display-category=category.sample",
+        "javax.portlet.display-name=Visitor Count Portlet",
+        "javax.portlet.init-param.template-path=/",
+        "javax.portlet.init-param.view-template=/view.jsp",
+        "javax.portlet.resource-bundle=content.Language",
+        "javax.portlet.security-role-ref=power-user,user"
+    },
+    service = Portlet.class
+)
+public class VisitorCountPortlet extends MVCPortlet {
+
+    @Reference
+    private VisitorLocalService visitorLocalService;
+
+    @Override
+    public void render(RenderRequest renderRequest, RenderResponse renderResponse) throws IOException, PortletException {
+        int visitorCount = getVisitorCount();
+        renderRequest.setAttribute("visitorCount", visitorCount);
+        super.render(renderRequest, renderResponse);
+    }
+
+    @ProcessAction(name = "incrementVisitorCount")
+    public void incrementVisitorCount(ActionRequest actionRequest, ActionResponse actionResponse) {
+        Visitor visitor = visitorLocalService.createVisitor(0); // Create a new visitor entry
+        visitorLocalService.incrementVisitorCount(visitor); // Increment the visitor count in the database
+    }
+
+    private int getVisitorCount() {
+        return visitorLocalService.getTotalVisitorCount();
+    }
+}
