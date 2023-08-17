@@ -125,3 +125,64 @@ public class VisitorCountPortlet extends MVCPortlet {
         return visitorLocalService.getTotalVisitorCount();
     }
 }
+________________________________________________
+
+
+package com.example.visitorcount.portlet;
+
+import com.example.visitorcount.service.VisitorLocalService;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.util.SessionClicks;
+import com.liferay.portal.kernel.util.PortalUtil;
+
+import javax.portlet.Portlet;
+import javax.portlet.ActionRequest;
+import javax.portlet.ActionResponse;
+import javax.portlet.ProcessAction;
+import javax.portlet.PortletException;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
+
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+
+@Component(
+    immediate = true,
+    property = {
+        "com.liferay.portlet.display-category=category.sample",
+        "javax.portlet.display-name=Visitor Count Portlet",
+        "javax.portlet.init-param.template-path=/",
+        "javax.portlet.init-param.view-template=/view.ftl",
+        "javax.portlet.resource-bundle=content.Language",
+        "javax.portlet.security-role-ref=power-user,user"
+    },
+    service = Portlet.class
+)
+public class VisitorCountPortlet extends MVCPortlet {
+
+    private static final String CLICK_ID = "com.example.visitorcount.click";
+
+    @Reference
+    private VisitorLocalService visitorLocalService;
+
+    @Override
+    public void render(RenderRequest renderRequest, RenderResponse renderResponse) throws PortletException {
+        int visitorCount = getVisitorCount();
+        renderRequest.setAttribute("visitorCount", visitorCount);
+        super.render(renderRequest, renderResponse);
+    }
+
+    @ProcessAction(name = "incrementVisitorCount")
+    public void incrementVisitorCount(ActionRequest actionRequest, ActionResponse actionResponse) {
+        String sessionId = PortalUtil.getHttpServletRequest(actionRequest).getSession().getId();
+
+        if (!SessionClicks.hasValue(sessionId, CLICK_ID)) {
+            visitorLocalService.incrementVisitorCount();
+            SessionClicks.put(sessionId, CLICK_ID, true);
+        }
+    }
+
+    private int getVisitorCount() {
+        return visitorLocalService.getTotalVisitorCount();
+    }
+}
