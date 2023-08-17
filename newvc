@@ -56,3 +56,21 @@ public class VisitorCountPortlet extends MVCPortlet {
         return visitorLocalService.getTotalVisitorCount();
     }
 }
+
+
+
+___________________________________________
+
+
+<script>
+    Liferay.Loader.require('jquery', function($) {
+        $.get('/o/visitor-count-portlet/get-visitor-count', function(data) {
+            var visitorCount = data.visitorCount;
+            $('#visitorCountPlaceholder').text('Total Visitors: ' + visitorCount);
+        });
+    });
+</script>
+
+<div class="footer">
+    <span id="visitorCountPlaceholder">Total Visitors: Loading...</span>
+</div>
