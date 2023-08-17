@@ -1,0 +1,35 @@
+// VisitorLocalServiceImpl.java
+
+package com.example.visitorcount.service.impl;
+
+import com.example.visitorcount.model.Visitor;
+import com.example.visitorcount.service.base.VisitorLocalServiceBaseImpl;
+import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.exception.SystemException;
+
+import org.osgi.service.component.annotations.Component;
+
+@Component(
+    property = "model.class.name=com.example.visitorcount.model.Visitor",
+    service = AopService.class
+)
+public class VisitorLocalServiceImpl extends VisitorLocalServiceBaseImpl {
+
+    public void incrementVisitorCount() {
+        try {
+            // Get the existing visitor entry, or create a new one if it doesn't exist
+            Visitor visitor = visitorPersistence.fetchByPrimaryKey(1);
+
+            if (visitor == null) {
+                visitor = createVisitor(1);
+            }
+
+            // Increment the visitor count and update the entry
+            int currentCount = visitor.getVisitorCount();
+            visitor.setVisitorCount(currentCount + 1);
+            updateVisitor(visitor);
+        } catch (SystemException e) {
+            // Handle exception
+        }
+    }
+}
