@@ -1,37 +1,51 @@
-<footer>
-    <!-- Your other footer content here -->
-    
-    <div class="visitor-count">
-        Total Visitors: <span id="total-visitor-count">Loading...</span>
-    </div>
-</footer>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Visitor Counter</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    function increaser() {
+      fetch('http://10.48.158.195:8098/api/jsonws/dea.visitor/getaddvisitorcount')
+        .then(response => response.json())
+        .then(json => $("#visits").text(json.visitorcount))
+    }
 
-<script>
-    // Function to set a cookie
-    function setCookie(name, value, days) {
-        const expires = new Date();
-        expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-        document.cookie = name + '=' + value + ';expires=' + expires.toUTCString();
+    function reader() {
+      fetch('http://10.48.158.195:8098/api/jsonws/dea.visitor/getvisitorcount')
+        .then(response => response.json())
+        .then(json => $("#visits").text(json.visitorcount))
     }
-    
-    // Function to get a cookie's value
+
+    function setCookie(name, value, minutes) {
+      var expires = new Date();
+      expires.setTime(expires.getTime() + minutes * 60 * 1000);
+      document.cookie = name + '=' + value + ';expires=' + expires.toUTCString() + ';path=/';
+    }
+
     function getCookie(name) {
-        const cookies = document.cookie.split('; ');
-        for (const cookie of cookies) {
-            const [cookieName, cookieValue] = cookie.split('=');
-            if (cookieName === name) {
-                return cookieValue;
-            }
+      var cookieArr = document.cookie.split(';');
+      for (var i = 0; i < cookieArr.length; i++) {
+        var cookiePair = cookieArr[i].split('=');
+        if (name === cookiePair[0].trim()) {
+          return decodeURIComponent(cookiePair[1]);
         }
-        return null;
+      }
+      return null;
     }
-    
-    // Get and update visitor count
-    const visitorCountCookieName = 'visitorCount';
-    const currentVisitorCount = parseInt(getCookie(visitorCountCookieName) || '0');
-    const updatedVisitorCount = currentVisitorCount + 1;
-    
-    setCookie(visitorCountCookieName, updatedVisitorCount.toString(), 365); // Cookie lasts for a year
-    
-    document.getElementById('total-visitor-count').textContent = updatedVisitorCount;
-</script>
+
+    $(document).ready(function() {
+      var sessionFlag = getCookie('sessionFlag');
+
+      if (!sessionFlag) {
+        increaser();
+        setCookie('sessionFlag', 'true', 10); // Set cookie to expire in 10 minutes
+      } else {
+        reader();
+      }
+    });
+  </script>
+</head>
+<body>
+  <p>Visitor Count: <span id="visits">Loading...</span></p>
+</body>
+</html>
