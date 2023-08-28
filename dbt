@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+
+<#include init />
+<#assign currentUrl = themeDisplay.getPortalURL() + themeDisplay.getURLCurrent() />
+  <#assign extUrl = themeDisplay.getURLCurrent() />
+<#assign portalURL = themeDisplay.getPortalURL() />
+<html class="${root_css_class}" dir="<@liferay.language key="lang.dir" />" lang="${w3c_language_id}">
+
+<head>
+	<title>${html_title}</title>
+
+	<meta content="initial-scale=1.0, width=device-width" name="viewport" />
+
+	<@liferay_util["include"] page=top_head_include />
+	
+    <!-- Favicon -->
+    <link href="${images_folder}/favicon.ico" rel="icon">
+
+
+</head>
+<style>
+html, body{ font-size: 12px !important;}
+</style>
+<body class="${css_class}">
+ <#assign dashboardPage = "/web/guest/dashboard" navigation="department_navigation.ftl" 
+ showMenu = "style='display:block;'"/>
+
+<#assign dashboardPage = htmlUtil.escape(dashboardPage) />
+
+
+<@liferay_ui["quick-access"] contentId="#main-content" />
+
+<@liferay_util["include"] page=body_top_include />
+
+<@liferay.control_menu />
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Roboto:wght@500;700&display=swap" rel="stylesheet"> 
+    
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+     <!-- Font Awesome  -->
+     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.2.0/css/all.css" />
+     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.2.0/css/sharp-solid.css" />
+     <script src="https://site-assets.fontawesome.com/releases/v6.2.0/js/all.js" data-auto-add-css="false" data-auto-replace-svg="false"></script>
+     <script src="https://site-assets.fontawesome.com/releases/v6.2.0/js/sharp-solid.js" data-auto-add-css="false" data-auto-replace-svg="false"></script>
+
+    <!-- Libraries Stylesheet -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Template Stylesheet -->
+    <link href="/o/Department-Backend-Theme/css/style.css" rel="stylesheet">
+
+<script type="text/javascript">
+ $('.sidebar-toggler').click(function () {
+        $('.sidebar, .content').toggleClass("open");
+        return false;
+    });
+    
+    $('.dropdown-toggle').click(function () {
+        console.log("Drop down1");
+        $('.dropdown-toggle, .dropdown-menu-end').toggleClass("show");
+        console.log("Drop down2");
+        return false;
+    });
+</script>
+<div class="container-fluid position-relative d-flex p-0"> 
+         <!-- Sidebar Start -->
+        <div class="sidebar">
+            <nav class="navbar navbar-dark">
+                		<div class="me-auto"><a class="depnavbar-brand" href="index.html"> <h1 style="color: white;">InfrastructureInIndia </h1>
+			 <h6>Initiative by Infrastructure Finance Secretariat,<br />Department of Economic Affairs, Ministry of Finance</h6></a>
+			 </div>
+                <div class="navbar-nav w-100">  
+           <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"><i class="fa fa-list me-2"></i>Home</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                           <a href="/manageslider"  class="dropdown-item">Banner</a>
+                           <a href="/news" class="dropdown-item">News</a>
+                          <a href="/important-links" class="dropdown-item">Important Links</a>  
+                          <a href="/quicklinks" class="dropdown-item">Quick Links</a>
+         <a href="/faq_backend" class="dropdown-item ">FAQ</a>
+      <a href="/sitemap_backend" class="dropdown-item ">Sitemap</a>
+                        </div>
+</div>
+ <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"><i class="fa fa-list me-2"></i>Infra Finance</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                       <a href="/reportsandinsights" class="dropdown-item ">Reports and Insights</a>
+                 <a href="/infrafinancinghub_backend" class="dropdown-item">Circulars and Orders</a>
+<a href="/infrafinancing_backend" class="dropdown-item">External Links</a>
+                        </div>
+</div>
+ <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"><i class="fa fa-list me-2"></i>Capacity Building</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                       <a href="/holidayslist_backend" class="dropdown-item">Holidays List</a>
+                        </div>
+</div>
+ <div class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle " data-bs-toggle="dropdown"><i class="fa fa-list me-2"></i>Knowledge Resources</a>
+                        <div class="dropdown-menu bg-transparent border-0">
+                         <a href="/knowledgehub_backend" class="dropdown-item">Document Repository</a>
+                        </div>
+</div>
+  <a href="/events"  class="nav-item nav-link "><i class="fa fa-list me-2"></i>Events</a>        
+<a href="/aboutifs_backend" class="nav-item nav-link "><i class="fa fa-list me-2"></i>About IFS</a>
+<a href="/contactus-backend" class="nav-item nav-link "><i class="fa fa-list me-2"></i>Contact Us</a>
+<a href="/harmonizedlist_backend" class="nav-item nav-link "><i class="fa fa-list me-2"></i>HML</a>
+
+
+           
+                </div>
+            </nav>
+        </div>
+        <!-- Sidebar End -->
+        
+        
+                <!-- Content Start -->
+        <div class="content col-md-12" style="background:#fff;">
+        <div class="">
+            <header class=" sticky-top px-4 py-0">
+            <!-- Navbar Start -->
+                <nav class="navbar navbar-expand">
+                    
+                    <a class="sidebar-toggler flex-shrink-0">
+                        <i class="fa fa-bars-sort"></i>
+                    </a>
+                    <a href="/dashboard" class="navbar-brand d-flex d-lg-none ms-2 mt-2 text-dark">
+                      <h3><i class="fa-solid fa-circle-dashed"></i> Infrastructure in India</h3>
+                    </a>
+                    <div class="d-none d-md-flex ms-4 justify-content-center portal_name">
+                        <b>Infrastructure in India</b>
+                    </div>
+                    <div class="navbar-nav align-items-center ms-auto">
+                       
+
+                        <div class="dropdown">
+<a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false"> 
+<img class="rounded-circle me-lg-2" src="${images_folder}/user.jpg" alt="" style="width: 40px; height: 40px;">
+<span class="d-none d-lg-inline-flex">${user_first_name} ${user_last_name}</span>
+</a>
+<div class="dropdown-menu">
+<span class="dropdown-item text-muted" href="#">User Name<br /> <b class="text-sm">${user_first_name} ${user_last_name}</b></span>
+<hr class="dropdown-divider">
+<a href="/userprofile" class="dropdown-item">Profile</a> 
+<a href="/c/portal/logout" class="dropdown-item">Log Out</a>
+</div>
+</div>
+</div>
+                </nav>
+            </header>
+            <!-- Navbar End -->
+          
+          <div class="container-fluid pt-4 px-4">
+                <div class="row">
+                    <div class="col-lg-12">
+                 
+		<#if selectable>
+			<@liferay_util["include"] page=content_include />
+		<#else>
+			${portletDisplay.recycle()}
+ 		 
+			<@liferay_theme["wrap-portlet"] page="portlet.ftl">
+				<@liferay_util["include"] page=content_include />
+			</@>
+		</#if>
+  
+  </div></div></div>
+  
+	  </div>
+        <!-- Content End -->
+         <!-- Back to Top -->
+        <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    </div>
+
+    <footer class="footer" style="visibility: visible;">
+      <div class="container-fluid">
+          <div class="row text-muted">
+              ©2023 All Right Reserved.
+          </div>
+      </div>
+  </footer>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <!-- Template Javascript -->
+    <script src="${javascript_folder}/main.js"></script>
+    <script>var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+      })</script>
+<@liferay_util["include"] page=body_bottom_include />
+<@liferay_util["include"] page=bottom_include />
+</body>
+
+</html>
+<style>
+.depnavbar-brand h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    line-height: 100% !important;
+    font-family: 'Roboto Slab', serif;
+    display: block;
+    padding: 0px;
+    text-transform: capitalize;
+    margin-bottom: 5px;
+}
+.depnavbar-brand h6 {
+    color: #CC9300;
+    font-size: 10px;
+    margin-top: 2px;
+    text-align: left;
+    margin-bottom: 0;
+    line-height: 110%;
+}
+a.depnavbar-brand {
+    text-decoration: none;
+}
+</style>
