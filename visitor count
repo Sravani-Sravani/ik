@@ -22,3 +22,43 @@ else{
 reader(); 
  }
  </script>
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Visitor Counter</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    function increaser() {
+      fetch('http://10.48.158.195:8098/api/jsonws/dea.visitor/getaddvisitorcount')
+        .then(response => response.json())
+        .then(json => $("#visits").text(json.visitorcount))
+    }
+
+    function reader() {
+      fetch('http://10.48.158.195:8098/api/jsonws/dea.visitor/getvisitorcount')
+        .then(response => response.json())
+        .then(json => $("#visits").text(json.visitorcount))
+    }
+
+    $(document).ready(function() {
+      // Check if a session flag exists to prevent multiple increments
+      var sessionFlag = sessionStorage.getItem('sessionFlag');
+
+      if (!sessionFlag) {
+        increaser();
+        sessionStorage.setItem('sessionFlag', 'true');
+        setTimeout(function() {
+          sessionStorage.removeItem('sessionFlag');
+        }, 600000); // 10 minutes in milliseconds
+      } else {
+        reader();
+      }
+    });
+  </script>
+</head>
+<body>
+  <p>Visitor Count: <span id="visits">Loading...</span></p>
+</body>
+</html>
