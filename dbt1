@@ -1,0 +1,13 @@
+$(document).ready(function() {
+    $('.sidebar-toggler').click(function () {
+        $('.sidebar, .content').toggleClass("open");
+        return false;
+    });
+
+    $(document).on('click', '.dropdown-toggle', function () {
+        console.log("Drop down1");
+        $('.dropdown-toggle, .dropdown-menu-end').toggleClass("show");
+        console.log("Drop down2");
+        return false;
+    });
+});
