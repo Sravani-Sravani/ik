@@ -1,25 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <script>
-        // Check if the page was refreshed using sessionStorage
-        if (performance.navigation.type === 1) {
-            // Page was reloaded, set a sessionStorage item to prevent further reloading
-            sessionStorage.setItem('pageRefreshed', 'true');
-        }
-        else if (sessionStorage.getItem('pageRefreshed') === 'true') {
-            // Page was reloaded previously, clear the sessionStorage item
-            sessionStorage.removeItem('pageRefreshed');
-        }
-        else {
-            // Page was not reloaded, reload it after a short delay
+ <script>
+        // Get the value of the 'refresh' query parameter from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const shouldRefresh = urlParams.get('refresh');
+
+        // Reload the current page if the 'refresh' query parameter is true
+        if (shouldRefresh === 'true') {
             setTimeout(function() {
                 location.reload();
             }, 2000); // 2 seconds delay, adjust as needed
         }
     </script>
-</head>
-<body>
-    <p>This is your FAQ page content.</p>
-</body>
-</html>
