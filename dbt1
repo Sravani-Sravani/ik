@@ -11,3 +11,19 @@ $(document).ready(function() {
         return false;
     });
 });
+
+$(document).ready(function () {
+    $('.nav-link.banner').click(function () {
+        // Add a class to highlight the "Banner" option
+        $(this).addClass('active');
+        
+        // Open the corresponding collapse
+        $('#banner-collapse').addClass('show');
+        
+        // Remove active class from other options if needed
+        $('.nav-link').not(this).removeClass('active');
+        
+        return false;
+    });
+});
+
