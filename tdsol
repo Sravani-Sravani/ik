@@ -1,0 +1,29 @@
+<!-- HTML -->
+<li><a onclick="toggleDarkMode()"><img src="images/darkmode_icon.jpg" alt="Dark Mode" class="img-fluid" /></a></li>
+
+<!-- JavaScript -->
+<script>
+function toggleDarkMode() {
+  var element = document.body;
+  element.classList.toggle("dark-mode");
+  
+  // Check if dark mode is active and store the preference in local storage
+  if (element.classList.contains("dark-mode")) {
+    localStorage.setItem("darkModeEnabled", "true");
+  } else {
+    localStorage.setItem("darkModeEnabled", "false");
+  }
+}
+
+// Check if dark mode preference is stored and apply it on page load
+window.addEventListener("load", function() {
+  var darkModeEnabled = localStorage.getItem("darkModeEnabled");
+  var element = document.body;
+
+  if (darkModeEnabled === "true") {
+    element.classList.add("dark-mode");
+  } else {
+    element.classList.remove("dark-mode");
+  }
+});
+</script>
