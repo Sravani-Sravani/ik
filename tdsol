@@ -1,24 +1,26 @@
-// darkmode.js
-
-// Function to toggle dark mode
 function toggleDarkMode() {
     var element = document.body;
     element.classList.toggle("dark-mode");
     
-    // Check if dark mode is enabled and store the preference in local storage
+    // Check if dark mode is enabled and store the preference in localStorage
     var isDarkModeEnabled = element.classList.contains("dark-mode");
-    localStorage.setItem("darkModeEnabled", isDarkModeEnabled);
+    localStorage.setItem("darkModeEnabled", isDarkModeEnabled.toString());
 }
 
-// Check if dark mode preference exists in local storage and apply it
-document.addEventListener("DOMContentLoaded", function () {
+// Function to check the dark mode preference in localStorage and apply it
+function checkDarkModePreference() {
     var isDarkModeEnabled = localStorage.getItem("darkModeEnabled");
     var element = document.body;
-
+    
     // Set the initial state based on the stored preference
     if (isDarkModeEnabled === "true") {
         element.classList.add("dark-mode");
     } else {
-        element.classList.remove("dark-mode"); // Ensure it's off if not stored
+        element.classList.remove("dark-mode");
     }
+}
+
+// Check the dark mode preference when the page loads
+document.addEventListener("DOMContentLoaded", function () {
+    checkDarkModePreference();
 });
