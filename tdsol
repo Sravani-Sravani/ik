@@ -1,13 +1,14 @@
 <!-- HTML -->
-<li><a onclick="toggleDarkMode()"><img src="images/darkmode_icon.jpg" alt="Dark Mode" class="img-fluid" /></a></li>
+<li><a id="darkModeToggle"><img src="images/darkmode_icon.jpg" alt="Dark Mode" class="img-fluid" /></a></li>
 
 <!-- JavaScript -->
 <script>
+// Function to toggle dark mode
 function toggleDarkMode() {
   var element = document.body;
   element.classList.toggle("dark-mode");
-
-  // Store the dark mode preference in local storage
+  
+  // Check if dark mode is active and store the preference in local storage
   if (element.classList.contains("dark-mode")) {
     localStorage.setItem("darkModeEnabled", "true");
   } else {
@@ -15,8 +16,8 @@ function toggleDarkMode() {
   }
 }
 
-// Check if dark mode preference is stored and apply it on page load
-document.addEventListener("DOMContentLoaded", function () {
+// Function to check and apply dark mode on page load
+function applyDarkModeOnLoad() {
   var darkModeEnabled = localStorage.getItem("darkModeEnabled");
   var element = document.body;
 
@@ -25,5 +26,12 @@ document.addEventListener("DOMContentLoaded", function () {
   } else {
     element.classList.remove("dark-mode");
   }
-});
+}
+
+// Add a click event listener to the dark mode toggle button
+var darkModeToggle = document.getElementById("darkModeToggle");
+darkModeToggle.addEventListener("click", toggleDarkMode);
+
+// Apply dark mode on page load
+applyDarkModeOnLoad();
 </script>
