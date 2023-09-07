@@ -16,8 +16,12 @@ function toggleDarkMode() {
 document.addEventListener("DOMContentLoaded", function () {
     var isDarkModeEnabled = localStorage.getItem("darkModeEnabled");
     var element = document.body;
+
+    // Set the initial state based on the stored preference
     if (isDarkModeEnabled === "true") {
         element.classList.add("dark-mode");
+    } else {
+        element.classList.remove("dark-mode"); // Ensure it's off if not stored
     }
 });
 </script>
