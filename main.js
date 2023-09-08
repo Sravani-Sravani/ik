@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
             content.classList.toggle('open');
         });
     }
-    
+
     if (dropdownToggle) {
         dropdownToggle.forEach(function (element) {
             element.addEventListener('click', function (event) {
