@@ -1,26 +1,23 @@
 <script>
 var coll = document.getElementsByClassName("collapsible1");
-var content = document.getElementsByClassName("content1");
 var i;
 
 for (i = 0; i < coll.length; i++) {
   coll[i].addEventListener("click", function() {
     this.classList.toggle("active");
     var content1 = this.nextElementSibling;
+    
     if (content1.style.maxHeight) {
-      content1.style.maxHeight = null; // Close the content1
+      content1.style.maxHeight = null; // Collapse the content
     } else {
-      content1.style.maxHeight = content1.scrollHeight + "px"; // Open the content1
-    } 
-  });
-
-  // Add an event listener to content1 to close it and remove "active" class when clicked
-  content[i].addEventListener("click", function() {
-    var parentCollapsible = this.previousElementSibling;
-    if (parentCollapsible.classList.contains("active")) {
-      parentCollapsible.classList.remove("active");
-      this.style.maxHeight = null;
+      content1.style.maxHeight = content1.scrollHeight + "px"; // Expand the content
     }
   });
+
+  // Collapse the initially active elements
+  if (coll[i].classList.contains("active")) {
+    var content1 = coll[i].nextElementSibling;
+    content1.style.maxHeight = content1.scrollHeight + "px";
+  }
 }
 </script>
